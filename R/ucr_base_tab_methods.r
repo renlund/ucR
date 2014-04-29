@@ -19,12 +19,12 @@ ucr.internal.base.tab.lm <- function(...) {
 #' @param object a \code{ucr.base.tab} object
 #' @param ... arguments to be passed 
 #' @seealso \code{\link{ucr.base.tab}}
+#' @importFrom Hmisc latex
 #' @export
 
 latex.ucr.base.tab <- function(object, ...) {
    # --> Add bottom text.
    # Explain notation.
-   require(Hmisc)
    bot <- "" # Bottom text.
    if (object$exists.numeric) { # Add text explaining numerical variables if any.
       median.eq <- "$m$ ($a$ -- $b$)"
