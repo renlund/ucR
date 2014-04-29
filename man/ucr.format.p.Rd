@@ -1,0 +1,27 @@
+\name{ucr.format.p}
+\alias{ucr.format.p}
+\title{Format p values for readability}
+\usage{
+ucr.format.p(p, min.p = "0.001")
+}
+\arguments{
+  \item{p}{the p value to format}
+
+  \item{min.p}{string indicating minimum value to display
+  explicitly}
+}
+\description{
+Utility function that formats a P value array to a string
+array. Smaller values than 'min.p' (a string!) will be
+replaced by strings like "< 0.001".
+}
+\examples{
+ucr.format.p(0.0000456, min.p="0.01")
+}
+\author{
+Lars Lindhagen
+}
+\seealso{
+\code{\link{format}}, \code{\link{sprintf}}
+}
+
