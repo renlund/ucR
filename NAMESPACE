@@ -1,4 +1,4 @@
-export(latex.ucr.base.tab)
+S3method(latex,ucr.base.tab)
 export(ucr.base.tab)
 export(ucr.format.p)
 importFrom(Hmisc,label)
