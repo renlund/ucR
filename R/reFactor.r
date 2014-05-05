@@ -4,6 +4,7 @@
 #' It is also possible to add and exclude levels, and turn missing values into 
 #' a separate level.
 #' 
+#' @author Henrik Renlund
 #' @param x factor or character vector to be relabelled or reordered
 #' @param L a list specifying the relabeling/reordering
 #' @param na.level if not \code{NULL} all \code{NA}'s will be a level with this label
