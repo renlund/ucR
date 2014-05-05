@@ -3,12 +3,17 @@
 \title{Look for a pattern in the \code{names} of R objects (typically data frames) and
 return the hits}
 \usage{
-varFind(pattern, dfs, index = FALSE, ...)
+varFind(pattern, dfs = TRUE, index = FALSE, ...)
 }
 \arguments{
   \item{pattern}{pattern to look for}
 
-  \item{dfs}{character string to of R objects}
+  \item{dfs}{logical or character string. If a character
+  vector of the names of R objects is given, the
+  \code{names} of these will be exmined with \code{grepRet}
+  ; if \code{TRUE} all data frames in the global
+  environment will be examined and if \code{FALSE} all
+  objects with a 'names' attribute will be examined.}
 
   \item{index}{logical; whether to also return indexes of
   hits (defaul FALSE)}
@@ -17,8 +22,8 @@ varFind(pattern, dfs, index = FALSE, ...)
 }
 \description{
 This function applies \code{\link{grepRet}} to
-\code{\link{names}} of a given set of R objects and returns
-the results as a list
+\code{\link{names}} of a set of R objects and returns the
+results as a list
 }
 \examples{
 require(datasets)

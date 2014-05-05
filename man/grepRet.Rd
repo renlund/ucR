@@ -15,8 +15,8 @@ grepRet(pattern, x, index = FALSE, ...)
   \item{...}{arguments to be passed to \code{\link{grep}}}
 }
 \description{
-This is a modification of \code{\link{grep}} to return not
-only the indexes of the hits (optional), but the hits
+This is a wrapper for \code{\link{grep}} to return not only
+the indexes of the hits (optional), but the hits
 themselves.
 }
 \examples{

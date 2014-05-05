@@ -1,6 +1,6 @@
 #' Look for a pattern in a character vector and return the hits
 #' 
-#' This is a modification of \code{\link{grep}} to return not only the indexes
+#' This is a wrapper for \code{\link{grep}} to return not only the indexes
 #' of the hits (optional), but the hits themselves. 
 #' 
 #' @author Henrik Renlund
@@ -16,5 +16,5 @@
 grepRet <- function(pattern, x, index=FALSE, ...) {
    m <- x[grep(pattern, x, ...)]
    if(index) names(m) <- grep(pattern, x, ...)
-   m
+   if(length(m)==0) NULL else m
 }
