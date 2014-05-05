@@ -1,4 +1,5 @@
 S3method(latex,ucr.base.tab)
+export(ceq)
 export(grepRet)
 export(reFactor)
 export(ucr.base.tab)
