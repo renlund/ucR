@@ -1,6 +1,8 @@
 S3method(latex,ucr.base.tab)
+export(grepRet)
 export(reFactor)
 export(ucr.base.tab)
 export(ucr.format.p)
+export(varFind)
 importFrom(Hmisc,label)
 importFrom(Hmisc,latex)
