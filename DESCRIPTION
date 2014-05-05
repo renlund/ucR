@@ -12,3 +12,6 @@ Depends:
 License: GPL-3
 LazyData: true
 Maintainer: Henrik Renlund <henrik.renlund@ucr.uu.se>
+VignetteBuilder: knitr
+Suggests:
+    knitr
