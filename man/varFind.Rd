@@ -24,6 +24,9 @@ the results as a list
 require(datasets)
 varFind(pattern="a", dfs=c("mtcars", "esoph"), index=TRUE)
 }
+\author{
+Henrik Renlund
+}
 \seealso{
 \code{\link{grepRet}}, \code{\link{grep}}
 }

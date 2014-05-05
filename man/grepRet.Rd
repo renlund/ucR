@@ -22,6 +22,9 @@ themselves.
 \examples{
 grepRet(pattern="a", x=names(datasets::mtcars))
 }
+\author{
+Henrik Renlund
+}
 \seealso{
 \code{\link{grep}}, \code{\link{grepl}}
 }
