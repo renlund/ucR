@@ -101,7 +101,7 @@ latex.ucr.base.tab <- function(object, ...) {
       collabel.just=rep("l", times=ncol(object$tab)),
       extracolheads=object$extra.col.heads,
       ...)
-   return (NULL)
+   invisible (NULL)
 }
 
 # Splits a table into several sub-tables with a subset of the groups in each
