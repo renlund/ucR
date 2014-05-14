@@ -60,20 +60,17 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
 
 
 
-#' @title Index a 'cr_group' object
-#' 
-#' @description This method makes sure that attributes 'rgroup', 'cgroup' and 
-#' 'colnames' are intact after permutation.
-#' 
-#' @note In RStudio (version Version 0.98.507) \code{'[.cr_group'} causes 
-#' an unexpected message "<simpleError in ..." at times. It is unclear
-#' why, as this does not appear in RConsole or RTerm.  
-#' 
-#'  @author Henrik Renlund
-#'  @param x an 'cr_group' object
-#'  @param i first index
-#'  @param j second index
-#'  @param ... arguments to be passed to \code{'['}
+#-#' @title Index a 'cr_group' object
+#-#' @description This method makes sure that attributes 'rgroup', 'cgroup' and 
+#-#' 'colnames' are intact after permutation. 
+#-#' @note In RStudio (version Version 0.98.507) \code{'[.cr_group'} causes 
+#-#' an unexpected message "<simpleError in ..." at times. It is unclear
+#-#' why, as this does not appear in RConsole or RTerm.  
+#-#'  @author Henrik Renlund
+#-#'  @param x an 'cr_group' object
+#-#'  @param i first index
+#-#'  @param j second index
+#-#'  @param ... arguments to be passed to \code{'['}
 #'  @export 
 
 '[.cr_group' <- function(x,i,j){
