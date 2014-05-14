@@ -1,5 +1,8 @@
+S3method("[",cr_group)
+S3method(latex,cr_group)
 S3method(latex,ucr.base.tab)
 export(ceq)
+export(cr_group)
 export(grepRet)
 export(reFactor)
 export(ucr.base.tab)
