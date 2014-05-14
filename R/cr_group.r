@@ -213,3 +213,13 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
    )")
    eval(parse(text=code))
 }
+
+# - #' @title Structure method
+# - #' @description \code{str} for \code{cr_group} objects
+#' @export
+
+str.cr_group <- function(x){
+   class(x) <- setdiff(class(x), "cr_group")
+   cat("Object of class 'cr_group' which contains:\n")
+   str(x)
+}
