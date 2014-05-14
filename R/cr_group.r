@@ -3,7 +3,11 @@
 #' @description Sets the 'rgroup' and 'cgroup' attributes and returns a 
 #' 'cr_group' object. These can also be set with \code{attr}, but this 
 #' functions checks that the dimensionality is OK.
-#' 
+#' @note This functions is mainly used because of its \code{latex} method. 
+#' There is also an indexing method. However, In RStudio 
+#' (version Version 0.98.507) \code{'[.cr_group'} causes 
+#' an unexpected message "<simpleError in ..." at times. It is unclear
+#' why, as this does not appear in RConsole or RTerm.  
 #' @author Henrik Renlund
 #' @param x the object (typically a matrix och data frame)
 #' @param rgroup the 'rgroup' attribute with length equal to \code{dim(object)[1]}
@@ -61,7 +65,7 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
 #' @description This method makes sure that attributes 'rgroup', 'cgroup' and 
 #' 'colnames' are intact after permutation.
 #' 
-#' @note In RStudio (version Version 0.98.507) \code{cr_group} causes 
+#' @note In RStudio (version Version 0.98.507) \code{'[.cr_group'} causes 
 #' an unexpected message "<simpleError in ..." at times. It is unclear
 #' why, as this does not appear in RConsole or RTerm.  
 #' 
