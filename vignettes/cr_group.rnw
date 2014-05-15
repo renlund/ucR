@@ -18,7 +18,6 @@ knit2pdf("vignettes/cr_group.rnw", clean=TRUE)
 <<source, cache=FALSE, include=FALSE, echo=FALSE>>=
 library(Hmisc)
 library(ucR)
-# source("C:/R/P_package/ucR/R/cr_group.r")
 @
 
 \setcounter{section}{-1}
@@ -60,34 +59,6 @@ Generate Table  \ref{tab:4}:
 dummy <- latex(M, r.perm=c(3,2,1), c.perm='alphabetical' , caption="Example 5: cgroup alphabetically, rgroup permutated", label="tab:5")
 @
 
-\section{Errors, warnings, and such}
-Generate an error
-<<error1, echo=TRUE, include=TRUE, results='hide', error=TRUE>>=
-M2 <- M; attr(M2, "cgroup") <- NULL; attr(M2, "rgroup") <- NULL
-dummy <- latex(M2)
-@
-Generate an error
-<<error2, echo=TRUE, include=TRUE, results='hide', error=TRUE>>=
-M2 <- M; class(M2) <- NULL
-dummy <- latex.cr_group(M2)
-@
-Generate a message (output hidden):
-<<message1, echo=TRUE, include=TRUE, results='hide', message=TRUE>>=
-dummy <- latex(M, r.perm='as')
-@
-Generate a message (output hidden):
-<<message2, echo=TRUE, include=TRUE, results='hide', message=TRUE>>=
-dummy <- latex(M, r.perm='As.I')
-@
-Generate a message (output hidden):
-<<message3, echo=TRUE, include=TRUE, results='hide', message=TRUE>>=
-dummy <- latex(M, r.perm='pHa')
-@
-
-Generate an error (output hidden):
-<<error3, echo=TRUE, include=TRUE, results='hide', error=TRUE>>=
-dummy <- latex(M, r.perm='alfa')
-@
 
 \section{Using \texttt{cr\_groups} to make \texttt{cr\_groups} objects}
 <<define_DF>>=
@@ -121,5 +92,34 @@ dummy <- latex(crDF, caption="'latex' on 'crDF'", label="tab:a1", colheads=TRUE)
 dummy <- latex(crM, caption="'latex' on 'crM'", label="tab:a2", colheads=TRUE)
 @
 
+\section{Errors, warnings, and such}
+\textbf{N.B.} It is difficult to generate this vignette with devtools; it seems that the code should not generate errors - therefore the code is commented out. 
+
+\noindent Generate an error:
+<<error1, echo=TRUE, include=TRUE, results='hide', error=TRUE>>=
+# M2 <- M; attr(M2, "cgroup") <- NULL; attr(M2, "rgroup") <- NULL
+# dummy <- latex(M2)
+@
+\noindent Generate an error:
+<<error2, echo=TRUE, include=TRUE, results='hide', error=TRUE>>=
+# M2 <- M; class(M2) <- NULL
+# dummy <- latex.cr_group(M2)
+@
+\noindent Generate a message (output hidden):
+<<message1, echo=TRUE, include=TRUE, results='hide', message=TRUE>>=
+# dummy <- latex(M, r.perm='as')
+@
+\noindent Generate a message (output hidden):
+<<message2, echo=TRUE, include=TRUE, results='hide', message=TRUE>>=
+# dummy <- latex(M, r.perm='As.I')
+@
+\noindent Generate a message (output hidden):
+<<message3, echo=TRUE, include=TRUE, results='hide', message=TRUE>>=
+# dummy <- latex(M, r.perm='pHa')
+@
+\noindent Generate an error:
+<<error3, echo=TRUE, include=TRUE, results='hide', error=TRUE>>=
+# dummy <- latex(M, r.perm='alfa')
+@
 
 \end{document}

@@ -8,8 +8,8 @@
 \arguments{
   \item{object}{an 'cr_group' object}
 
-  \item{r.perm}{is either (interpreted as) 'as.is',
-  'alphabetical' or a permutation of
+  \item{r.perm}{should be either (interpretable as)
+  'as.is', 'alphabetical' or a permutation of
   \code{sort(unique(attr(object, "rgroup")))}. If 'as.is'
   row groups are ordered as they appear in 'rgroups', if
   'alphabetical' they appear in alphabetical order,
@@ -20,7 +20,7 @@
   \item{colheads}{is an argument that if 'character' is
   passed to \code{latex} but if TRUE will set 'colheads'
   (in \code{latex}) to the objects attribute 'colnames' (if
-  possibly, else \code{dimnames(object)[[2]]})}
+  possible, else \code{dimnames(object)[[2]]})}
 
   \item{file}{is an argument passed to \code{latex}
   (default "")}

@@ -3,11 +3,6 @@
 #' @description Sets the 'rgroup' and 'cgroup' attributes and returns a 
 #' 'cr_group' object. These can also be set with \code{attr}, but this 
 #' functions checks that the dimensionality is OK.
-#' @note This functions is mainly used because of its \code{latex} method. 
-#' There is also an indexing method. However, In RStudio 
-#' (version Version 0.98.507) \code{'[.cr_group'} causes 
-#' an unexpected message "<simpleError in ..." at times. It is unclear
-#' why, as this does not appear in RConsole or RTerm.  
 #' @author Henrik Renlund
 #' @param x the object (typically a matrix och data frame)
 #' @param rgroup the 'rgroup' attribute with length equal to \code{dim(object)[1]}
@@ -53,24 +48,19 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
         cn.code <- if(cn) "colnames=sprintf('GR-%d', 1:m)" else ""
         tmp <- c(rg.code, cr.code, cn.code)
         opts_code <- tmp[tmp!=""]
-        code <- paste0("y <- cr_group(M,", paste(opts_code, collapse=", ") , ")")
-        eval(parse(text=code))
+        code <- paste0("cr_group(M,", paste(opts_code, collapse=", ") , ")")
+        y <- eval(parse(text=code))
         y
     }
 
-
-
-#-#' @title Index a 'cr_group' object
-#-#' @description This method makes sure that attributes 'rgroup', 'cgroup' and 
-#-#' 'colnames' are intact after permutation. 
-#-#' @note In RStudio (version Version 0.98.507) \code{'[.cr_group'} causes 
-#-#' an unexpected message "<simpleError in ..." at times. It is unclear
-#-#' why, as this does not appear in RConsole or RTerm.  
-#-#'  @author Henrik Renlund
-#-#'  @param x an 'cr_group' object
-#-#'  @param i first index
-#-#'  @param j second index
-#-#'  @param ... arguments to be passed to \code{'['}
+#' @title Index a 'cr_group' object
+#' @description This method makes sure that attributes 'rgroup', 'cgroup' and 
+#' 'colnames' are intact after permutation. 
+#'  @author Henrik Renlund
+#'  @param x an 'cr_group' object
+#'  @param i first index
+#'  @param j second index
+#'  @param ... arguments to be passed to \code{'['}
 #'  @export 
 
 '[.cr_group' <- function(x,i,j){
@@ -98,14 +88,15 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
 #' 
 #' @author Henrik Renlund
 #' @param object an 'cr_group' object
-#' @param r.perm is either (interpreted as) 'as.is', 'alphabetical' or a permutation of 
+#' @param r.perm should be  either (interpretable as) 'as.is', 
+#' 'alphabetical' or a permutation of 
 #' \code{sort(unique(attr(object, "rgroup")))}. If 'as.is' row groups are ordered
 #' as they appear in 'rgroups', if 'alphabetical' they appear in alphabetical
 #' order, otherwise in the permutation given.
 #' @param c.perm is analogous to \code{r.perm}
 #' @param colheads is an argument that if 'character' is passed to \code{latex} 
 #' but if TRUE will set 'colheads' (in \code{latex}) to the objects attribute 
-#' 'colnames' (if possibly, else \code{dimnames(object)[[2]]})
+#' 'colnames' (if possible, else \code{dimnames(object)[[2]]})
 #' @param file is an argument passed to \code{latex} (default "")
 #' @param title is an argument passed to \code{latex} (default "")
 #' @param ... additional arguments passed to \code{latex}
@@ -123,11 +114,11 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
 
 latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE, file="", title="", ...){
    if(!"cr_group" %in% class(object)){
-      stop("[?] 'object' is not of class 'cr_group'.")
+      stop("[latex.cr_group] 'object' is not of class 'cr_group'.")
    }
    if(is.null(rg <- attr(object, "rgroup")) & 
          is.null(cg <- attr(object, "cgroup"))){
-      stop("[?] the relevant attributes 'rgroup' and 'cgroup' are both missing.")
+      stop("[latex.cr_group] the relevant attributes 'rgroup' and 'cgroup' are both missing.")
    }
    if(missing(colheads)) colheads <- dimnames(object)[[2]]
    if(!is.character(colheads)){
@@ -155,7 +146,7 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
          ""
       } else {
          if(length(curr_attr) != if(name=="rg") nrow(object) else ncol(object)){
-            stop("[?] attributes need to be of the same lengths as the objects dimension")
+            stop("[latex.cr_group] attributes need to be of the same lengths as the objects dimension")
          }
          RG <- levels(factor(curr_attr))
          perm <- if( name=="rg" ) R.perm else C.perm
@@ -164,22 +155,22 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
                RG <- unique(curr_attr) 
                if(perm!="as.is"){
                   perm <- "as.is"
-                  message("[?] 'rperm' interpreted as 'as.is'")
+                  message("[latex.cr_group] 'rperm' interpreted as 'as.is'")
                }
             } 
             if( grepl(perm, "alphabetical", ignore.case=TRUE)) {
                if(perm!="alphabetical"){
                   perm <- "alphabetical"
-                  message("[?] 'perm' interpreted as 'alphabetical'")
+                  message("[latex.cr_group] 'perm' interpreted as 'alphabetical'")
                }
             } 
             if( !perm %in% c("alphabetical", "as.is") ){
-               stop("'perm' must be (interpretable as) 'alphabetical', 'as.is' or a permuation.")
+               stop("[latex.cr_group] 'perm' must be (interpretable as) 'alphabetical', 'as.is' or a permuation.")
             }
          }
          if(is.numeric(perm)){ 
             if(!setequal(perm,1:length(RG))){
-               stop("[?] 'perm' needs to be a permuation of the indexes of 'levels(rgroup)'")
+               stop("[latex.cr_group] 'perm' needs to be a permuation of the indexes of 'levels(rgroup)'")
             }
             RG <- RG[perm] 
          }
@@ -211,12 +202,14 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
    eval(parse(text=code))
 }
 
-# - #' @title Structure method
-# - #' @description \code{str} for \code{cr_group} objects
+#- @title Structure method
+#- @description \code{str} for \code{cr_group} objects
+#- @param x object
+#- @param ... arguments to pass to str
 #' @export
 
-str.cr_group <- function(x){
+str.cr_group <- function(x, ...){
    class(x) <- setdiff(class(x), "cr_group")
    cat("Object of class 'cr_group' which contains:\n")
-   str(x)
+   str(x, ...)
 }

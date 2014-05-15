@@ -18,7 +18,7 @@ This method makes sure that attributes 'rgroup', 'cgroup'
 and 'colnames' are intact after permutation.
 }
 \note{
-In RStudio (version Version 0.98.507) \code{cr_group}
+In RStudio (version Version 0.98.507) \code{'[.cr_group'}
 causes an unexpected message "<simpleError in ..." at
 times. It is unclear why, as this does not appear in
 RConsole or RTerm.
