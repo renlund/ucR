@@ -204,7 +204,7 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
 
 #' @title Structure method
 #' @description \code{str} for \code{cr_group} objects
-#' @param x object
+#' @param object an object
 #' @param ... arguments to pass to \code{str}
 #' @export
 

@@ -52,7 +52,7 @@ Allowed values:
   Hence, percentages are omitted in this case.
 - "total": Percentage  n(group, level) / n.}
 
-\item{print.perc}{TRUE if a percent sign ('%') is to be printed for percentages.}
+\item{print.perc}{TRUE if a percent sign ('\%') is to be printed for percentages.}
 
 \item{print.perc.space}{TRUE if a space is to be printed between the number and the
 percent sign, i.e. "12.3 \%" rather than "12.3\%".
