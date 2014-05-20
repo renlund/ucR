@@ -1,6 +1,6 @@
-#' This function manipulates factor levels
+#' @title This function manipulates factor levels
 #'  
-#' This functions enables relabeling, reordering and merging of factor levels.
+#' @description This functions enables relabeling, reordering and merging of factor levels.
 #' It is also possible to add and exclude levels, and turn missing values into 
 #' a separate level.
 #' 

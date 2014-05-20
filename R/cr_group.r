@@ -206,7 +206,7 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
 #' @description \code{str} for \code{cr_group} objects
 #' @param x object
 #' @param ... arguments to pass to \code{str}
-#' @exportMethod
+#' @export
 
 str.cr_group <- function(object, ...){
    class(object) <- setdiff(class(object), "cr_group")

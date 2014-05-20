@@ -1,6 +1,6 @@
-#' Create a baseline table
+#' @title Create a baseline table
 #' 
-#' Creates a baseline table from a data frame. The data may 
+#' @description Creates a baseline table from a data frame. The data may 
 #' be partitioned in two or more groups. A column for the 
 #' "combined" group (all data) will also be included.
 #' 

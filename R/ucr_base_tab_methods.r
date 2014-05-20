@@ -9,9 +9,9 @@ ucr.internal.base.tab.lm <- function(...) {
    return (mod)
 }
 
-#' Produce latex code from \code{ucr.base.tab} object
+#' @title Produce latex code from \code{ucr.base.tab} object
 #' 
-#' A simple wrapper for the Hmisc latex function, 
+#' @description A simple wrapper for the Hmisc latex function, 
 #' that adds an explanatory bottom text and extra 
 #' column headings.
 #' 

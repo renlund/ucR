@@ -1,6 +1,6 @@
-#' Look for a pattern in a character vector and return the hits
+#' @title Look for a pattern in a character vector and return the hits
 #' 
-#' This is a wrapper for \code{\link{grep}} to return not only the indexes
+#' @description This is a wrapper for \code{\link{grep}} to return not only the indexes
 #' of the hits (optional), but the hits themselves. 
 #' 
 #' @author Henrik Renlund

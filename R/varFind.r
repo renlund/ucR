@@ -1,7 +1,7 @@
-#' Look for a pattern in the \code{names} of R objects (typically data frames) and 
+#' @title Look for a pattern in the \code{names} of R objects (typically data frames) and 
 #' return the hits
 #' 
-#' This function applies \code{\link{grepRet}} to \code{\link{names}} of a set
+#' @description This function applies \code{\link{grepRet}} to \code{\link{names}} of a set
 #' of R objects and returns the results as a list
 #' 
 #' @author Henrik Renlund

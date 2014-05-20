@@ -1,6 +1,6 @@
-#' Format p values for readability
+#' @title Format p values for readability
 #' 
-#' Utility function that formats a P value array to a string array.
+#' @description Utility function that formats a P value array to a string array.
 #' Smaller values than 'min.p' (a string!) will be replaced by strings like
 #' "< 0.001".
 #' @author Lars Lindhagen

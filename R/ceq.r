@@ -1,6 +1,6 @@
-#' An identity function that returns TRUE for confirmable equalities
+#' @title An identity function that returns TRUE for confirmable equalities
 #' 
-#' This function will return true if the comparison \code{'=='} 
+#' @description This function will return true if the comparison \code{'=='} 
 #' is TRUE. It will return false if \code{'=='} returns \code{FALSE} or \code{NA}.
 #' Optionally it can return \code{TRUE} if both things compared are \code{NA}.
 #' 
