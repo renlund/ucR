@@ -5,6 +5,10 @@
 \usage{
 tipsR(types = c(".html", ".pdf"))
 }
+\arguments{
+\item{types}{What kind of files to look for in 'P:/Programming/tipsR'. Defaults
+to hmtl and pdf.}
+}
 \description{
 If you have access to 'P:/Programming/tipsR' this function
 can let you open the tipsR presentations

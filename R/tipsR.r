@@ -2,6 +2,8 @@
 #' @description If you have access to 'P:/Programming/tipsR' this function 
 #' can let you open the tipsR presentations
 #' @author Henrik Renlund
+#' @param types What kind of files to look for in 'P:/Programming/tipsR'. Defaults
+#' to hmtl and pdf.
 #' @export
 
 tipsR <- function(types=c(".html", ".pdf")){
