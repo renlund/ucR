@@ -6,7 +6,7 @@
 \method{str}{cr_group}(object, ...)
 }
 \arguments{
-\item{x}{object}
+\item{object}{an object}
 
 \item{...}{arguments to pass to \code{str}}
 }
