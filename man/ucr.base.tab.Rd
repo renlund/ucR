@@ -25,32 +25,42 @@ NA's in the group variable.}
 the table. By default, all variables are included.}
 
 \item{num.format}{How to present numerical variables. Allowed values:
-- "median": Median with IQR or range.
-- "mean": Mean with standard deviation.
-- "both": Both. This gives "median stuff (mean stuff)".}
+\itemize{
+  \item "median": Median with IQR or range.
+\item "mean": Mean with standard deviation.
+\item "both": Both. This gives "median stuff (mean stuff)".
+}}
 
 \item{median.format}{What measure of dispersion to give together with medians.
-Allowed values:
-- "iqr": Interquartile range (Q1 and Q3).
-- "range": Range (min and max).
-- A numerical strictly value between 0 and 50.
-  Example: If median.format  10, then the 10th and 90th
-  percentiles will be reported.}
+ Allowed values:
+ \itemize{
+\item "iqr": Interquartile range (Q1 and Q3).
+ \item "range": Range (min and max).
+ \item A numerical strictly value between 0 and 50.
+   Example: If median.format  10, then the 10th and 90th
+   percentiles will be reported.
+   }}
 
 \item{mean.format}{How to present standard deviations. Allowed values:
-- "par": Mean (SD).
-- "pm": Mean plus/minus SD.}
+\itemize{
+ \item "par": Mean (SD).
+\item "pm": Mean plus/minus SD.
+}}
 
 \item{factor.format}{How to present factor variables. Allowed values:
-- count.perc: Count (percentage).
-- perc.count: Percentage (count).}
+ \itemize{
+\item count.perc: Count (percentage).
+ \item perc.count: Percentage (count).
+ }}
 
 \item{perc.method}{How to compute percentages for factor variables. Allowed values:
-- "group": Computes n(group, level) / n(group).
-- "level": Computes n(group, level) / n(level).
+\itemize{
+ \item "group": Computes n(group, level) / n(group).
+\item "level": Computes n(group, level) / n(level).
   For the combined group, this would always give 100%.
   Hence, percentages are omitted in this case.
-- "total": Percentage  n(group, level) / n.}
+\item "total": Percentage  n(group, level) / n.
+}}
 
 \item{print.perc}{TRUE if a percent sign ('\%') is to be printed for percentages.}
 
@@ -62,11 +72,13 @@ N/A if percent sign is disabled.}
 variables should be omitted from the table.}
 
 \item{show.missing}{How should missing values, if any, per group be shown?
-- "none": Don't show missing values.
-- "in.row": Show the number of missing values within square
+\itemize{
+\item "none": Don't show missing values.
+\item "in.row": Show the number of missing values within square
   brackets after the usual data.
-- "sep.row": Show the number of missing values is a separate
-  row.}
+\item "sep.row": Show the number of missing values is a separate
+  row.
+  }}
 
 \item{digits}{An integer, giving the number of decimals for numeric
 variables, unless otherwise specified through the parameter
@@ -88,16 +100,24 @@ groups. P-values can only be included if there are groups.}
 
 \item{num.test}{Which kind of test to use for numerical variables. The selected
 test depends on the number of groups. Allowed values:
-- "nonparam": A non-parametrical test:
-    * Wilcoxon (Mann-Whitney) test for two groups.
-    * Kruskal-Wallis test for three or more groups.
-- "param": A parametrical test:
-    * t-test for two groups.
-    * ANOVA for three or more groups.}
+\itemize{
+\item "nonparam": A non-parametrical test:
+\itemize{
+    \item Wilcoxon (Mann-Whitney) test for two groups.
+    \item Kruskal-Wallis test for three or more groups.
+    }
+\item "param": A parametrical test:
+    \itemize{
+    \item t-test for two groups.
+    \item ANOVA for three or more groups.
+    }
+    }}
 
 \item{factor.test}{Which test to use for factor variables. Allowed values:
-- "fisher": Fisher's exact test.
-- "pearson": Perason's chi2 test.}
+\itemize{
+ \item "fisher": Fisher's exact test.
+\item "pearson": Perason's chi2 test.
+}}
 
 \item{min.p}{Smallest P-value to be displayed. If smaller, then a text like
 "< 0.001" is given.
