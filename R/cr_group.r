@@ -100,8 +100,9 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
 #' @param file is an argument passed to \code{latex} (default "")
 #' @param title is an argument passed to \code{latex} (default "")
 #' @param ... additional arguments passed to \code{latex}
-#' @seealso \code{\link{latex}}, \code{\link{cr_group}}
+#' @seealso \code{Hmisc::latex}, \code{\link{cr_group}}
 #' @examples
+#' \dontrun{
 #' nr <- 7; nc <- 5; M <- matrix(1:(nr*nc), nrow=nr, byrow=TRUE)
 #' rownames(M) <- letters[1:nr]
 #' colnames(M) <- LETTERS[1:nc]
@@ -110,6 +111,8 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
 #' class(M) <- "cr_group"
 #' dummy <- latex(M, r.perm='as.is', c.perm='alpha')
 #' # see vignette 
+#' }
+#' @importFrom Hmisc latex
 #' @export
 
 latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE, file="", title="", ...){

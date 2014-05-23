@@ -3,7 +3,7 @@
 \alias{latex.cr_group}
 \title{Latex method for objects of class \code{cr_group}}
 \usage{
-\method{latex}{cr_group}(object, r.perm = "as.is", c.perm = "as.is",
+latex.cr_group(object, r.perm = "as.is", c.perm = "as.is",
   colheads = TRUE, file = "", title = "", ...)
 }
 \arguments{
@@ -33,6 +33,7 @@ Objects of class \code{cr_group} have attributes
 \code{latex} function of package \code{Hmics}
 }
 \examples{
+\dontrun{
 nr <- 7; nc <- 5; M <- matrix(1:(nr*nc), nrow=nr, byrow=TRUE)
 rownames(M) <- letters[1:nr]
 colnames(M) <- LETTERS[1:nc]
@@ -42,10 +43,11 @@ class(M) <- "cr_group"
 dummy <- latex(M, r.perm='as.is', c.perm='alpha')
 # see vignette
 }
+}
 \author{
 Henrik Renlund
 }
 \seealso{
-\code{\link{latex}}, \code{\link{cr_group}}
+\code{Hmisc::latex}, \code{\link{cr_group}}
 }
 
