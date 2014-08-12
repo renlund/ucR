@@ -70,7 +70,7 @@
 #'                * ANOVA for three or more groups.
 #' @param factor.test  Which test to use for factor variables. Allowed values:
 #'               - "fisher": Fisher's exact test.
-#'               - "pearson": Perason's chi2 test.
+#'               - "pearson": Pearson's chi2 test.
 #' @param min.p  Smallest P-value to be displayed. If smaller, then a text like
 #'         "< 0.001" is given.
 #'         NOTE: This value must be a string, e.g. "0.001" or "1e-3". 
