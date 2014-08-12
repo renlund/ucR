@@ -1,13 +1,14 @@
 Package: ucR
 Title: UCR R functions
-Version: 0.2.3
+Version: 0.3.2
 Authors@R: c(person(given = "Henrik", family = "Renlund", role =
     c("aut", "cre"), email= "henrik.renlund@ucr.uu.se"), person(given = "Lars",
     family= "Lindhagen", role = "aut", email= "lars.lindhagen@ucr.uu.se"))
 Description: A collection of some functions used by the merry crew of R coders
     at Uppsala Clinical Research Center
 Depends:
-    R (>= 3.0.0),
+    R (>= 3.0.0)
+Imports:
     Hmisc
 License: GPL-3
 LazyData: true

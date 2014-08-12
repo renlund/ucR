@@ -1,0 +1,11 @@
+bibentry(bibtype="Manual",
+         title="UCR R Functions",
+         author=person("UCR R"),
+         organization="UCR Statistics",
+         adress="Uppsala, Sweden",
+         year=2014,
+         note="Version: 0.2(?)",
+         key="ucR-package",
+         mheader="If you really feel you must cite package 'ucR' in documents, use:",
+         mfooter="(This citatation info is mostly here for 'learning-how-to-make-package' purposes.)"
+         )

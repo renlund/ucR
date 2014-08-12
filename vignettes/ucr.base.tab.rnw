@@ -10,6 +10,7 @@
 \addtolength{\textheight}{3cm}
 
 <<cache=FALSE, echo=FALSE, include=FALSE>>=
+library(Hmisc)
 library(ucR)
 @
 \begin{document}

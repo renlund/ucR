@@ -1,7 +1,7 @@
-#' Look for a pattern in the \code{names} of R objects (typically data frames) and 
+#' @title Look for a pattern in the \code{names} of R objects (typically data frames) and 
 #' return the hits
 #' 
-#' This function applies \code{\link{grepRet}} to \code{\link{names}} of a set
+#' @description This function applies \code{\link{grepRet}} to \code{\link{names}} of a set
 #' of R objects and returns the results as a list
 #' 
 #' @author Henrik Renlund
@@ -23,7 +23,7 @@ varFind <- function(pattern, dfs=TRUE,  index=FALSE, ...) {
       tmp <- c()
       if(dfs) {
          for(K in ls(.GlobalEnv)) 
-            if(class(get(K))=="data.frame") tmp <- c(K, tmp)
+            if("data.frame" %in% class(get(K))) tmp <- c(K, tmp)
       } else {
          for(K in ls(.GlobalEnv)) 
             if(!is.null(dummy <- attr(get(K), "names"))) tmp <- c(K, tmp)
