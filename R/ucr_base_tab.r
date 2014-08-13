@@ -1,9 +1,9 @@
 #' @title Create a baseline table
-#' 
-#' @description Creates a baseline table from a data frame. The data may 
-#' be partitioned in two or more groups. A column for the 
+#'
+#' @description Creates a baseline table from a data frame. The data may
+#' be partitioned in two or more groups. A column for the
 #' "combined" group (all data) will also be included.
-#' 
+#'
 #' @author Lars Lindhagen
 #' @param data  The data frame.
 #' @param group.name  Name of the variable in 'data' that defines the groups, or NULL
@@ -93,7 +93,7 @@
 #'               }
 #' @param min.p  Smallest P-value to be displayed. If smaller, then a text like
 #'         "< 0.001" is given.
-#'         NOTE: This value must be a string, e.g. "0.001" or "1e-3". 
+#'         NOTE: This value must be a string, e.g. "0.001" or "1e-3".
 #' @return The return value is an S3 object of class ucr.base.tab.
 #' @importFrom Hmisc label
 #' @export
