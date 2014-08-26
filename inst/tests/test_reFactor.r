@@ -73,6 +73,7 @@ test_that("warnings work", {
 })
 
 test_that("errors work", {
+   x <- LETTERS[1:4]
    L <- 1:10
    expect_error(reFactor(x,L))
    
