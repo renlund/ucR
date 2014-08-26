@@ -10,11 +10,11 @@ ucr.internal.base.tab.lm <- function(...) {
 }
 
 #' @title Produce latex code from \code{ucr.base.tab} object
-#' 
-#' @description A simple wrapper for the Hmisc latex function, 
-#' that adds an explanatory bottom text and extra 
+#'
+#' @description A simple wrapper for the Hmisc latex function,
+#' that adds an explanatory bottom text and extra
 #' column headings.
-#' 
+#'
 #' @author Lars Lindhagen
 #' @param object a \code{ucr.base.tab} object
 #' @param ... arguments to be passed to \code{latex}
@@ -121,7 +121,7 @@ latex.ucr.base.tab <- function(object, ...) {
 #    Sub-table 2: Groups 4, 5, 6, 7.
 #    Sub-table 3: Groups 8, 9, 10.
 # The following call achieves this:
-#   split(u, list(1:3, 4:6, 7:10))
+#   split(u, list(1:3, 4:7, 8:10))
 #
 # The return value is a list of "smaller" ucr.base.tab objects.
 split.ucr.base.tab <- function(object, group.partition) {
@@ -156,7 +156,7 @@ ucr.internal.base.tab.parameter.check <- function(data, group.name,
    combined.name, x.names, num.format, median.format, mean.format, factor.format,
    perc.method, print.perc, print.perc.space, omit.ref.level, show.missing, digits, spec.digits,
    include.n, include.p, num.test, factor.test, min.p) {
-   
+
    # --> Utility functions.
    # Tests if x is a positive integer.
    is.posint <- function(x) {
@@ -207,7 +207,7 @@ ucr.internal.base.tab.parameter.check <- function(data, group.name,
          stop(sprintf("%s must lie strictly between %.1f and %.1f", x.name, a, b))
       }
    }
-   
+
    if (class(data) != "data.frame") {
       stop("data must be a data frame.")
    }
