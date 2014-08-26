@@ -13,7 +13,26 @@
 \item{...}{passed arguments}
 }
 \description{
-Turn objects into data frames
+Some R functionality (I'm thinking mainly of ggplot2) requires
+the data you are interested in to be packaged in data frames, hence this
+function.
+}
+\examples{
+# combine variables into a data frame
+x <- 1:2
+y <- letters[1:2]
+makeDF(c("x","y"))
+# 'env' is R_GlobalEnv by default but can be any environment, data frame or list
+makeDF(c("mpg", "disp"), env=datasets::mtcars)
+# methods include 'list' ...
+makeDF(list(x=1:2, y=letters[1:2]))
+# and 'survfit'
+library(survival)
+n <- 50
+s <- Surv(rexp(n), rbinom(n,1,0.2))
+f <- factor(rep(letters[1:2], length.out=n))
+sf <- survfit(s~f)
+makeDF(sf)
 }
 \author{
 Henrik Renlund

@@ -9,7 +9,8 @@ Description: A collection of some functions used by the merry crew of R coders
 Depends:
     R (>= 3.0.0)
 Imports:
-    Hmisc
+    Hmisc,
+    survival
 License: GPL-3
 LazyData: true
 Maintainer: Henrik Renlund <henrik.renlund@ucr.uu.se>
