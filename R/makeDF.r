@@ -104,11 +104,5 @@ makeDF.list <- function(object, env=.GlobalEnv, ...){
    makeDF(object=use, env=object)
 }
 
-# library(survival)
-# S <- Surv(time=rexp(50,1), event=rbinom(50,1,0.2))
-# sf <- survfit(S~1)
-# sf2 <- sf
-# L <- list(a=sf, b=sf2)
-# makeDF(object=L)
-# makeDF.list(object=L)
+
 
