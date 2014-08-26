@@ -53,15 +53,15 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
         y
     }
 
-#' @title Index a 'cr_group' object
-#' @description This method makes sure that attributes 'rgroup', 'cgroup' and 
-#' 'colnames' are intact after permutation. 
-#'  @author Henrik Renlund
-#'  @param x an 'cr_group' object
-#'  @param i first index
-#'  @param j second index
-#'  @param ... arguments to be passed to \code{'['}
-#'  @export 
+# - # @title Index a 'cr_group' object
+# - # @description This method makes sure that attributes 'rgroup', 'cgroup' and 
+# - # 'colnames' are intact after permutation. 
+# - #  @author Henrik Renlund
+# - #  @param x an 'cr_group' object
+# - #  @param i first index
+# - #  @param j second index
+# - #  @param ... arguments to be passed to \code{'['}
+#' @export 
 
 '[.cr_group' <- function(x,i,j){
     class(x) <- setdiff(class(x), "cr_group")
@@ -205,10 +205,10 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
    eval(parse(text=code))
 }
 
-#' @title Structure method
-#' @description \code{str} for \code{cr_group} objects
-#' @param object an object
-#' @param ... arguments to pass to \code{str}
+# - # @title Structure method
+# - # @description \code{str} for \code{cr_group} objects
+# - # @param object an object
+# - # @param ... arguments to pass to \code{str}
 #' @export
 
 str.cr_group <- function(object, ...){

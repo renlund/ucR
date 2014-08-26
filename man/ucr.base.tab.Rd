@@ -116,7 +116,7 @@ test depends on the number of groups. Allowed values:
 \item{factor.test}{Which test to use for factor variables. Allowed values:
 \itemize{
  \item "fisher": Fisher's exact test.
-\item "pearson": Perason's chi2 test.
+\item "pearson": Pearson's chi2 test.
 }}
 
 \item{min.p}{Smallest P-value to be displayed. If smaller, then a text like

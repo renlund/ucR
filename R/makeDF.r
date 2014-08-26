@@ -1,13 +1,4 @@
 #' @title Turn objects into data frames 
-#' @param object an object
-#' @param env an environment
-#' @param ... passed arguments
-#' @author Henrik Renlund
-#' @export
-
-makeDF <- function(object, env, ...) UseMethod("makeDF")
-
-#' @title Turn objects into data frames 
 #' @description Some R functionality (I'm thinking mainly of ggplot2) requires
 #' the data you are interested in to be packaged in data frames, hence this 
 #' function.
@@ -34,16 +25,25 @@ makeDF <- function(object, env, ...) UseMethod("makeDF")
 #' makeDF(sf)
 #' @export
 
+makeDF <- function(object, env, ...) UseMethod("makeDF")
+
+# - # @title Turn objects into data frames 
+# - # @param object an object
+# - # @param env an environment
+# - # @param ... passed arguments
+# - # @author Henrik Renlund
+#' @export
+
 makeDF.default <- function(object, env, ...){
    message("The default method of makeDF doesn't do much")
    as.data.frame(NULL)
 }
 
-#' @title Turn variables into a data frame
-#' @param object a character vector of variables contained in \code{env}
-#' @param env the environment, data frame or list that contains the variables
-#' @param ... for future needs?
-#' @author Henrik Renlund
+# - # @title Turn variables into a data frame
+# - # @param object a character vector of variables contained in \code{env}
+# - # @param env the environment, data frame or list that contains the variables
+# - # @param ... for future needs?
+# - # @author Henrik Renlund
 #' @export
 
 makeDF.character <- function(object, env=.GlobalEnv, ...){
@@ -80,11 +80,11 @@ makeDF.character <- function(object, env=.GlobalEnv, ...){
 # (df <- makeDF(object=c("x", "y", "z")))
 # makeDF(c("x", "z"), df)
 
-#' @title Turn survfit object into a data frame
-#' @param object a survfit object
-#' @param env environment must currently be set to \code{.GlobalEnv}
-#' @param ... for future needs?
-#' @author Henrik Renlund
+# - # @title Turn survfit object into a data frame
+# - # @param object a survfit object
+# - # @param env environment must currently be set to \code{.GlobalEnv}
+# - # @param ... for future needs?
+# - # @author Henrik Renlund
 #' @export
  
 makeDF.survfit <- function(object, env=.GlobalEnv, ...){
@@ -109,11 +109,11 @@ makeDF.survfit <- function(object, env=.GlobalEnv, ...){
 # makeDF(object = "sf")
 # makeDF(object = c("sf", "sf2"))
 
-#' @title Turn elements of a list into a data frame
-#' @param object a list of objects for which a makeDF method exist
-#' @param env environment must currently be set to \code{.GlobalEnv}
-#' @param ... for future needs?
-#' @author Henrik Renlund
+# - # @title Turn elements of a list into a data frame
+# - # @param object a list of objects for which a makeDF method exist
+# - # @param env environment must currently be set to \code{.GlobalEnv}
+# - # @param ... for future needs?
+# - # @author Henrik Renlund
 #' @export
  
 makeDF.list <- function(object, env=.GlobalEnv, ...){
@@ -123,6 +123,3 @@ makeDF.list <- function(object, env=.GlobalEnv, ...){
    use <- names(object)
    makeDF(object=use, env=object)
 }
-
-
-
