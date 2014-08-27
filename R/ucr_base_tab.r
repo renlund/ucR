@@ -23,8 +23,8 @@
 #'                 \itemize{
 #'                \item "iqr": Interquartile range (Q1 and Q3).
 #'                 \item "range": Range (min and max).
-#'                 \item A numerical strictly value between 0 and 50.
-#'                   Example: If median.format  10, then the 10th and 90th
+#'                 \item A numerical value strictly between 0 and 50.
+#'                   Example: If median.format = 10, then the 10th and 90th
 #'                   percentiles will be reported.
 #'                   }
 #' @param mean.format  How to present standard deviations. Allowed values:

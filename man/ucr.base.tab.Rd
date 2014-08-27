@@ -36,8 +36,8 @@ the table. By default, all variables are included.}
  \itemize{
 \item "iqr": Interquartile range (Q1 and Q3).
  \item "range": Range (min and max).
- \item A numerical strictly value between 0 and 50.
-   Example: If median.format  10, then the 10th and 90th
+ \item A numerical value strictly between 0 and 50.
+   Example: If median.format = 10, then the 10th and 90th
    percentiles will be reported.
    }}
 
@@ -116,7 +116,7 @@ test depends on the number of groups. Allowed values:
 \item{factor.test}{Which test to use for factor variables. Allowed values:
 \itemize{
  \item "fisher": Fisher's exact test.
-\item "pearson": Perason's chi2 test.
+\item "pearson": Pearson's chi2 test.
 }}
 
 \item{min.p}{Smallest P-value to be displayed. If smaller, then a text like

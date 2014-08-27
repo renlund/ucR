@@ -3,7 +3,7 @@
 \alias{latex.ucr.base.tab}
 \title{Produce latex code from \code{ucr.base.tab} object}
 \usage{
-latex.ucr.base.tab(object, ...)
+\method{latex}{ucr.base.tab}(object, ...)
 }
 \arguments{
 \item{object}{a \code{ucr.base.tab} object}
