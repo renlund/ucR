@@ -16,7 +16,8 @@ grepRet(pattern, x, index = FALSE, ...)
 }
 \description{
 This is a wrapper for \code{\link{grep}} to return not only the indexes
-of the hits (optional), but the hits themselves.
+of the hits (optional), but the hits themselves. (This is mainly a helper function
+for \code{varFind} but can at times be useful.)
 }
 \examples{
 grepRet(pattern="a", x=names(datasets::mtcars))

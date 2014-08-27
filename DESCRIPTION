@@ -1,6 +1,6 @@
 Package: ucR
 Title: UCR R functions
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: c(person(given = "Henrik", family = "Renlund", role =
     c("aut", "cre"), email= "henrik.renlund@ucr.uu.se"), person(given = "Lars",
     family= "Lindhagen", role = "aut", email= "lars.lindhagen@ucr.uu.se"))
@@ -9,7 +9,8 @@ Description: A collection of some functions used by the merry crew of R coders
 Depends:
     R (>= 3.0.0)
 Imports:
-    Hmisc
+    Hmisc,
+    survival
 License: GPL-3
 LazyData: true
 Maintainer: Henrik Renlund <henrik.renlund@ucr.uu.se>
