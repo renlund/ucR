@@ -1,7 +1,8 @@
 #' @title Look for a pattern in a character vector and return the hits
 #' 
 #' @description This is a wrapper for \code{\link{grep}} to return not only the indexes
-#' of the hits (optional), but the hits themselves. 
+#' of the hits (optional), but the hits themselves. (This is mainly a helper function
+#' for \code{varFind} but can at times be useful.)
 #' 
 #' @author Henrik Renlund
 #' @param pattern pattern to look for
