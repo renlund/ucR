@@ -1,6 +1,6 @@
 context("All tests of 'makeDF'")
 
-test_that("makeDF.default works", { 
+test_that("makeDF.default works", {
    x <- 1
    class(x) <- paste(sample(letters, 15, T), collapse="")
    expect_equivalent(makeDF(x),data.frame())
@@ -35,6 +35,7 @@ test_that("makeDF.survfit works", {
    expect_equal( class(M1df), "data.frame")
    expect_equal( M1df$strata, NULL)
    M2 <- survfit(S~f)
+   M2df <- makeDF(M2)
    expect_equal( class(M2df), "data.frame")
    expect_equal( is.null(M2df$strata), FALSE)
 })

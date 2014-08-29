@@ -81,7 +81,7 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
       v_n[k] <- length(lev) - 1
       tmp1 <- gsub(vars[k],"", lev[-1])
       tmp2a <- paste(vars[k], tmp1[1])
-      tmp2b <- if(v_n[k]>1) paste( paste(rep(" ", nchar(vars[k])),collapse="" ), tmp1[-1])
+      tmp2b <- if(v_n[k]>1) paste( paste(rep(" ", nchar(vars[k])),collapse="" ), tmp1[-1]) else NULL
       tmp2 <- c(tmp2a, tmp2b)
       rnames <- c(rnames, tmp2)
    }
