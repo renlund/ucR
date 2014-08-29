@@ -9,6 +9,53 @@
 #' @param ci if TRUE confidence intervals are included
 #' @param ... arguments passed to \code{transFormat}
 #' @author Henrik Renlund
+#' @examples 
+#' # Comparing two set of covariates in model 'lm'
+#' DF <- data.frame(x1=c(1,2,3,4),x2=c(3,4,0,1))
+#' DF$y <- 2*DF$x1 + DF$x2 + c(0.1, -0.2, 0.05,0.05)
+#' modComp(
+#'    resp = "y", 
+#'    vars = c("x1", "x2"), 
+#'    model = lm, 
+#'    covars = list(1, 1:2), 
+#'    data = DF, 
+#'    uni = FALSE, 
+#'    ci = TRUE, 
+#'    round=2
+#'    )
+#' # Comparing different covariates in model 'coxph'
+#' library(survival)
+#' DF <- data.frame(
+#'    x = c(3,1,2,3,2,4,5,6,4,5,3,2,4,1,1,2,3,4,6,7,8,1,1,2,6,4,2,1,1,3,4),
+#'    y = c(0,1,1,0,1,0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,1,1,0,1,0,0,1,0,0),
+#'    z =  rep(letters[1:2], length.out=31),
+#'    u = rep(c(1:5), length.out=31)
+#' )
+#' cox_endp <- with(DF, Surv(x,y))
+#' modComp(resp = "cox_endp", 
+#'    vars = c("z", "u"), 
+#'    model=coxph,
+#'    covars=list(1:2), 
+#'    data = DF, 
+#'    uni=TRUE,
+#'    ci=FALSE,
+#'    round=1,
+#'    fun=exp
+#' )
+#' # Comparing different covariates in model 'glm'
+#' # NOTE: must incorporate the argument "family='binomial'" by defining a function such that this is true
+#' Model <- function(formula, data) glm(formula=formula, family="binomial",data=data)
+#' modComp(resp = "y", 
+#'    vars = c("x", "z"), 
+#'    model=Model,
+#'    covars=list(1:2, 2), 
+#'    data = DF, 
+#'    uni=TRUE,
+#'    ci=FALSE,
+#'    signif=3,
+#'    fun=exp
+#' )
+#' rm(Model, cox_endp, DF)
 #' @export
 
 modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...){
@@ -84,7 +131,7 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
    M
 }
 
-#' @title Transform and format###############################################
+#' @title Transform and format
 #' @description Apply a function to x, then \code{round} or \code{signif} before formatting
 #' @param x the object
 #' @param fun the function
@@ -94,7 +141,7 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
 #' @param ... arguments passed to \code{format}
 
 transFormat <- function(x, fun=NULL, signif=NULL, round=NULL, skip=FALSE, ...){
-   if(is.null(skip)) skip <- FALSE # so that transFormat can be called with skip = empty list entry
+   if(is.null(skip)) skip <- FALSE # ? consistent with the other arguments?
    if(is.null(fun)) fun <- identity
    if(is.null(y <- tryCatch(fun(x), error=function(e) NULL))){
       warning("[transFormat] 'fun' not applicable to 'x' and is set to 'identity'")
@@ -140,43 +187,4 @@ spann <- function(start, length) {
    }
    if(!setequal(s,unique(s))) warning("[modComp\\spann] spann contains multiplicities")
    s
-}
-
-# tests
-if(FALSE){
-   foo <- function(x=0, ...){
-      x + bar(...) + baz(...)
-   }
-   bar <- function(y=0, ...) if(y==0) 3 else -3
-   baz <- function(z=0, ...) if(z==0) 10 else -10
-   foo()
-   foo(1)
-   foo(y=1)
-   foo(z=1)
-   foo(y=1,z=1)
-   foo(z=1,y=1)
-   foo(z=1,y=1,100)
-   foo(100,1,1)
-   foo(100,1)
-}
-
-if(FALSE){
-   bar <- function(x) mean(x)
-   bar(1:2)
-   bar(1:2, 1) # Error
-   
-   baz <- function(y,z=0) '+'(y,z)
-   baz(1)
-   baz(1,2)
-   baz(1,2,3) # Error
-   
-   foo <- function(...){
-      ret <- rep(NA,2)
-      L <- list(...)
-      ret[1] <- bar(x=L[['x']])
-      ret[2] <- baz(y=L[['y']])
-      ret
-   }
-   foo(x=1:2,y=0) 
-   
 }
