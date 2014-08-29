@@ -7,7 +7,7 @@
 #' @param data location of the variables in \code{vars}
 #' @param uni should univariate analyses be performed (if integer, this is used as an index on \code{vars} to determine which univariate analyses)
 #' @param ci if TRUE confidence intervals are included
-#' @param ... arguments passed to \code{model} and \code{transFormat}. (Note that this could potentially be problematic if \code{model} and \code{transFormat} have identical arguments).)
+#' @param ... arguments passed to \code{transFormat}
 #' @author Henrik Renlund
 #' @export
 
@@ -94,6 +94,7 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
 #' @param ... arguments passed to \code{format}
 
 transFormat <- function(x, fun=NULL, signif=NULL, round=NULL, skip=FALSE, ...){
+   if(is.null(skip)) skip <- FALSE # so that transFormat can be called with skip = empty list entry
    if(is.null(fun)) fun <- identity
    if(is.null(y <- tryCatch(fun(x), error=function(e) NULL))){
       warning("[transFormat] 'fun' not applicable to 'x' and is set to 'identity'")
@@ -157,4 +158,25 @@ if(FALSE){
    foo(z=1,y=1,100)
    foo(100,1,1)
    foo(100,1)
+}
+
+if(FALSE){
+   bar <- function(x) mean(x)
+   bar(1:2)
+   bar(1:2, 1) # Error
+   
+   baz <- function(y,z=0) '+'(y,z)
+   baz(1)
+   baz(1,2)
+   baz(1,2,3) # Error
+   
+   foo <- function(...){
+      ret <- rep(NA,2)
+      L <- list(...)
+      ret[1] <- bar(x=L[['x']])
+      ret[2] <- baz(y=L[['y']])
+      ret
+   }
+   foo(x=1:2,y=0) 
+   
 }
