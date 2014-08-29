@@ -59,9 +59,7 @@ test_that("'modComp' works for model = glm", {
       z =  rep(letters[1:2], length.out=31),
       u = rep(c(1:5), length.out=31)
       )
-   # glm(y~x+z+u, data=DF, family="binomial")
    Model <- function(formula, data) glm(formula=formula, family="binomial",data=data)
-   # Model(y~x+z, data=DF)
    expect_equivalent(
    modComp(resp = "y", 
            vars = c("x", "z"), 
@@ -83,8 +81,7 @@ test_that("'modComp' works for coxph", {
       z =  rep(letters[1:2], length.out=31),
       u = rep(c(1:5), length.out=31)
    )
-   cox_endp <- with(DF, Surv(x,y))
-   # coxph(cox_endp~z+u, data=DF)
+   DF$cox_endp <- with(DF, Surv(x,y))
    expect_equivalent(
       modComp(resp = "cox_endp", 
               vars = c("z", "u"), 
@@ -96,7 +93,7 @@ test_that("'modComp' works for coxph", {
               round=1),
       matrix(c("-0.3 (-1.6,1.0)","-0.4 (-1.7,0.9)","0.2 (-0.2,0.6)","0.2 (-0.2,0.6)"),nrow=2,byrow=TRUE)
    )
-   rm(cox_endp, DF)
+   rm(DF)
 }) # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 test_that("'transFormat' works", {
