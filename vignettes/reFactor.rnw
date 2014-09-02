@@ -1,9 +1,10 @@
-%\VignetteEngine{knitr::knitr} 
+%\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{How to use 'reFactor' (knitr produced documentation)}
 \documentclass{article}
 
 <<cache=FALSE, echo=FALSE, include=FALSE>>=
 library(ucR)
+set.seed(19790424)
 @
 
 
@@ -18,7 +19,7 @@ library(ucR)
 \section{Purpose}
 The function\footnote{The name \code{relevel} was taken!} \code{reFactor} was build mainly to be able to easily rename, reorder, and merge the levels of a factor. It can also create and exclude levels, and set \code{NA} to be a level.
 
-Motivating example: 
+Motivating example:
 <<motivating_example>>=
 lev <- c(" ", "never", "some", "a lot")
 smoking <- factor(sample(x=lev, 100, TRUE), levels=lev)
@@ -33,13 +34,13 @@ table(reFactor(smoking, L))
 \section{Basic functionality}
 
 \subsection{Renaming and reordering levels}
-Levels can be renamed by providing a list with entries of the old level name that equals a new name. 
+Levels can be renamed by providing a list with entries of the old level name that equals a new name.
 <<basic_rename>>=
 (x <- factor(LETTERS[1:2]))
 L <- list(A="newA", B="newB")
 reFactor(x,L)
 @
-The order of the list determines the order of the levels created. 
+The order of the list determines the order of the levels created.
 <<basic_rename_reorder>>=
 (x <- factor(LETTERS[1:2], levels=LETTERS[2:1]))
 L <- list(A="newA", B="newB")
@@ -51,14 +52,14 @@ If you simply want to reorder you must provide a \code{NULL} new name.
 L <- list(B=NULL, A=NULL, C=NULL)
 reFactor(x,L)
 @
-The list \code{L} need not cover all existing levels. If not, the remaining levels will be added in the same order as they appeared in the original. 
+The list \code{L} need not cover all existing levels. If not, the remaining levels will be added in the same order as they appeared in the original.
 <<basic_reorder_incomplete>>=
 (x <- factor(LETTERS[1:5]))
 L <- list(D=NULL, B="newB")
 reFactor(x,L)
 @
 \subsection{Adding and merging levels}
-If \code{L} includes a non-existing level, this level will be added. 
+If \code{L} includes a non-existing level, this level will be added.
 <<new_level>>=
 (x <- factor(LETTERS[1:2]))
 L <- list(Foo=NULL)

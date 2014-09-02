@@ -8,6 +8,7 @@
 ## ----source, cache=FALSE, include=FALSE, echo=FALSE----------------------
 library(Hmisc)
 library(ucR)
+set.seed(19790424)
 
 ## ----define_M------------------------------------------------------------
 nr <- 7; nc <- 5; m <- matrix(1:(nr*nc), nrow=nr, byrow=TRUE)
@@ -45,8 +46,8 @@ DF <- data.frame(
 )
 rownames(DF) <- sprintf("Ind: %d", 1:n)
 crDF <- cr_group(
-   x=DF, 
-   rgroup=rep(LETTERS[1:3],len=7), 
+   x=DF,
+   rgroup=rep(LETTERS[1:3],len=7),
    cgroup=rep(c("gr-A", "gr-B"), each=2),
    colnames = gsub("[x|y]\\.", "", names(DF))
    )
@@ -57,7 +58,7 @@ str(crDF[7:1,c(1,3,2,4)])
 M <- matrix(1:12, nrow=4)
 rownames(M) <- sprintf("Row %d", 1:4)
 colnames(M) <- sprintf("Col %d", 1:3)
-(crM <- cr_group(x=M, rgroup=LETTERS[1:4], cgroup=letters[1:3])) 
+(crM <- cr_group(x=M, rgroup=LETTERS[1:4], cgroup=letters[1:3]))
 crM[4:1,c(3,1,2)]
 
 ## ----in_action, echo=TRUE, include=TRUE, results='asis'------------------
@@ -65,22 +66,13 @@ dummy <- latex(crDF, caption="'latex' on 'crDF'", label="tab:a1", colheads=TRUE)
 dummy <- latex(crM, caption="'latex' on 'crM'", label="tab:a2", colheads=TRUE)
 
 ## ----error1, echo=TRUE, include=TRUE, results='hide', error=TRUE---------
-# M2 <- M; attr(M2, "cgroup") <- NULL; attr(M2, "rgroup") <- NULL
-# dummy <- latex(M2)
+M2 <- crM; attr(M2, "cgroup") <- NULL; attr(M2, "rgroup") <- NULL
+tryCatch(dummy <- latex(M2), error = function(e) print(e))
 
 ## ----error2, echo=TRUE, include=TRUE, results='hide', error=TRUE---------
-# M2 <- M; class(M2) <- NULL
-# dummy <- latex.cr_group(M2)
+M2 <- crM; class(M2) <- NULL
+tryCatch(dummy <- latex.cr_group(M2), error = function(e) print(e))
 
 ## ----message1, echo=TRUE, include=TRUE, results='hide', message=TRUE-----
-# dummy <- latex(M, r.perm='as')
-
-## ----message2, echo=TRUE, include=TRUE, results='hide', message=TRUE-----
-# dummy <- latex(M, r.perm='As.I')
-
-## ----message3, echo=TRUE, include=TRUE, results='hide', message=TRUE-----
-# dummy <- latex(M, r.perm='pHa')
-
-## ----error3, echo=TRUE, include=TRUE, results='hide', error=TRUE---------
-# dummy <- latex(M, r.perm='alfa')
+dummy <- latex(crM, r.perm='as')
 

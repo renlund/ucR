@@ -1,5 +1,6 @@
 ## ----cache=FALSE, echo=FALSE, include=FALSE------------------------------
 library(ucR)
+set.seed(19790424)
 
 ## ----motivating_example--------------------------------------------------
 lev <- c(" ", "never", "some", "a lot")

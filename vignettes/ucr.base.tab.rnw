@@ -1,17 +1,18 @@
-%\VignetteEngine{knitr::knitr} 
+%\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{Example of ucr.base.tab and its latex method}
 \documentclass{article}
 
-\title{\texttt{ucr.base.tab} and its \texttt{latex} method}   
-\author{Lars Lindhagen \\ {\small modified/knitrified by Henrik Renlund}}          
-\addtolength{\hoffset}{-1.5cm} 
+\title{\texttt{ucr.base.tab} and its \texttt{latex} method}
+\author{Lars Lindhagen \\ {\small modified/knitrified by Henrik Renlund}}
+\addtolength{\hoffset}{-1.5cm}
 \addtolength{\textwidth}{3cm}
-\addtolength{\voffset}{-1.5cm} 
+\addtolength{\voffset}{-1.5cm}
 \addtolength{\textheight}{3cm}
 
 <<cache=FALSE, echo=FALSE, include=FALSE>>=
 library(Hmisc)
 library(ucR)
+set.seed(19790424)
 @
 \begin{document}
 \maketitle
