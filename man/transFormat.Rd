@@ -17,7 +17,7 @@ transFormat(x, fun = NULL, signif = NULL, round = NULL, skip = FALSE,
 
 \item{skip}{if TRUE \code{format} is skipped}
 
-\item{...}{arguments passed to \code{format}}
+\item{...}{arguments passed to \code{base::format}}
 }
 \description{
 Apply a function to x, then \code{round} or \code{signif} before formatting

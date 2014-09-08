@@ -11,7 +11,7 @@ modComp(resp, vars, model, covars, data = NULL, uni = TRUE, ci = TRUE,
 
 \item{vars}{character vector containing the names of all variables of interest}
 
-\item{model}{name (as character) of the model}
+\item{model}{name of the model}
 
 \item{covars}{a list containing index vectors on \code{vars}. Each entry corresponds to an analysis.}
 
