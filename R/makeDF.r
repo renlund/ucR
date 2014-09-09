@@ -35,8 +35,18 @@ makeDF <- function(object, env, ...) UseMethod("makeDF")
 #' @export
 
 makeDF.default <- function(object, env, ...){
-   message("The default method of makeDF doesn't do much")
-   as.data.frame(NULL)
+  message("The default method of makeDF doesn't do much")
+  as.data.frame(NULL)
+}
+
+# - # @title Turn objects into data frames 
+# - # @param object an object
+# - # @param env an environment
+# - # @param ... passed arguments
+# - # @author Henrik Renlund
+#' @export
+makeDF.data.frame <- function(object, env, ...){
+  object
 }
 
 # - # @title Turn variables into a data frame
@@ -50,6 +60,7 @@ makeDF.character <- function(object, env=.GlobalEnv, ...){
 #    if( class(env) %in% c("data.frame", "list")){
 #       env <- get(as.character(substitute(env)), inherits=TRUE)
 #    } 
+  if(any(indx<-table(object)>1)) warning(paste0("[makeDF.character] the object contains multiplicities (check entries: ",paste0(names(table(object)[indx]), collapse=", "),")"))
    for(K in object){
       if(!exists(K, env)){
          stop(paste0("'",K,"' does not exist in the specified place (environment, data frame, or list)."))
@@ -65,8 +76,13 @@ makeDF.character <- function(object, env=.GlobalEnv, ...){
          for(k in seq_along(object)){
             X <- makeDF(get(object[k],env))
             if(is.null(d <- nrow(X))) d <- 1
-            X <- cbind(X, "object" =rep(k, d))
-            if(!exists("rX",inherits=FALSE)) rX <- X else rX <- rbind(rX, X)
+            if(length(object)>1) X <- cbind(X, "object" =rep(k, d))
+            rX <- if(!exists("rX",inherits=FALSE)){ 
+               X 
+            } else { 
+              tryCatch(expr = rbind(rX, X), 
+                       error = function(e) stop(paste0("[makeDF.character] could not rbind the makeDF:ified '", object[k],"' (from the specified enviroment) to the rbind-accumulation of: ", paste(object[1:(k-1)]), collapse=", "), "."))
+            }
          }
          return(rX)
       }
