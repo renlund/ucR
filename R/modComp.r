@@ -139,6 +139,7 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
 #' @param round if non-NULL this is the 'digits' argument for \code{round}
 #' @param skip if TRUE \code{format} is skipped
 #' @param ... arguments passed to \code{base::format}
+#' @export
 
 transFormat <- function(x, fun=NULL, signif=NULL, round=NULL, skip=FALSE, ...){
    if(is.null(skip)) skip <- FALSE # ? consistent with the other arguments?
