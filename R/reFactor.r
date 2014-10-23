@@ -10,6 +10,7 @@
 #' @param na.level if not \code{NULL} all \code{NA}'s will be a level with this label
 #' @param exclude a value to make into NA's
 #' @param new.last if \code{TRUE} then added levels will be placed last in the list of levels (default \code{FALSE})
+#' @param warn do you want warnings when doing stupid things?
 #' @examples
 #' x <- LETTERS[1:5] # x <- factor(x)
 #' L <- list(B=c("nyB", "C"),E=NULL, D="nyD")

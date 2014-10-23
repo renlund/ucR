@@ -16,6 +16,8 @@ reFactor(x, L, na.level = NULL, exclude = NULL, new.last = FALSE,
 \item{exclude}{a value to make into NA's}
 
 \item{new.last}{if \code{TRUE} then added levels will be placed last in the list of levels (default \code{FALSE})}
+
+\item{warn}{do you want warnings when doing stupid things?}
 }
 \description{
 This functions enables relabeling, reordering and merging of factor levels.
