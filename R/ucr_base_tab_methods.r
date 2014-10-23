@@ -208,7 +208,7 @@ ucr.internal.base.tab.parameter.check <- function(data, group.name,
       }
    }
 
-   if (class(data) != "data.frame") {
+   if (!"data.frame" %in% class(data)) { # with packages like e.g. dplyr a data.frame may have several classes
       stop("data must be a data frame.")
    }
    if (nrow(data) == 0) {
