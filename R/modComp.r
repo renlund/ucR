@@ -41,10 +41,10 @@
 #'    ci=FALSE,
 #'    round=1,
 #'    fun=exp
-#' )
-#' # Comparing different covariates in model 'glm'
-#' # NOTE: must incorporate the argument "family='binomial'" by defining a function such that this is true
-#' Model <- function(formula, data) glm(formula=formula, family="binomial",data=data)
+#' ) # Comparing different covariates in model 'glm' # NOTE: must incorporate
+#' the argument "family='binomial'" by defining a function such that this is
+#' true Model <- function(formula, data) glm(formula=formula,
+#' family="binomial",data=data)
 #' modComp(resp = "y",
 #'    vars = c("x", "z"),
 #'    model=Model,
