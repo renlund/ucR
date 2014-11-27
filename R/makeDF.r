@@ -1,6 +1,6 @@
-#' @title Turn objects into data frames 
+#' @title Turn objects into data frames
 #' @description Some R functionality (I'm thinking mainly of ggplot2) requires
-#' the data you are interested in to be packaged in data frames, hence this 
+#' the data you are interested in to be packaged in data frames, hence this
 #' function.
 #' @param object an object
 #' @param env an environment
@@ -27,7 +27,7 @@
 
 makeDF <- function(object, env, ...) UseMethod("makeDF")
 
-# - # @title Turn objects into data frames 
+# - # @title Turn objects into data frames
 # - # @param object an object
 # - # @param env an environment
 # - # @param ... passed arguments
@@ -39,7 +39,7 @@ makeDF.default <- function(object, env, ...){
   as.data.frame(NULL)
 }
 
-# - # @title Turn objects into data frames 
+# - # @title Turn objects into data frames
 # - # @param object an object
 # - # @param env an environment
 # - # @param ... passed arguments
@@ -59,7 +59,7 @@ makeDF.data.frame <- function(object, env, ...){
 makeDF.character <- function(object, env=.GlobalEnv, ...){
 #    if( class(env) %in% c("data.frame", "list")){
 #       env <- get(as.character(substitute(env)), inherits=TRUE)
-#    } 
+#    }
   if(any(indx<-table(object)>1)) warning(paste0("[makeDF.character] the object contains multiplicities (check entries: ",paste0(names(table(object)[indx]), collapse=", "),")"))
    for(K in object){
       if(!exists(K, env)){
@@ -72,15 +72,16 @@ makeDF.character <- function(object, env=.GlobalEnv, ...){
    }
    curr_extensions <- setdiff(gsub("makeDF.", "", methods("makeDF")), c("default", "character"))
    if(length(klasser)>0){
-      if(klasser %in% curr_extensions){
+      if(any(klasser %in% curr_extensions)){
+         # do we need to force all items in object to have the same class?
          for(k in seq_along(object)){
             X <- makeDF(get(object[k],env))
             if(is.null(d <- nrow(X))) d <- 1
             if(length(object)>1) X <- cbind(X, "object" =rep(k, d))
-            rX <- if(!exists("rX",inherits=FALSE)){ 
-               X 
-            } else { 
-              tryCatch(expr = rbind(rX, X), 
+            rX <- if(!exists("rX",inherits=FALSE)){
+               X
+            } else {
+              tryCatch(expr = rbind(rX, X),
                        error = function(e) stop(paste0("[makeDF.character] could not rbind the makeDF:ified '", object[k],"' (from the specified enviroment) to the rbind-accumulation of: ", paste(object[1:(k-1)]), collapse=", "), "."))
             }
          }
@@ -102,7 +103,7 @@ makeDF.character <- function(object, env=.GlobalEnv, ...){
 # - # @param ... for future needs?
 # - # @author Henrik Renlund
 #' @export
- 
+
 makeDF.survfit <- function(object, env=.GlobalEnv, ...){
    if(environmentName(env)!="R_GlobalEnv"){
       stop("[makeDF.survfit] environments (other than the global) are currently unsupported")
@@ -120,7 +121,7 @@ makeDF.survfit <- function(object, env=.GlobalEnv, ...){
 # S <- Surv(time=rexp(50,1), event=rbinom(50,1,0.2))
 # sf <- survfit(S~1)
 # sf2 <- sf
-# 
+#
 # makeDF(object=  sf)
 # makeDF(object = "sf")
 # makeDF(object = c("sf", "sf2"))
@@ -131,7 +132,7 @@ makeDF.survfit <- function(object, env=.GlobalEnv, ...){
 # - # @param ... for future needs?
 # - # @author Henrik Renlund
 #' @export
- 
+
 makeDF.list <- function(object, env=.GlobalEnv, ...){
    if(environmentName(env)!="R_GlobalEnv"){
       stop("[makeDF.list] environments (other than the global) are currently unsupported")
