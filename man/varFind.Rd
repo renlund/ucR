@@ -4,7 +4,7 @@
 \title{Look for a pattern in the \code{names} of R objects (typically data frames) and
 return the hits}
 \usage{
-varFind(pattern, dfs = TRUE, index = FALSE, ...)
+varFind(pattern, dfs = TRUE, ignore.case = TRUE, ...)
 }
 \arguments{
 \item{pattern}{pattern to look for}
@@ -14,7 +14,7 @@ R objects is given, the \code{names} of these will be exmined with \code{grepRet
 ; if \code{TRUE} all data frames in the global environment will be examined and if
 \code{FALSE} all objects with a 'names' attribute will be examined.}
 
-\item{index}{logical; whether to also return indexes of hits (defaul FALSE)}
+\item{ignore.case}{logical; should upper/lower case distinction be ignored? (default \code{TRUE})}
 
 \item{...}{arguments to be passed to \code{\link{grep}}}
 }

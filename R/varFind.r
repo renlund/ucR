@@ -10,7 +10,7 @@
 #' R objects is given, the \code{names} of these will be exmined with \code{grepRet}
 #' ; if \code{TRUE} all data frames in the global environment will be examined and if
 #' \code{FALSE} all objects with a 'names' attribute will be examined.
-#' @param index logical; whether to also return indexes of hits (defaul FALSE)
+#' @param ignore.case logical; should upper/lower case distinction be ignored? (default \code{TRUE})
 #' @param ... arguments to be passed to \code{\link{grep}}
 #' @examples
 #' require(datasets)
@@ -18,7 +18,7 @@
 #' @seealso \code{\link{grepRet}}, \code{\link{grep}}
 #' @export
 
-varFind <- function(pattern, dfs=TRUE, index=FALSE, ...) {
+varFind <- function(pattern, dfs=TRUE, ignore.case=TRUE, ...) {
    if(is.logical(dfs)){
       tmp <- c()
       if(dfs) {
@@ -34,7 +34,7 @@ varFind <- function(pattern, dfs=TRUE, index=FALSE, ...) {
    class(L) <- "list"
    for(df in dfs){
       if(!is.null(var.names <- names(get(df, envir = .GlobalEnv)))){
-         L[[df]] <- grepRet(pattern, var.names, index, ...)
+         L[[df]] <- grepRet(pattern, var.names, ignore.case = ignore.case, ...)
       } else {
          warning(paste0("[varFind] Object ", df, " does not have any names."))
       }
