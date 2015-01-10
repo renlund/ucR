@@ -26,6 +26,9 @@ modComp(resp, vars, model, covars, data = NULL, uni = TRUE, ci = TRUE,
 \description{
 Compare different subsets of covariates within a model
 }
+\note{
+This function cannot yet incorporate interactions.
+}
 \examples{
 # Comparing two set of covariates in model 'lm'
 DF <- data.frame(x1=c(1,2,3,4),x2=c(3,4,0,1))
@@ -59,9 +62,11 @@ modComp(resp = "cox_endp",
    round=1,
    fun=exp
 )
-# Comparing different covariates in model 'glm'
-# NOTE: must incorporate the argument "family='binomial'" by defining a function such that this is true
-Model <- function(formula, data) glm(formula=formula, family="binomial",data=data)
+# Comparing different covariates in model 'glm' NOTE: must incorporate
+# the argument "family='binomial'" by defining a function such that this is
+# true
+Model <- function(formula, data) glm(formula=formula,
+family="binomial",data=data)
 modComp(resp = "y",
    vars = c("x", "z"),
    model=Model,
