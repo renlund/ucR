@@ -102,6 +102,19 @@ L <- list(B=c("merge_AB","A"), C=c("new_C", "A"))
 reFactor(x,L)
 @
 
+\subsection{The empty string}
+One cannot specify the element name in a list explicitly to be the empty string
+<<>>=
+# list(a_name="value", ""="another_value") # not possible
+list(a_name="value", "another_value") # possible
+@
+Therefore, if you want to recode a empty string value can do
+<<>>=
+x <- c("A", "", "B")
+L <- list("A"="New A", "not_so_empty_now", "B"="New B")
+reFactor(x, L)
+@
+
 
 
 \subsection{Excluding and adding \code{NA} as level}

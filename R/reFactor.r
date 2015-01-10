@@ -49,7 +49,12 @@ reFactor <- function(x,L, na.level=NULL, exclude=NULL, new.last=FALSE, warn=TRUE
          if(warn) warning("[reFactor] Key '",key,"' has been used previously and will be skipped.")
          next
       }
-      a <- L[[key]]
+      if(key == ""){
+         empty_indx <- min(which(nL == key))
+         a <- L[[empty_indx]]
+      } else {
+         a <- L[[key]] # before
+      }
       if( !(key %in% lev) ){
          if( !is.null(a) ) if(warn) warning(paste0("[reFactor] Key ", key,
                                           " is a new value and will not be renamed nor will it absorb any other value"))

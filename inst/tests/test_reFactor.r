@@ -163,3 +163,16 @@ test_that("recoding with same value works", {
    L2 <- list(B=c("B.new", "C"))
    expect_equal(reFactor(x,L1),reFactor(x,L2))
 })
+test_that("empty names work", {
+   x <- c("A", "", "B")
+   expect_equal(reFactor(x), factor(x, levels=sort(x)))
+   L <- list("A"="New A", "foo", "B"="New B")
+   expect_equal(
+      reFactor(x, list("A"="New A", "foo", "B"="New B")),
+      factor(c("New A", "foo", "New B"), levels=c("New A", "foo", "New B"))
+   )
+   expect_equal(
+      reFactor(x, list("foo", "A"="New A", "B"="New B")),
+      factor(c("New A", "foo", "New B"))
+   )
+})
