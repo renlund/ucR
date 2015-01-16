@@ -92,7 +92,7 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
    rad <- sum(v_n)
    M <- matrix(NA, nrow=rad, ncol=kol)
    rownames(M) <- rnames
-   colnames(M) <- c(if(uni) "Univariate" else NULL , sprintf("Model %d", 1:length(covars)))
+   colnames(M) <- c(if(uni) "Univariate" else NULL , sprintf("Model %d", seq_along(covars)))
    for(k in 1:kol){ # k = 1
       indx <- if(uni & k==1) 1 else if(uni) k-1 else k
       if(uni & k==1){
