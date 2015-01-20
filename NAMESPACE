@@ -2,6 +2,7 @@
 
 S3method("[",cr_group)
 S3method(confint,coxme)
+S3method(confint,glmerMod)
 S3method(latex,cr_group)
 S3method(latex,ucr.base.tab)
 S3method(makeDF,character)
