@@ -4,13 +4,15 @@
 \alias{confint.coxme}
 \title{\code{confint} method for class \code{coxme}}
 \usage{
-\method{confint}{coxme}(object)
+\method{confint}{coxme}(object, more = FALSE)
 }
 \arguments{
 \item{object}{an onbject of class \code{coxme}}
+
+\item{more}{set to TRUE if you also want the coefficients and p --values.}
 }
 \description{
-This is a crappy solution to getting the confidence intervals
+This is a outstandingly crappy solution to getting the confidence intervals
 for the coefficients from a \code{coxme} object. It captures the output from
 \code{print(object)}... Oh, well.
 }
