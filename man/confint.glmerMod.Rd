@@ -4,12 +4,19 @@
 \alias{confint.glmerMod}
 \title{\code{confint} method for class \code{glmerMod}}
 \usage{
-\method{confint}{glmerMod}(object, more = FALSE)
+\method{confint}{glmerMod}(object, parm = NULL, level = 0.95, ...,
+  more = FALSE)
 }
 \arguments{
-\item{object}{an onbject of class \code{coxme}}
+\item{object}{an object of class \code{coxme}}
 
-\item{more}{set to TRUE if you also want the coefficients and p --values.}
+\item{parm}{(only for method compatability)}
+
+\item{level}{(only for method compatability)}
+
+\item{...}{(only for method compatability)}
+
+\item{more}{set to TRUE if you also want the coefficients and p-values.}
 }
 \description{
 This is a highly crappy solution to getting the confidence intervals

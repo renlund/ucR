@@ -2,15 +2,21 @@
 #' @description This is a highly crappy solution to getting the confidence intervals
 #' for the coefficients from a \code{coxme} object. It captures the output from
 #' \code{print(object)}... Oh, well.
-#' @param object an onbject of class \code{coxme}
-#' @param more set to TRUE if you also want the coefficients and p --values.
+#' @param object an object of class \code{coxme}
+#' @param parm (only for method compatability)
+#' @param level (only for method compatability)
+#' @param ... (only for method compatability)
+#' @param more set to TRUE if you also want the coefficients and p-values.
 #' @author Henrik Renlund
+#' @method confint glmerMod
 #' @export
 
-confint.glmerMod <- function(object, more=FALSE){
+confint.glmerMod <- function(object, parm=NULL, level=0.95, ...,  more=FALSE){
+   if(!is.null(parm)) warning("[confint.coxme] argument 'parm' doesn't do anything for this methos")
+   if(level != 0.95) warning("[confint.coxme] 'level' will be 0.95 regardless of what argument you give it. Ha!")
    foo <- capture.output(summary(object))
    a <- which(foo == "Fixed effects:") + 1
-   b <- which(foo == "Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1") - 2
+   b <- grep(pattern = "^Signif. codes:", x = foo)
    raw <- foo[a:b]
    borty <- function(x){
       y <- c()
