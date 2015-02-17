@@ -9,7 +9,7 @@ mids_get(object, m)
 \arguments{
 \item{object}{a mids object}
 
-\item{imp.only}{do you want only the rows with}
+\item{m}{imputation index}
 }
 \description{
 Extract imputed data sets from a \code{mids} object

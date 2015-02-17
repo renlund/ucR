@@ -1,7 +1,7 @@
 #' @title Extract imputed data sets
 #' @description Extract imputed data sets from a \code{mids} object
 #' @param object a mids object
-#' @param imp.only do you want only the rows with
+#' @param m imputation index
 #' @author Henrik Renlund
 #' @export
 
