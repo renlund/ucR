@@ -20,9 +20,10 @@ test_that("makeDF works with different environments", {
 })
 
 test_that("makeDF.data.frame works", {
-  DF <- data.frame(x=1:2, y=2:1)
-  expect_warning(makeDF(c("DF", "DF")))
-  expect_identical(makeDF(DF), DF)
+  env <- environment()
+   DF <- data.frame(x=1:2, y=2:1)
+  expect_warning(makeDF(c("DF", "DF"), env=env))
+  expect_identical(makeDF(DF, env = env), DF)
   foo <- new.env()
   assign(x="Hoo", value=data.frame(z=LETTERS, x=1:26), env=foo)
   expect_identical(makeDF(object="Hoo", env = foo), get("Hoo", foo))
@@ -33,7 +34,7 @@ test_that("makeDF.data.frame works", {
   assign(x="Gro", value=data.frame(Z=letters, x=26:1), env=foo)
   expect_error(makeDF(c("Hoo", "Gro"), foo))
   expect_error(makeDF("Bar", foo))
-  rm(foo, DF, R)
+  rm(foo, DF, R, env)
 })
 
 test_that("makeDF.list works", {
