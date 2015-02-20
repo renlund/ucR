@@ -11,7 +11,7 @@ mids_predict_logreg_2(object, formula, newmids)
 
 \item{formula}{formula for the logistic regression}
 
-\item{new_data}{data for which predictions are wanted}
+\item{newmids}{data for which predictions are wanted}
 }
 \description{
 Predict from imputed data sets from a \code{mids} object and a

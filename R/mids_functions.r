@@ -80,7 +80,11 @@ mids_predict_logreg <- function(object, formula, newdata){
    eval(parse(text=paste0("mira <- with(object, ",code,")")))
    mipo <- pool(object = mira)
    coef <- mipo$qbar
-   mod_mat <- model.matrix(object = as.formula(formula), data = newdata) # ???
+   newdata <- subset(newdata, TRUE) # NEW: somewhat inelegant way of making sure
+                                    # that newdata does not have weird attributes
+                                    # that makes a mess... (which has been know
+                                    # to happen)
+   mod_mat <- model.matrix(object = as.formula(formula), data = newdata)
    fail <- "[mids_predict_logreg] something is wrong ... "
    tryCatch(expr = sum(mod_mat[1,] * coef), warning = function(w) stop(fail), error = function(e) stop(fail))
    S <- rep(0, nrow(mod_mat))
@@ -105,7 +109,7 @@ mids_predict_logreg <- function(object, formula, newdata){
 #' logistic regerssion model
 #' @param object a mids object
 #' @param formula formula for the logistic regression
-#' @param new_data data for which predictions are wanted
+#' @param newmids data for which predictions are wanted
 #' @note It would be very nice to be able to include \code{se.fit}...
 #' @author Henrik Renlund
 #' @export
@@ -145,20 +149,69 @@ if(FALSE){
 
 #' @title Describe an imputed data set
 #' @description Describe complete case, missing and imputed via ucr.base.tab
+#' @note Currently this function utilizes the \code{ucr.base.tab} function with
+#' a certain parameters. It is unclear how easy it would be to allow the
+#' passing of arguments from \code{mids_describe} to this function...
 #' @param object a mids object
+#' @param x.names character vector of variables of interest
 #' @param file file to write latex output to (empty string by default)
+#' @param force.factor a character vector of variables to be forced into factors
+#' (e.g. event variables that are coded as 0/1)
 #' @param ... arguments passed to \code{Hmisc::latex}
+#' @param factorize force character vectors to be factors? (if FALSE these
+#' variables are removed)
+#' @param digits the number of digits (median and IQR for imputed
+#' variable description)
+#' @param silent hide message on removed variables?
+#' @return LaTeX code for descriptive table
 #' @author Henrik Renlund
 #' @export
 
-mids_describe <- function(object, file="", ...){
+mids_describe <- function(object, x.names, file="", ..., force.factor=NULL, factorize = TRUE, digits=1, silent = TRUE){
+   # fix/check argument ------------
    if(!"mids" %in% class(object)) warning("[mids_describe] object class not 'mids'")
-   raw <- object$data
+   if(missing(x.names)) {
+      x.names <- names(object$data)
+   } else {
+      if(!all(x.names %in% names(object$data))) stop("[mids_describe] bad x.names argument")
+   }
+   if(!is.null(force.factor))
+      if(!all(force.factor %in% x.names))
+         stop("[mids_describe] bad force.factor argument")
+   raw <- subset(object$data, TRUE, select=x.names)
+   # eliminate bad table variables ------
+   for(K in x.names){
+      if(any(class(raw[[K]]) %in% c("Date", "POSIXct", "POSIXt", "POSIXlt", "POSIXt"))){
+         raw[[K]] <- NULL
+         if(!silent) message(paste0("[mids_describe] variable '", K, "' is a date and removed"))
+         next
+      }
+      if(K %in% force.factor){
+         if(!is.factor(raw[[K]])){
+            raw[[K]] <- factor(raw[[K]])
+         }
+         next
+      }
+      if(is.character(raw[[K]])){
+         if(factorize){
+            raw[[K]] <- factor(raw[[K]])
+         } else {
+            raw[[K]] <- NULL
+            if(!silent) message(paste0("[mids_describe] variable '", K, "' is a character and removed"))
+         }
+      }
+   }
+
    while((miss_ind <- paste0(sample(c(letters,LETTERS), 10), collapse="")) %in% names(raw)){
-      "Foo" #
+      "This part just creates a variable name that does not already exist in the dataset"
    }
    raw[[miss_ind]] <- factor(ifelse(complete.cases(raw), "Complete", "Missing"))
-   bt <- ucr.base.tab(data = raw, group.name = miss_ind, include.p = FALSE, include.combined = FALSE, show.missing = "in.row", include.n = FALSE)
+   bt <- ucr.base.tab(data = raw,
+                      group.name = miss_ind,
+                      include.p = FALSE,
+                      include.combined = FALSE,
+                      show.missing = "in.row",
+                      include.n = FALSE)
    bt_var <- bt$tab[,1]
    Imputation <- rep(NA_character_, length(bt_var))
    place <- function(s, x = bt$tab){
@@ -174,7 +227,10 @@ mids_describe <- function(object, file="", ...){
       if(is.numeric(raw[[K]])){
          indx <- place(K)
          tmp <- as.numeric(as.matrix(object$imp[[K]]))
-         Imputation[indx] <- paste0(median(tmp), " (", paste(quantile(tmp, probs=c(0.27,0.75)), collapse=" - "), ")")
+         Q2 <- round(median(tmp), digits)
+         Q1 <- round(quantile(tmp, probs=c(0.27)), digits)
+         Q3 <- round(quantile(tmp, probs=c(0.75)), digits)
+         Imputation[indx] <- paste0(Q2, " (", Q1, " - ", Q3, ")")
       }
       if(is.factor(raw[[K]]) | is.character(raw[[K]])){
          indx <- place(K)
@@ -185,7 +241,7 @@ mids_describe <- function(object, file="", ...){
       }
    }
    bt$tab <- cbind(bt$tab, "Imputed values" = Imputation)
-   bt$extra.col.heads <- c(bt$extra.col.heads, " ")
+   bt$extra.col.heads <- c(bt$extra.col.heads, paste0("$", object$m, " \\times$ missing/variable"))
    latex(bt, file = file, ...)
 }
 
@@ -206,6 +262,8 @@ if(FALSE){
    if(!require(mice)) stop("! need 'mice'")
    df <- gimme_some_data(50)
    object <- mice(df)
+   mids_describe(object)
+
    mids_get(object, 1)
    index <- 1:25
    sobject <- mids_subset(object, index)
