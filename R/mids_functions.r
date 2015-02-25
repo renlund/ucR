@@ -71,6 +71,7 @@ mids_predict_on <- function(object, mids, ...){
 #' @param formula formula for the logistic regression
 #' @param newdata data for which predictions are wanted
 #' @author Henrik Renlund
+#' @importFrom mice pool
 #' @export
 
 mids_predict_logreg <- function(object, formula, newdata){
