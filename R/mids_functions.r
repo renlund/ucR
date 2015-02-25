@@ -180,7 +180,7 @@ mids_describe <- function(object, x.names, file="", ..., force.factor=NULL, fact
          stop("[mids_describe] bad force.factor argument")
    raw <- subset(object$data, TRUE, select=x.names)
    # eliminate bad table variables ------
-   for(K in x.names){
+   for(K in x.names){ # K = x.names[1]
       if(any(class(raw[[K]]) %in% c("Date", "POSIXct", "POSIXt", "POSIXlt", "POSIXt"))){
          raw[[K]] <- NULL
          if(!silent) message(paste0("[mids_describe] variable '", K, "' is a date and removed"))
@@ -206,6 +206,9 @@ mids_describe <- function(object, x.names, file="", ..., force.factor=NULL, fact
       "This part just creates a variable name that does not already exist in the dataset"
    }
    raw[[miss_ind]] <- factor(ifelse(complete.cases(raw), "Complete", "Missing"))
+   COCA <- subset(raw,  complete.cases(raw))
+   MISS <- subset(raw, !complete.cases(raw))
+
    bt <- ucr.base.tab(data = raw,
                       group.name = miss_ind,
                       include.p = FALSE,
@@ -214,6 +217,8 @@ mids_describe <- function(object, x.names, file="", ..., force.factor=NULL, fact
                       include.n = FALSE)
    bt_var <- bt$tab[,1]
    Imputation <- rep(NA_character_, length(bt_var))
+   medShift_1 <- rep(NA_character_, length(bt_var))
+   medShift_2 <- rep(NA_character_, length(bt_var))
    place <- function(s, x = bt$tab){
       indx <- which(x %in% s)
       if(length(indx) == 1) return(indx)
@@ -221,7 +226,7 @@ mids_describe <- function(object, x.names, file="", ..., force.factor=NULL, fact
       if(length(indx) == 1) return(indx)
       stop("[mids_describe] cannot find variable location... (ish)")
    }
-   for(K in names(object$imp)){ # K = names(object$imp)[3]
+   for(K in names(object$imp)){ # K = names(object$imp)[1]
       temp_var <- object$imp[[K]]
       if(is.null(temp_var)) next
       if(is.numeric(raw[[K]])){
@@ -231,6 +236,12 @@ mids_describe <- function(object, x.names, file="", ..., force.factor=NULL, fact
          Q1 <- round(quantile(tmp, probs=c(0.27)), digits)
          Q3 <- round(quantile(tmp, probs=c(0.75)), digits)
          Imputation[indx] <- paste0(Q2, " (", Q1, " - ", Q3, ")")
+         iqr_coca <- IQR(COCA[[K]])
+         med_coca <- median(COCA[[K]])
+         iqr_miss <- IQR(MISS[[K]], na.rm=TRUE)
+         med_miss <- median(MISS[[K]], na.rm=TRUE)
+         medShift_1[indx] <- round((med_miss - med_coca) / iqr_coca, digits+1 )
+         medShift_2[indx] <- round((median(tmp) - med_miss) / iqr_miss, digits+1 )
       }
       if(is.factor(raw[[K]]) | is.character(raw[[K]])){
          indx <- place(K)
@@ -240,8 +251,8 @@ mids_describe <- function(object, x.names, file="", ..., force.factor=NULL, fact
          Imputation[indx:(indx+length(tmp_tab)-1)] <- paste0(100*tmp_tab, "%")
       }
    }
-   bt$tab <- cbind(bt$tab, "Imputed values" = Imputation)
-   bt$extra.col.heads <- c(bt$extra.col.heads, paste0("$", object$m, " \\times$ missing/variable"))
+   bt$tab <- cbind(bt$tab, "$\\delta_1$" = medShift_1, "Imputed values" = Imputation, "$\\delta_2$" = medShift_2)
+   bt$extra.col.heads <- c(bt$extra.col.heads, " ", paste0("$", object$m, " \\times$ missing/variable"), " ")
    latex(bt, file = file, ...)
 }
 
