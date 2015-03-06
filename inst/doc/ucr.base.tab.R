@@ -1,6 +1,7 @@
 ## ----cache=FALSE, echo=FALSE, include=FALSE------------------------------
 library(Hmisc)
 library(ucR)
+set.seed(19790424)
 
 ## ----generating_dataset, cache=TRUE--------------------------------------
 n <- 972 # Data set size.

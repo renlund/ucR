@@ -2,25 +2,26 @@
 #' @description  Compare different subsets of covariates within a model
 #' @param resp the response variable
 #' @param vars character vector containing the names of all variables of interest
-#' @param model name (as character) of the model
+#' @param model name of the model
 #' @param covars a list containing index vectors on \code{vars}. Each entry corresponds to an analysis.
 #' @param data location of the variables in \code{vars}
-#' @param uni should univariate analyses be performed (if integer, this is used as an index on \code{vars} to determine which univariate analyses)
+#' @param uni logical: should univariate analyses be performed. If integer, this is used as an index on \code{vars} to determine which univariate analyses are performed)
 #' @param ci if TRUE confidence intervals are included
 #' @param ... arguments passed to \code{transFormat}
 #' @author Henrik Renlund
-#' @examples 
+#' @note This function cannot yet incorporate interactions.
+#' @examples
 #' # Comparing two set of covariates in model 'lm'
 #' DF <- data.frame(x1=c(1,2,3,4),x2=c(3,4,0,1))
 #' DF$y <- 2*DF$x1 + DF$x2 + c(0.1, -0.2, 0.05,0.05)
 #' modComp(
-#'    resp = "y", 
-#'    vars = c("x1", "x2"), 
-#'    model = lm, 
-#'    covars = list(1, 1:2), 
-#'    data = DF, 
-#'    uni = FALSE, 
-#'    ci = TRUE, 
+#'    resp = "y",
+#'    vars = c("x1", "x2"),
+#'    model = lm,
+#'    covars = list(1, 1:2),
+#'    data = DF,
+#'    uni = FALSE,
+#'    ci = TRUE,
 #'    round=2
 #'    )
 #' # Comparing different covariates in model 'coxph'
@@ -32,24 +33,26 @@
 #'    u = rep(c(1:5), length.out=31)
 #' )
 #' cox_endp <- with(DF, Surv(x,y))
-#' modComp(resp = "cox_endp", 
-#'    vars = c("z", "u"), 
+#' modComp(resp = "cox_endp",
+#'    vars = c("z", "u"),
 #'    model=coxph,
-#'    covars=list(1:2), 
-#'    data = DF, 
+#'    covars=list(1:2),
+#'    data = DF,
 #'    uni=TRUE,
 #'    ci=FALSE,
 #'    round=1,
 #'    fun=exp
 #' )
-#' # Comparing different covariates in model 'glm'
-#' # NOTE: must incorporate the argument "family='binomial'" by defining a function such that this is true
-#' Model <- function(formula, data) glm(formula=formula, family="binomial",data=data)
-#' modComp(resp = "y", 
-#'    vars = c("x", "z"), 
+#' # Comparing different covariates in model 'glm' NOTE: must incorporate
+#' # the argument "family='binomial'" by defining a function such that this is
+#' # true
+#' Model <- function(formula, data) glm(formula=formula,
+#' family="binomial",data=data)
+#' modComp(resp = "y",
+#'    vars = c("x", "z"),
 #'    model=Model,
-#'    covars=list(1:2, 2), 
-#'    data = DF, 
+#'    covars=list(1:2, 2),
+#'    data = DF,
 #'    uni=TRUE,
 #'    ci=FALSE,
 #'    signif=3,
@@ -81,7 +84,7 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
       v_n[k] <- length(lev) - 1
       tmp1 <- gsub(vars[k],"", lev[-1])
       tmp2a <- paste(vars[k], tmp1[1])
-      tmp2b <- if(v_n[k]>1) paste( paste(rep(" ", nchar(vars[k])),collapse="" ), tmp1[-1])
+      tmp2b <- if(v_n[k]>1) paste( paste(rep(" ", nchar(vars[k])),collapse="" ), tmp1[-1]) else NULL
       tmp2 <- c(tmp2a, tmp2b)
       rnames <- c(rnames, tmp2)
    }
@@ -89,9 +92,9 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
    rad <- sum(v_n)
    M <- matrix(NA, nrow=rad, ncol=kol)
    rownames(M) <- rnames
-   colnames(M) <- c(if(uni) "Univariate" else NULL , sprintf("Model %d", 1:length(covars)))
+   colnames(M) <- c(if(uni) "Univariate" else NULL , sprintf("Model %d", seq_along(covars)))
    for(k in 1:kol){ # k = 1
-      indx <- if(uni & k==1) 1 else if(uni) k-1 else k 
+      indx <- if(uni & k==1) 1 else if(uni) k-1 else k
       if(uni & k==1){
          for(i in uni_filt){
             vs <- vars[i]
@@ -138,7 +141,8 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
 #' @param signif if non-NULL this is the 'digits' argument for \code{signif}
 #' @param round if non-NULL this is the 'digits' argument for \code{round}
 #' @param skip if TRUE \code{format} is skipped
-#' @param ... arguments passed to \code{format}
+#' @param ... arguments passed to \code{base::format}
+#' @export
 
 transFormat <- function(x, fun=NULL, signif=NULL, round=NULL, skip=FALSE, ...){
    if(is.null(skip)) skip <- FALSE # ? consistent with the other arguments?
