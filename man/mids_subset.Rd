@@ -2,17 +2,17 @@
 % Please edit documentation in R/mids_functions.r
 \name{mids_subset}
 \alias{mids_subset}
-\title{Subset imputed data sets}
+\title{Proper subset of imputed data sets}
 \usage{
 mids_subset(object, index)
 }
 \arguments{
 \item{object}{a mids object}
 
-\item{index}{the rows you want (can be a logical expression)}
+\item{index}{the rows you want (can be a logical expression or character vector)}
 }
 \description{
-Subset imputed data sets from a \code{mids} object
+Make a proper subset imputed data sets from a \code{mids} object
 }
 \author{
 Henrik Renlund

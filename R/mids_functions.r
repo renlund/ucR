@@ -1,5 +1,6 @@
 #' @title Extract imputed data sets
 #' @description Extract imputed data sets from a \code{mids} object
+#' @note This functionality already exists in \code{mice::complete}!
 #' @param object a mids object
 #' @param m imputation index
 #' @author Henrik Renlund
@@ -16,22 +17,23 @@ mids_get <- function(object, m){
    DF
 }
 
-#' @title Subset imputed data sets
-#' @description Subset imputed data sets from a \code{mids} object
+#' @title Proper subset of imputed data sets
+#' @description Make a proper subset imputed data sets from a \code{mids} object
 #' @param object a mids object
-#' @param index the rows you want (can be a logical expression)
+#' @param index the rows you want (can be a logical expression or character vector)
 #' @author Henrik Renlund
 #' @export
 
 mids_subset <- function(object, index){
    if(!"mids" %in% class(object)) warning("[mids_subset] object is not of class 'mids'")
    if(is.logical(index)) index <- which(index)
+   if(any(duplicated(index))) stop("[mids_subset] no duplicates")
    new_object <- object
    new_object$data <- object$data[index, ]
-   for(K in names(object$imp)){ # K = names(object$imp)[2]
+   for(K in names(object$imp)){ # K = names(object$imp)[1]
       tmp <- object$imp[[K]]
       if(is.null(tmp)) next
-      replacer <- tmp[rownames(tmp) %in% as.character(index),]
+      replacer <- tmp[rownames(tmp) %in% row.names(object$data),]
       if(nrow(replacer)==0){
          new_object$imp[[K]] <- NULL
       } else {
@@ -40,6 +42,47 @@ mids_subset <- function(object, index){
    }
    class(new_object) <- c("mids_subset", class(object))
    new_object
+}
+
+#' @title Subset imputed data sets
+#' @description Subset imputed data sets from a \code{mids} object.
+#' If the subsetting index is proper, this function will call \code{mids_subset} and thus \code{index} can be integer, logical or character. For improper subsets the index must be integer, and the \code{object$data} will get its rownames set to \code{1:nrow(object$data)} (for ease of handling).
+#' @param object a mids object
+#' @param index the rows you want (must be integer for improper subsets)
+#' @author Henrik Renlund
+#' @export
+
+mids_subset_2 <- function(object, index){
+    if(!"mids" %in% class(object)) warning("[mids_subset] object is not of class 'mids'")
+    n <- nrow(object$data)
+    naro <- row.names(object$data)
+    if(length(unique(index)) == length(index)) return(mids_subset(object, index))
+    if(!is.numeric(index)) stop("[mids_subset_2] need numeric index")
+    tryCatch(naro_int <- as.numeric(naro), warning = function(w) NULL)
+    if(any(is.na(naro_int)) | any(naro_int != 1:n) ){
+        warning("[mids_subset_2] row names should be the integers starting from 1. Will change this")
+        for(K in names(object$imp)){ # K = names(object$imp)[1]
+            tmp <- object$imp[[K]]
+            if(is.null(tmp)) next
+            row.names(object$imp[[K]]) <- which(naro %in% row.names(tmp))
+        }
+        row.names(object$data) <- 1:n
+    }
+    new_object <- object
+    new_object$data <- object$data[index, ]
+
+    for(K in names(object$imp)){ # K = names(object$imp)[1]
+        tmp <- object$imp[[K]]
+        if(is.null(tmp)) next
+        replacer <- tmp[as.character(index[which(index %in% row.names(tmp))]), ]
+        if(nrow(replacer)==0){
+            new_object$imp[[K]] <- NULL
+        } else {
+            new_object$imp[[K]] <- replacer
+        }
+    }
+    class(new_object) <- c("mids_subset", class(object))
+    new_object
 }
 
 #' @title Predict on imputed data
@@ -71,15 +114,14 @@ mids_predict_on <- function(object, mids, ...){
 #' @param formula formula for the logistic regression
 #' @param newdata data for which predictions are wanted
 #' @author Henrik Renlund
-#' @importFrom mice pool
 #' @export
 
 mids_predict_logreg <- function(object, formula, newdata){
    if(!"mids" %in% class(object)) warning("[mids_predict_logreg] object class not 'mids'")
    prob_function <- function(x) exp(x)/(1+exp(x))
    code <- paste0("glm(", formula, ", family='binomial')")
-   eval(parse(text=paste0("mira <- with(object, ",code,")")))
-   mipo <- pool(object = mira)
+   mira <- eval(parse(text=paste0("with(object, ",code,")")))
+   mipo <- mice::pool(object = mira)
    coef <- mipo$qbar
    newdata <- subset(newdata, TRUE) # NEW: somewhat inelegant way of making sure
                                     # that newdata does not have weird attributes
@@ -134,18 +176,6 @@ mids_predict_logreg_2 <- function(object, formula, newmids){
       linear_pred = linear_pred,
       prob_pred = prob_function(linear_pred)
       )
-}
-
-if(FALSE){
-   df <- gimme_some_data(1000)
-   mdf <- mice(df)
-   df2 <- gimme_some_data(100)
-   mdf2 <- mice(df2)
-   cbind(
-      mids_predict_logreg_2(mdf, "y~x+z", mdf2),
-      mids_predict_logreg(mdf, "y~x+z", df2)
-   )
-
 }
 
 #' @title Describe an imputed data set
@@ -268,21 +298,4 @@ gimme_some_data <- function(n=1000){
    df$x[sample(1:n, size = max(0.09*n, 3), FALSE)] <- NA
    df$z[sample(1:n, size = max(0.04*n, 4), FALSE)] <- NA
    df
-}
-
-if(FALSE){
-   if(!require(mice)) stop("! need 'mice'")
-   df <- gimme_some_data(50)
-   object <- mice(df)
-   mids_describe(object)
-
-   mids_get(object, 1)
-   index <- 1:25
-   sobject <- mids_subset(object, index)
-   class(sobject)
-   str(sobject$data)
-   rownames(sobject$imp$x)
-   rownames(object$imp$x)
-   rownames(sobject$imp$z)
-   rownames(object$imp$z)
 }
