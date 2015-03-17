@@ -14,6 +14,9 @@ mids_get(object, m)
 \description{
 Extract imputed data sets from a \code{mids} object
 }
+\note{
+This functionality already exists in \code{mice::complete}!
+}
 \author{
 Henrik Renlund
 }
