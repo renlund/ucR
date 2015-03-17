@@ -14,7 +14,9 @@
 confint.coxme <- function(object, parm=NULL, level=0.95, ..., more=FALSE){
    if(!is.null(parm)) warning("[confint.coxme] argument 'parm' doesn't do anything for this methos")
    if(level != 0.95) warning("[confint.coxme] 'level' will be 0.95 regardless of what argument you give it. Ha!")
+   old_width <- options("width"=1000)
    foo <- capture.output(object)
+   options("width" = old_width)
    a <- which(foo == "Fixed coefficients") + 1
    b <- which(foo == "Random effects") - 2
    raw <- foo[a:b]
