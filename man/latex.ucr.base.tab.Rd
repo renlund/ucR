@@ -2,7 +2,7 @@
 % Please edit documentation in R/ucr_base_tab_methods.r
 \name{latex.ucr.base.tab}
 \alias{latex.ucr.base.tab}
-\title{Produce latex code from \code{ucr.base.tab} object}
+\title{Produce latex code from a \code{ucr.base.tab} object}
 \usage{
 latex.ucr.base.tab(object, ...)
 }
