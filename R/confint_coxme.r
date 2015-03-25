@@ -1,13 +1,13 @@
 #' @title \code{confint} method for class \code{coxme}
-#' @description This is a outstandingly crappy solution to getting the confidence intervals
-#' for the coefficients from a \code{coxme} object. It captures the output from
-#' \code{print(object)}... Oh, well.
+#' @description This is a outstandingly crappy solution to getting the
+#'   confidence intervals for the coefficients from a \code{coxme} object. It
+#'   captures the output from \code{print(object)}... Oh, well.
 #' @param object an object of class \code{coxme}
 #' @param parm (only for method compatability)
 #' @param level (only for method compatability)
 #' @param ... (only for method compatability)
 #' @param more set to TRUE if you also want the coefficients and p-values.
-#' @author Henrik Renlund
+#' @author Henrik Renlund - but don't hold it against me
 #' @method confint coxme
 #' @export
 
@@ -16,7 +16,7 @@ confint.coxme <- function(object, parm=NULL, level=0.95, ..., more=FALSE){
    if(level != 0.95) warning("[confint.coxme] 'level' will be 0.95 regardless of what argument you give it. Ha!")
    old_width <- options("width"=1000)
    foo <- capture.output(object)
-   options("width" = old_width)
+   options("width" = old_width$width)
    a <- which(foo == "Fixed coefficients") + 1
    b <- which(foo == "Random effects") - 2
    raw <- foo[a:b]

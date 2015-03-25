@@ -19,11 +19,11 @@
 \item{more}{set to TRUE if you also want the coefficients and p-values.}
 }
 \description{
-This is a highly crappy solution to getting the confidence intervals
-for the coefficients from a \code{coxme} object. It captures the output from
-\code{print(object)}... Oh, well.
+This is a highly crappy solution to getting the confidence
+  intervals for the coefficients from a \code{coxme} object. It captures the
+  output from \code{print(object)}... Oh, well.
 }
 \author{
-Henrik Renlund
+Henrik Renlund  - but don't hold it against me
 }
 
