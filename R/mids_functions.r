@@ -30,10 +30,10 @@ mids_subset <- function(object, index){
    if(any(duplicated(index))) stop("[mids_subset] no duplicates")
    new_object <- object
    new_object$data <- object$data[index, ]
-   for(K in names(object$imp)){ # K = names(object$imp)[1]
+   for(K in names(object$imp)){
       tmp <- object$imp[[K]]
       if(is.null(tmp)) next
-      replacer <- tmp[rownames(tmp) %in% row.names(object$data),]
+      replacer <- tmp[rownames(tmp) %in% row.names(new_object$data),]
       if(nrow(replacer)==0){
          new_object$imp[[K]] <- NULL
       } else {
@@ -61,7 +61,7 @@ mids_subset_2 <- function(object, index){
     tryCatch(naro_int <- as.numeric(naro), warning = function(w) NULL)
     if(any(is.na(naro_int)) | any(naro_int != 1:n) ){
         warning("[mids_subset_2] row names should be the integers starting from 1. Will change this")
-        for(K in names(object$imp)){ # K = names(object$imp)[1]
+        for(K in names(object$imp)){
             tmp <- object$imp[[K]]
             if(is.null(tmp)) next
             row.names(object$imp[[K]]) <- which(naro %in% row.names(tmp))
@@ -71,7 +71,7 @@ mids_subset_2 <- function(object, index){
     new_object <- object
     new_object$data <- object$data[index, ]
 
-    for(K in names(object$imp)){ # K = names(object$imp)[1]
+    for(K in names(object$imp)){
         tmp <- object$imp[[K]]
         if(is.null(tmp)) next
         replacer <- tmp[as.character(index[which(index %in% row.names(tmp))]), ]

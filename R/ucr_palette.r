@@ -9,7 +9,7 @@ ucr_palette <- function(show=FALSE){
    colors <- c("#61A60E", "#3A96B4", "#DC6511", "#6E3784", "#005E85")
    if(show) {
       dev.new()
-      barplot(table(colors), col=colors, yaxt='n')
+      barplot(table(factor(colors, levels=colors)), col=colors, yaxt='n')
    }
    colors
 }

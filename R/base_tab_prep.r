@@ -37,12 +37,13 @@ base_tab_prep <- function(X, max.unique = 10, elim.names = NULL, force.factor = 
          X[[K]] <- NULL
          next
       }
-      if(class(X[[K]]) %in% elim_class){
+      the_class <- class(X[[K]])
+      if(any(the_class %in% elim_class)){
          X[[K]] <- NULL
          next
       }
       n_unique <- length(unique(X[[K]]))
-      if(n_unique > unique.lim) {
+      if(all(!the_class %in% c("numeric", "integer")) & n_unique > max.unique) {
          X[[K]] <- NULL
          next
       }
@@ -53,7 +54,7 @@ base_tab_prep <- function(X, max.unique = 10, elim.names = NULL, force.factor = 
             next
          }
       }
-      if(force.factor & is.charcter(X[[K]])){
+      if(force.factor & is.character(X[[K]])){
          X[[K]]  <- factor(X[[K]])
       }
    }
