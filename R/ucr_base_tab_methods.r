@@ -9,7 +9,7 @@ ucr.internal.base.tab.lm <- function(...) {
    return (mod)
 }
 
-#' @title Produce latex code from \code{ucr.base.tab} object
+#' @title Produce latex code from a \code{ucr.base.tab} object
 #'
 #' @description A simple wrapper for the Hmisc latex function,
 #' that adds an explanatory bottom text and extra
@@ -104,50 +104,55 @@ latex.ucr.base.tab <- function(object, ...) {
    invisible (NULL)
 }
 
-# Splits a table into several sub-tables with a subset of the groups in each
-# sub-table. Each sub-table will contain the "Variable" column and the selected
-# subset of groups. In addition, the first sub-table will contain the N column
-# (if any), and the last sub-table will contain the "Combined" column and the
-# P-value column (if any).
-#
-# Parameters:
-# object = An object of class ucr.base.tab.
-# group.partition = A list specifying how to split the table. Each entry in the
-#                   list is an array of gorup numbers.
-#
-# Example: Suppose that 'u' is an object of class ucr.base.tab with 10 groups,
-# and one wants to split it into three sub-tables as follows:
-#    Sub-table 1: Groups 1, 2, 3.
-#    Sub-table 2: Groups 4, 5, 6, 7.
-#    Sub-table 3: Groups 8, 9, 10.
-# The following call achieves this:
-#   split(u, list(1:3, 4:7, 8:10))
-#
-# The return value is a list of "smaller" ucr.base.tab objects.
-split.ucr.base.tab <- function(object, group.partition) {
-   fgc <- object$first.group.col # Short-hand.
-   lgc <- fgc + object$n.groups - 1 # Column of last group.
-   nc <- ncol(object$tab) # Total number of columns.
-   res <- list()
-   for (i in 1:length(group.partition)) {
-      cur.obj <- object # Current sub-table.
-      if (i == 1) {
-         # First sub-table, include N column (if any).
-         cur.cols <- 1:(fgc-1)
-      } else {
-         cur.cols <- 1 # Just "Variable" column.
+#' @title Splits a table into several sub-tables.
+#'
+#' @description A simple wrapper for the Hmisc latex function,
+#' that adds an explanatory bottom text and extra
+#' column headings.
+#'
+#' @author Lars Lindhagen
+#' @param object An object of class ucr.base.tab.
+#' @param group.partition A list specifying how to split the table. Each entry
+#'                        in the list is an array of group numbers.
+#' @param always.n If \code{TRUE}, then group size is included in all tables.
+#' @seealso \code{\link{ucr.base.tab}}
+#' @examples
+#' # Suppose that u is an object of class ucr.base.tab with 10 groups,
+#' # and one wants to split it into three sub-tables as follows:
+#' #    Sub-table 1: Groups 1, 2, 3.
+#' #    Sub-table 2: Groups 4, 5, 6, 7.
+#' #    Sub-table 3: Groups 8, 9, 10.
+#' # The following call achieves this:
+#'   split(u, list(1:3, 4:7, 8:10))
+#' @return A list of "smaller" \code{ucr.base.tab} objects.
+#' @export
+
+split.ucr.base.tab <- function(object, group.partition, always.n=F) {
+  fgc <- object$first.group.col # Short-hand.
+  lgc <- fgc + object$n.groups - 1 # Column of last group.
+  nc <- ncol(object$tab) # Total number of columns.
+  res <- list()
+  for (i in 1:length(group.partition)) {
+    cur.obj <- object # Current sub-table.
+    if ((i == 1) || always.n) {
+      # First sub-table or N requested. Include N column (if any).
+      cur.cols <- 1:(fgc-1)
+    } else {
+      cur.cols <- 1 # Just "Variable" column.
+    }
+    cur.cols <- c(cur.cols, fgc + group.partition[[i]] - 1) # Selected groups.
+    if (i == length(group.partition)) {
+      # Last sub-table, include Combined column and P-values (if any).
+      if (lgc < nc) {
+        cur.cols <- c(cur.cols, ((lgc+1):nc))
       }
-      cur.cols <- c(cur.cols, fgc + group.partition[[i]] - 1) # Selected groups.
-      if (i == length(group.partition)) {
-         # Last sub-table, include Combined column and P-values (if any).
-         cur.cols <- c(cur.cols, ((lgc+1):nc))
-      }
-      # Keep only correct columns.
-      cur.obj$tab <- cur.obj$tab[, cur.cols]
-      cur.obj$extra.col.heads <- cur.obj$extra.col.heads[cur.cols]
-      res[[i]] <- cur.obj # Append sub-table to result list.
-   }
-   return (res)
+    }
+    # Keep only correct columns.
+    cur.obj$tab <- cur.obj$tab[, cur.cols]
+    cur.obj$extra.col.heads <- cur.obj$extra.col.heads[cur.cols]
+    res[[i]] <- cur.obj # Append sub-table to result list.
+  }
+  return (res)
 }
 
 
