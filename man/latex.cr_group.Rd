@@ -4,7 +4,7 @@
 \alias{latex.cr_group}
 \title{Latex method for objects of class \code{cr_group}}
 \usage{
-latex.cr_group(object, r.perm = "as.is", c.perm = "as.is",
+\method{latex}{cr_group}(object, r.perm = "as.is", c.perm = "as.is",
   colheads = TRUE, file = "", title = "", ...)
 }
 \arguments{

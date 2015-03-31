@@ -12,7 +12,7 @@
 #' @param label if TRUE then the data base entry will be stored as a label for
 #'   the new variable. Another label can be specified with a character string.
 #' @param check if TRUE this checks the variable
-#' @param Henrik Renlund
+#' @author Henrik Renlund
 #' @export
 
 data_man <- function(name,

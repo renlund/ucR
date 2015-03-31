@@ -62,6 +62,9 @@ reported in the table. A typical result in the "Level"
 column could be "By IQR: 1.4 mmol/L". (In this example,
 \code{digits} = 1).}
 
+\item{include.ref}{A logical specifying whether reference levels should be
+included in the table.}
+
 \item{or.hr}{A string providing a name for the estimete, e.g. "OR" for odds
 ratios.}
 
@@ -71,9 +74,6 @@ ratios.}
 
 \item{max.ucl}{Confidence intervals are omitted (replaced by a bar) if the
                 upper limit exeeds this value.}
-
-\item{incude.ref}{A logical specifying whether reference levels should be
-included in the table.}
 }
 \value{
 The return value is an S3 object of class \code{ucr.model.tab}.

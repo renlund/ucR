@@ -44,7 +44,7 @@
 #'                   reported in the table. A typical result in the "Level"
 #'                   column could be "By IQR: 1.4 mmol/L". (In this example,
 #'                   \code{digits} = 1).
-#' @param incude.ref  A logical specifying whether reference levels should be
+#' @param include.ref  A logical specifying whether reference levels should be
 #'                    included in the table.
 #' @param or.hr  A string providing a name for the estimete, e.g. "OR" for odds
 #'               ratios.

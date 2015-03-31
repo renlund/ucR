@@ -4,7 +4,7 @@
 \alias{latex.ucr.model.tab}
 \title{Produce latex code from a \code{ucr.model.tab} object}
 \usage{
-latex.ucr.model.tab(object, ...)
+\method{latex}{ucr.model.tab}(object, ...)
 }
 \arguments{
 \item{object}{a \code{ucr.model.tab} object}

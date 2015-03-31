@@ -123,7 +123,7 @@ latex.ucr.base.tab <- function(object, ...) {
 #' #    Sub-table 2: Groups 4, 5, 6, 7.
 #' #    Sub-table 3: Groups 8, 9, 10.
 #' # The following call achieves this:
-#'   split(u, list(1:3, 4:7, 8:10))
+#' #  split(u, list(1:3, 4:7, 8:10))
 #' @return A list of "smaller" \code{ucr.base.tab} objects.
 #' @export
 

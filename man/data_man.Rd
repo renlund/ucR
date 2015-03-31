@@ -30,10 +30,11 @@ Defaults to "data_man_container"}
 the new variable. Another label can be specified with a character string.}
 
 \item{check}{if TRUE this checks the variable}
-
-\item{Henrik}{Renlund}
 }
 \description{
 ...
+}
+\author{
+Henrik Renlund
 }
 
