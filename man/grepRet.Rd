@@ -20,6 +20,11 @@ This is a wrapper for \code{\link{grep}} to return not only the indexes
 of the hits (optional), but the hits themselves. (This is mainly a helper function
 for \code{varFind} but can at times be useful.)
 }
+\note{
+This function will be \code{grepr} in the 'dataman' package.
+(It will be eventually be removed so as to not clutter the 'ucR' package too
+much, but I don't want to break to much code in current use!)
+}
 \examples{
 grepRet(pattern="a", x=names(datasets::mtcars))
 }

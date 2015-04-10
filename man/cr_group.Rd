@@ -20,6 +20,11 @@ Sets the 'rgroup' and 'cgroup' attributes and returns a
 'cr_group' object. These can also be set with \code{attr}, but this
 functions checks that the dimensionality is OK.
 }
+\note{
+This function will be placed in the 'dataman' package.
+(It will be eventually be removed so as to not clutter the 'ucR' package too
+much, but I don't want to break to much code in current use!)
+}
 \author{
 Henrik Renlund
 }

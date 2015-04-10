@@ -16,6 +16,9 @@
 #' L <- list(B=c("nyB", "C"),E=NULL, D="nyD")
 #' reFactor(x,L)
 #' @seealso \code{\link{factor}}, \code{\link{relevel}}
+#' @note This function will be \code{refactor} in the 'dataman' package.
+#' (It will be eventually be removed so as to not clutter the 'ucR' package too
+#' much, but I don't want to break to much code in current use!)
 #' @export
 
 reFactor <- function(x,L, na.level=NULL, exclude=NULL, new.last=FALSE, warn=TRUE){

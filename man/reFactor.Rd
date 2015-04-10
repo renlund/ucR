@@ -25,6 +25,11 @@ This functions enables relabeling, reordering and merging of factor levels.
 It is also possible to add and exclude levels, and turn missing values into
 a separate level.
 }
+\note{
+This function will be \code{refactor} in the 'dataman' package.
+(It will be eventually be removed so as to not clutter the 'ucR' package too
+much, but I don't want to break to much code in current use!)
+}
 \examples{
 x <- LETTERS[1:5] # x <- factor(x)
 L <- list(B=c("nyB", "C"),E=NULL, D="nyD")

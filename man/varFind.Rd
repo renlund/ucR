@@ -23,6 +23,11 @@ R objects is given, the \code{names} of these will be exmined with \code{grepRet
 This function applies \code{\link{grepRet}} to \code{\link{names}} of a set
 of R objects and returns the results as a list
 }
+\note{
+This function will be \code{find_var} in the 'dataman' package.
+(It will be eventually be removed so as to not clutter the 'ucR' package too
+much, but I don't want to break to much code in current use!)
+}
 \examples{
 require(datasets)
 varFind(pattern="a", dfs=c("mtcars", "esoph"), index=TRUE)

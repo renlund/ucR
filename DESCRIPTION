@@ -1,6 +1,6 @@
 Package: ucR
 Title: UCR R functions
-Version: 0.3.6
+Version: 0.4.0
 Authors@R: c(person(given = "Henrik", family = "Renlund", role =
     c("aut", "cre"), email= "henrik.renlund@ucr.uu.se"), person(given = "Lars",
     family= "Lindhagen", role = "aut", email= "lars.lindhagen@ucr.uu.se"))

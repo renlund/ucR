@@ -7,6 +7,9 @@
 #' @param ... passed arguments
 #' @author Henrik Renlund
 #' @importFrom survival Surv survfit
+#' @note This function will be \code{make_df} in the 'dataman' package.
+#' (It will be eventually be removed so as to not clutter the 'ucR' package too
+#' much, but I don't want to break to much code in current use!)
 #' @examples
 #' # combine variables into a data frame
 #' x <- 1:2

@@ -1,13 +1,16 @@
 #' @title Create \code{cr_group} object
-#' 
-#' @description Sets the 'rgroup' and 'cgroup' attributes and returns a 
-#' 'cr_group' object. These can also be set with \code{attr}, but this 
+#'
+#' @description Sets the 'rgroup' and 'cgroup' attributes and returns a
+#' 'cr_group' object. These can also be set with \code{attr}, but this
 #' functions checks that the dimensionality is OK.
 #' @author Henrik Renlund
 #' @param x the object (typically a matrix och data frame)
 #' @param rgroup the 'rgroup' attribute with length equal to \code{dim(object)[1]}
 #' @param cgroup the 'cgroup' attribute with length equal to \code{dim(object)[2]}
 #' @param colnames use this to set colnames (class \code{cr_group} can keep track of these under permutations (if object is 'data.frame' colnames are dropped under permuation)
+#' @note This function will be placed in the 'dataman' package.
+#' (It will be eventually be removed so as to not clutter the 'ucR' package too
+#' much, but I don't want to break to much code in current use!)
 #' @export
 
 
@@ -54,14 +57,14 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
     }
 
 # - # @title Index a 'cr_group' object
-# - # @description This method makes sure that attributes 'rgroup', 'cgroup' and 
-# - # 'colnames' are intact after permutation. 
+# - # @description This method makes sure that attributes 'rgroup', 'cgroup' and
+# - # 'colnames' are intact after permutation.
 # - #  @author Henrik Renlund
 # - #  @param x an 'cr_group' object
 # - #  @param i first index
 # - #  @param j second index
 # - #  @param ... arguments to be passed to \code{'['}
-#' @export 
+#' @export
 
 '[.cr_group' <- function(x,i,j){
     class(x) <- setdiff(class(x), "cr_group")
@@ -77,25 +80,25 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
     }
     class(y) <- c("cr_group", class(y))
     y
-} 
+}
 
 
 #' @title Latex method for objects of class \code{cr_group}
-#' 
-#' @description Objects of class \code{cr_group} have attributes 
-#' 'rgroup' and/or 'cgroup'. These are extracted for use in the 
+#'
+#' @description Objects of class \code{cr_group} have attributes
+#' 'rgroup' and/or 'cgroup'. These are extracted for use in the
 #' \code{latex} function of package \code{Hmics}
-#' 
+#'
 #' @author Henrik Renlund
 #' @param object an 'cr_group' object
-#' @param r.perm should be  either (interpretable as) 'as.is', 
-#' 'alphabetical' or a permutation of 
+#' @param r.perm should be  either (interpretable as) 'as.is',
+#' 'alphabetical' or a permutation of
 #' \code{sort(unique(attr(object, "rgroup")))}. If 'as.is' row groups are ordered
 #' as they appear in 'rgroups', if 'alphabetical' they appear in alphabetical
 #' order, otherwise in the permutation given.
 #' @param c.perm is analogous to \code{r.perm}
-#' @param colheads is an argument that if 'character' is passed to \code{latex} 
-#' but if TRUE will set 'colheads' (in \code{latex}) to the objects attribute 
+#' @param colheads is an argument that if 'character' is passed to \code{latex}
+#' but if TRUE will set 'colheads' (in \code{latex}) to the objects attribute
 #' 'colnames' (if possible, else \code{dimnames(object)[[2]]})
 #' @param file is an argument passed to \code{latex} (default "")
 #' @param title is an argument passed to \code{latex} (default "")
@@ -110,7 +113,7 @@ CReator <- function(n=3, m=2, rg=TRUE, cg=TRUE, cn=TRUE, df=FALSE){
 #' attr(M, "cgroup") <- rep(c("Fuzzy", "Busy"), length.out=nc)
 #' class(M) <- "cr_group"
 #' dummy <- latex(M, r.perm='as.is', c.perm='alpha')
-#' # see vignette 
+#' # see vignette
 #' }
 #' @importFrom Hmisc latex
 #' @export
@@ -119,7 +122,7 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
    if(!"cr_group" %in% class(object)){
       stop("[latex.cr_group] 'object' is not of class 'cr_group'.")
    }
-   if(is.null(rg <- attr(object, "rgroup")) & 
+   if(is.null(rg <- attr(object, "rgroup")) &
          is.null(cg <- attr(object, "cgroup"))){
       stop("[latex.cr_group] the relevant attributes 'rgroup' and 'cgroup' are both missing.")
    }
@@ -143,7 +146,7 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
       for(k in seq_along(x)) y[k] <- paste0(mellan,x[k],mellan)
       paste0("c(", paste(y, collapse=", "), ")")
    }
-   foo <- function(name, R.perm=r.perm, C.perm=c.perm, milieu=ENV){ 
+   foo <- function(name, R.perm=r.perm, C.perm=c.perm, milieu=ENV){
       curr_attr <- get(name)
       if(is.null(curr_attr)){
          ""
@@ -155,37 +158,37 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
          perm <- if( name=="rg" ) R.perm else C.perm
          if(is.character(perm)){
             if( grepl(perm, "as.is", ignore.case=TRUE)) {
-               RG <- unique(curr_attr) 
+               RG <- unique(curr_attr)
                if(perm!="as.is"){
                   perm <- "as.is"
                   message("[latex.cr_group] 'rperm' interpreted as 'as.is'")
                }
-            } 
+            }
             if( grepl(perm, "alphabetical", ignore.case=TRUE)) {
                if(perm!="alphabetical"){
                   perm <- "alphabetical"
                   message("[latex.cr_group] 'perm' interpreted as 'alphabetical'")
                }
-            } 
+            }
             if( !perm %in% c("alphabetical", "as.is") ){
                stop("[latex.cr_group] 'perm' must be (interpretable as) 'alphabetical', 'as.is' or a permuation.")
             }
          }
-         if(is.numeric(perm)){ 
+         if(is.numeric(perm)){
             if(!setequal(perm,1:length(RG))){
                stop("[latex.cr_group] 'perm' needs to be a permuation of the indexes of 'levels(rgroup)'")
             }
-            RG <- RG[perm] 
+            RG <- RG[perm]
          }
          frg <- factor(curr_attr, levels=RG)
          X <- get(x="new_object", envir=milieu)
          assign(
-            x="new_object", 
-            value = if(name=="rg") X[order(frg),] else X[,order(frg)], 
+            x="new_object",
+            value = if(name=="rg") X[order(frg),] else X[,order(frg)],
             envir=milieu
             )
          pref <- if(name=="rg") "r" else "c"
-         paste0(pref,"group = ", char_vec(RG),", 
+         paste0(pref,"group = ", char_vec(RG),",
       n.",pref,"group = ",char_vec(rle(as.character(sort(frg)))$lengths, ""),",
       ")
       }
@@ -193,9 +196,9 @@ latex.cr_group <- function(object, r.perm="as.is", c.perm="as.is", colheads=TRUE
    row_code <- foo(name="rg")
    col_code <- foo(name="cg")
    code <- paste0("latex(
-      object=new_object, 
-      ", 
-      row_code, 
+      object=new_object,
+      ",
+      row_code,
       col_code,
       "title=title,
       file=file,

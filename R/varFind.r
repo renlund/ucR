@@ -16,6 +16,9 @@
 #' require(datasets)
 #' varFind(pattern="a", dfs=c("mtcars", "esoph"), index=TRUE)
 #' @seealso \code{\link{grepRet}}, \code{\link{grep}}
+#' @note This function will be \code{find_var} in the 'dataman' package.
+#' (It will be eventually be removed so as to not clutter the 'ucR' package too
+#' much, but I don't want to break to much code in current use!)
 #' @export
 
 varFind <- function(pattern, dfs=TRUE, ignore.case=TRUE, ...) {
