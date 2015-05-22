@@ -93,10 +93,10 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
    M <- matrix(NA, nrow=rad, ncol=kol)
    rownames(M) <- rnames
    colnames(M) <- c(if(uni) "Univariate" else NULL , sprintf("Model %d", seq_along(covars)))
-   for(k in 1:kol){ # k = 1
+   for(k in 1:kol){ # k = 2
       indx <- if(uni & k==1) 1 else if(uni) k-1 else k
       if(uni & k==1){
-         for(i in uni_filt){
+         for(i in uni_filt){# i = uni_filt[1]
             vs <- vars[i]
             form <- formula(paste0(resp ," ~ ", paste(vs, collapse=" + ")))
             MOD <- if(is.data.frame(DF)) model(form, data=DF) else model(form)
@@ -118,7 +118,12 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
          form <- formula(paste0(resp ," ~ ", paste(vs, collapse=" + ")))
          MOD <- if(is.data.frame(DF)) model(form, data=DF) else model(form)
          look <- paste0("(", vs, ")", collapse="|")
-         coef_mod <- coef(MOD)
+         coef_mod <- if("glmerMod" %in% class(MOD)) {
+             warning("[modComp] extracting coefficients from a glmerMod object is somewhat experimental")
+             coef(MOD)[[1]][1,]
+         } else {
+             coef(MOD)
+         }
          coef_indx <- grepl(look, names(coef_mod))
          COEF <- gsub(" ", "", transFormat(coef_mod[coef_indx], ...))
          if(ci){
