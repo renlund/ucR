@@ -1,3 +1,4 @@
 library(testthat)
 library(ucR)
-test_package("ucR")
+
+test_check("ucR")

@@ -19,7 +19,6 @@ ucr.internal.base.tab.lm <- function(...) {
 #' @param object a \code{ucr.base.tab} object
 #' @param ... arguments to be passed to \code{latex}
 #' @seealso \code{\link{ucr.base.tab}}
-#' @importFrom Hmisc latex
 #' @export
 
 latex.ucr.base.tab <- function(object, ...) {
@@ -96,7 +95,7 @@ latex.ucr.base.tab <- function(object, ...) {
    object$tab <- gsub("_", "\\\\_", object$tab) # Change all '_' to '\_'.
    object$tab <- gsub("%", "\\\\%", object$tab) # Change all '%' to '\%'.
    bot <- gsub("%", "\\\\%", bot) # Change '%' to '\%' for bottom text too.
-   dummy <- latex(object$tab, insert.bottom=bot,
+   dummy <- Hmisc::latex(object$tab, insert.bottom=bot,
       col.just=rep("l", times=ncol(object$tab)),
       collabel.just=rep("l", times=ncol(object$tab)),
       extracolheads=object$extra.col.heads,

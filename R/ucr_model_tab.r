@@ -54,7 +54,6 @@
 #'                 upper limit exeeds this value.
 #'
 #' @return The return value is an S3 object of class \code{ucr.model.tab}.
-#' @importFrom Hmisc label
 #' @export
 
 ucr.model.tab <- function(model, x.names=NULL, data, model.name,
@@ -206,8 +205,8 @@ ucr.model.tab <- function(model, x.names=NULL, data, model.name,
       # TODO: Allow for this? Empty cells?
       stop(sprintf("Variable %s not in data", cur.x.name))
     }
-    if (label(cur.x) != "") {
-      cur.x.label <- label(cur.x) # Variable label.
+    if (Hmisc::label(cur.x) != "") {
+      cur.x.label <- Hmisc::label(cur.x) # Variable Hmisc::label.
     } else {
       cur.x.label <- cur.x.name # No label, use variable name instead.
     }

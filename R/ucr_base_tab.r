@@ -95,7 +95,6 @@
 #'         "< 0.001" is given.
 #'         NOTE: This value must be a string, e.g. "0.001" or "1e-3".
 #' @return The return value is an S3 object of class ucr.base.tab.
-#' @importFrom Hmisc label
 #' @export
 
 ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
