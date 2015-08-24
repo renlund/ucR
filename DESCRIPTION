@@ -1,5 +1,5 @@
 Package: ucR
-Title: ucr stat function
+Title: Ucr Stat Functions
 Version: 0.4.0.9000
 Authors@R: c(person(given = "Henrik", family = "Renlund", role =
     c("aut", "cre"), email= "henrik.renlund@ucr.uu.se"), person(given = "Lars",
@@ -7,12 +7,12 @@ Authors@R: c(person(given = "Henrik", family = "Renlund", role =
     person(given = "Johan", family = "Lindback", role = c("aut"),
     email = "johan.lindback@ucr.uu.se"))
 Description: Repository for miscellaneous code for ucr stat.
-Depends: 
+Depends:
     R (>= 3.0.0)
 License: GPL-3
 LazyData: true
 VignetteBuilder: knitr
-Suggests: 
+Suggests:
     knitr,
     Hmisc,
     survival,
