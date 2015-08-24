@@ -79,11 +79,11 @@ country <- factor(country)
 # Correct group order.
 group <- reFactor(group, list(Small=NULL, Medium=NULL))
 data.set <- data.frame(group, age, hgt, bmi, gender, country)
-label(data.set$gender) <- "Gender"
-label(data.set$age) <- "Age (years)"
-label(data.set$hgt) <- "Height (cm)"
-label(data.set$bmi) <- "BMI"
-label(data.set$country) <- "Country"
+Hmisc::label(data.set$gender) <- "Gender"
+Hmisc::label(data.set$age) <- "Age (years)"
+Hmisc::label(data.set$hgt) <- "Height (cm)"
+Hmisc::label(data.set$bmi) <- "BMI"
+Hmisc::label(data.set$country) <- "Country"
 # Use only two groups.
 use.2.groups <- TRUE
 if (use.2.groups) {

@@ -215,8 +215,8 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
   for (i in 1:length(x.names)) {
     cur.x.name <- x.names[i] # Name of current x variable.
     cur.x <- data[[cur.x.name]] # Current x variable.
-    if (label(cur.x) != "") {
-      cur.x.label <- label(cur.x) # Variable label.
+    if (Hmisc::label(cur.x) != "") {
+      cur.x.label <- Hmisc::label(cur.x) # Variable label.
     } else {
       cur.x.label <- cur.x.name # No label, use variable name instead.
     }
