@@ -32,7 +32,7 @@
 #'                \item "par": Mean (SD).
 #'               \item "pm": Mean plus/minus SD.
 #'               }
-#' @param factor.format  How to present factor variables. Allowed values:
+#' @param factor.format  How to present factors. Allowed values:
 #'                 \itemize{
 #'                \item count.perc: Count (percentage).
 #'                 \item perc.count: Percentage (count).
