@@ -276,7 +276,7 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
             cur.row[cur.col] <- mean.string
           } else {
             # Both median and mean.
-            cur.row[cur.col] <- sprintf("%s %s", median.string, mean.string)
+            cur.row[cur.col] <- sprintf("%s \\{%s\\}", median.string, mean.string)
           }
         } else {
           cur.row[cur.col] <- "---" # Only NA's.

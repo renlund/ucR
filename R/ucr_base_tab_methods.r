@@ -48,7 +48,7 @@ latex.ucr.base.tab <- function(object, ...) {
       } else if (object$num.format == "mean") {
          num.txt <- sprintf("%s represents %s", mean.eq, mean.txt)
       } else {
-         num.txt <- sprintf("%s %s represents %s %s", median.eq, mean.eq, median.txt, mean.txt)
+         num.txt <- sprintf("%s \\{%s\\} represents %s \\{%s\\}", median.eq, mean.eq, median.txt, mean.txt)
       }
       bot <- sprintf("%s \n\n %s.", bot, num.txt)
    }

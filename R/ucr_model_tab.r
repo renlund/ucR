@@ -193,9 +193,9 @@ ucr.model.tab <- function(model, x.names=NULL, data, model.name,
   tab.mat <- matrix("", nrow=0, ncol=4)
   extra.col.heads <- rep("", times=n.cols) # Extra column heads.
   if (include.p) {
-    extra.col.heads[colno.res] <- sprintf("%s (95\\%% CI) $P$", or.hr)
+    extra.col.heads[colno.res] <- sprintf("%s (95%% CI) $P$", or.hr)
   } else {
-    extra.col.heads[colno.res] <- sprintf("%s (95\\%% CI)", or.hr)
+    extra.col.heads[colno.res] <- sprintf("%s (95%% CI)", or.hr)
   }
 
   # Create columns headings and subheadings.
