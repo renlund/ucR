@@ -17,7 +17,7 @@
 
 base_tab_prep <- function(X, max.unique = 10, elim.names = NULL, force.factor = TRUE, binary.code = TRUE, elim.class = NULL){
    if(!"data.frame" %in% class(X)) warning("[base_tab_prep] X does not have the property 'data.frame'")
-   elim_class <- c(elim.class,  c("Date", "POSIXct", "POSIXt"))
+   if(is.null(elim.class)) elim_class <- c(elim.class,  c("Date", "POSIXct", "POSIXt"))
    if(is.logical(binary.code)){
       if(binary.code) {
          b_fix <- TRUE
@@ -29,6 +29,7 @@ base_tab_prep <- function(X, max.unique = 10, elim.names = NULL, force.factor = 
       if(length(binary.code != 2)) stop("[base_tab_prep] wrong length of binary code")
       b_fix <- TRUE
       blist <- list("0" = binary.code[1], "1" = binary.code[2])
+      binary.code <- TRUE
    } else {
       stop("[base_tab_prep] weird binary code")
    }
@@ -42,13 +43,13 @@ base_tab_prep <- function(X, max.unique = 10, elim.names = NULL, force.factor = 
          X[[K]] <- NULL
          next
       }
-      n_unique <- length(unique(X[[K]]))
+      n_unique <- length(unique(na.omit(X[[K]])))
       if(all(!the_class %in% c("numeric", "integer")) & n_unique > max.unique) {
          X[[K]] <- NULL
          next
       }
-      if(n_unique == 2){
-         unique_set <- unique(X[[K]])
+      if(n_unique == 2 & binary.code){
+         unique_set <- unique(na.omit(X[[K]]))
          if(setequal(unique_set, 0:1)){
             X[[K]] <- reFactor(x = X[[K]], L = blist)
             next
