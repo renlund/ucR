@@ -51,12 +51,16 @@ base_tab_prep <- function(X, max.unique = 10, elim.names = NULL, force.factor = 
       if(n_unique == 2 & binary.code){
          unique_set <- unique(na.omit(X[[K]]))
          if(setequal(unique_set, 0:1)){
+            lab <- attr(X[[K]], "label")
             X[[K]] <- reFactor(x = X[[K]], L = blist)
+            attr(X[[K]], "label") <- lab
             next
          }
       }
       if(force.factor & is.character(X[[K]])){
+         lab <- attr(X[[K]], "label")
          X[[K]]  <- factor(X[[K]])
+         attr(X[[K]], "label") <- lab
       }
    }
    X
