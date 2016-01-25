@@ -2,16 +2,19 @@
 #'
 #' @description Creates a baseline table from a data frame. The data may
 #' be partitioned in two or more groups. A column for the
-#' "combined" group (all data) will also be included.
+#' "combined" group (all data) can also be included.
 #'
 #' @author Lars Lindhagen
 #' @param data  The data frame.
 #' @param group.name  Name of the variable in 'data' that defines the groups, or NULL
-#'              (default) if there are no groups. Note that there must be no
-#'              NA's in the group variable.
-#' @param combined.name  Column heading for the combined group. Default  "Combined".
-#' @param x.names  Names and order of the variables in 'data' that shall be included in
-#'           the table. By default, all variables are included.
+#'              (default) if there are no groups. The group variable must be a
+#'              factor without missing..
+#' @param combined.name  Column heading for the combined group. Defaults to
+#'       "Combined".
+#' @param x.names  Names and order of the variables in 'data' that shall be
+#'                 included in the table. By default, all variables are
+#'                 included. However, the group variable, if any, is never
+#'                 included.
 #' @param num.format  How to present numerical variables. Allowed values:
 #'              \itemize{
 #'                \item "median": Median with IQR or range.
@@ -72,8 +75,9 @@
 #' @param include.p  TRUE if P-values are to be included in the table. They refer to
 #'             univariate tests for identical distribution in the different
 #'             groups. P-values can only be included if there are groups.
-#' @param num.test  Which kind of test to use for numerical variables. The selected
-#'            test depends on the number of groups. Allowed values:
+#' @param test.x.names  Names of variables to perform tests for.
+#' @param num.test  Which kind of test to use for numerical variables. Allowed
+#'                  values:
 #'            \itemize{
 #'            \item "nonparam": A non-parametrical test:
 #'            \itemize{
@@ -85,16 +89,29 @@
 #'                \item t-test for two groups.
 #'                \item ANOVA for three or more groups.
 #'                }
+#'            \item "nonparam.trend": The non-parametric Jonckheere-Terpstra
+#'                   trend test, treating the group variable as ordinal. Only
+#'                   for 3+ groups.
+#'            \item "param.trend": A parametric trend test (likelihood ratio
+#'                   test for simple linear regression), converting the group
+#'                   variable to linear scores. Only for 3+ groups.
 #'                }
 #' @param factor.test  Which test to use for factor variables. Allowed values:
 #'               \itemize{
-#'                \item "fisher": Fisher's exact test.
+#'               \item "fisher": Fisher's exact test.
 #'               \item "pearson": Pearson's chi2 test.
+#'               \item "trend": Linear-by-linear association test, converting
+#'                     both the group variable and the baseline variable
+#'                     (possibly dichotomous) to linear scores. Only for 3+
+#'                     groups.
 #'               }
 #' @param min.p  Smallest P-value to be displayed. If smaller, then a text like
 #'         "< 0.001" is given.
 #'         NOTE: This value must be a string, e.g. "0.001" or "1e-3".
 #' @return The return value is an S3 object of class ucr.base.tab.
+#' @importFrom Hmisc label
+#' @importFrom coin independence_test
+#' @importFrom coin pvalue
 #' @export
 
 ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
@@ -103,6 +120,7 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
   perc.method="group", print.perc=T, print.perc.space=F,
   omit.ref.level=F, show.missing="none", digits=1,
   spec.digits=NULL, include.combined=T, include.n=T, include.p=T,
+  test.x.names=x.names,
   num.test="nonparam", factor.test="fisher", min.p="0.001") {
 
   # --> Check that parameters are sane. If not, execution will be stopped.
@@ -113,8 +131,10 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
     perc.method=perc.method, print.perc=print.perc,
     print.perc.space=print.perc.space, omit.ref.level=omit.ref.level,
     show.missing=show.missing, digits=digits, spec.digits=spec.digits,
-    include.n=include.n, include.p=include.p, num.test=num.test,
-    factor.test=factor.test, min.p=min.p)
+    include.n=include.n, include.p=include.p, test.x.names=test.x.names,
+    num.test=num.test, factor.test=factor.test, min.p=min.p)
+  # Make sure the group variable is not included.
+  x.names <- setdiff(x.names, group.name)
   # Make 'spec.digits' a complete list, replacing missing values by 'digits'.
   if (is.null(spec.digits)) {
     spec.digits <- list()
@@ -161,8 +181,8 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
   #              no groups, the combined group is the only one.
   colno.var <- 1 # Column for variable name.
   colno.n <- 2 # Column for number of observations.
-  colno.group0 <- 2 # Column for "group 0". Group number g (= 1, 2, ...) has
-                    # this number + g.
+  # Column for "group 0". Group number g (= 1, 2, ...) has this number + g.
+  colno.group0 <- 2
   if (include.groups) {
     colno.combined <- colno.group0 + n.groups + 1 # Combined group.
   } else {
@@ -276,54 +296,76 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
             cur.row[cur.col] <- mean.string
           } else {
             # Both median and mean.
-            cur.row[cur.col] <- sprintf("%s %s", median.string, mean.string)
+            cur.row[cur.col] <- sprintf("%s \\{%s\\}", median.string, mean.string)
           }
         } else {
           cur.row[cur.col] <- "---" # Only NA's.
         }
         exists.numeric <- TRUE
       } # End of long loop over groups.
-      # P-value of Wilcoxon test (2 groups) or Kruskal-Wallis test
-      # (3+ groups).
-      # First time here? If so, decide which test to use.
-      if (numeric.test.ix == 0) {
-        n.tests.defined <- n.tests.defined + 1
-        numeric.test.ix <- n.tests.defined
-        if (num.test == "nonparam") {
-          # Non-parametrical test: Wilcoxon/Kruskal-Wallis.
-          if (n.groups == 2) {
-            test.names[numeric.test.ix] <- "Wilcoxon test"
-            num.test.fcn <- wilcox.test
+      if (include.p && is.element(cur.x.name, test.x.names)) {
+        # P-value.
+        # First time here? If so, decide which test to use.
+        if (numeric.test.ix == 0) {
+          n.tests.defined <- n.tests.defined + 1
+          numeric.test.ix <- n.tests.defined
+          if (num.test == "nonparam") {
+            # Non-parametrical test: Wilcoxon/Kruskal-Wallis.
+            if (n.groups == 2) {
+              test.names[numeric.test.ix] <- "Wilcoxon test"
+              num.test.fcn <- function(x, g) wilcox.test(x ~ g)$p.value
+            } else {
+              test.names[numeric.test.ix] <- "Kruskal-Wallis test"
+              num.test.fcn <- function(x, g) kruskal.test(x ~ g)$p.value
+            }
+          } else if (num.test == "param") {
+            # Parametrical test: t-test/ANOVA. Same code, just different names.
+            if (n.groups == 2) {
+              test.names[numeric.test.ix] <- "$t$-test"
+            } else {
+              test.names[numeric.test.ix] <- "ANOVA"
+            }
+            num.test.fcn <- function(x, g) {
+              m0 <- lm(x ~ 1)
+              m1 <- lm(x ~ g)
+              a <- anova(m1, m0)
+              p <- a[["Pr(>F)"]][2]
+              return (p)
+            }
+          } else if (num.test == "nonparam.trend") {
+            # Non-parametric trend test.
+            # Jonckheere-Terpstra test from coin package.
+            test.names[numeric.test.ix] <- "Jonckheere--Terpstra trend test"
+            num.test.fcn <- function(x, g) {
+              g <- as.ordered(g) # Make sure g is ordinal.
+              it <- coin::independence_test(x ~ g, ytrafo = rank,
+                distribution="asymptotic")
+              p <- coin::pvalue(it)
+              return (p)
+            }
           } else {
-            test.names[numeric.test.ix] <- "Kruskal-Wallis test"
-            num.test.fcn <- kruskal.test
-          }
-        } else {
-          # Parametrical test: t-test/ANOVA.
-          if (n.groups == 2) {
-            test.names[numeric.test.ix] <- "$t$-test"
-            num.test.fcn <- function(...) t.test(..., var.equal=T)
-          } else {
-            test.names[numeric.test.ix] <- "ANOVA"
-            num.test.fcn <- ucr.internal.base.tab.lm
+            # Parametric trend test. Just linear regression...
+            test.names[numeric.test.ix] <- "Linear regression trend test"
+            num.test.fcn <- function(x, g) {
+              p <- summary(lm(x ~ as.numeric(g)))$coef[2, 4]
+              return (p)
+            }
           }
         }
-      }
 
-      # Test can raise error, e.g. if all non-NA posts belong to the same
-      # group. If so, catch the error and let P = NA, giving the string "---".
-      p.value <- NA
-      if (include.p) {
-        p.value <- tryCatch(num.test.fcn(cur.x ~ data[[group.name]])$p.value,
-                            error=test.error.handler)
-      }
-      if (!is.na(p.value)) {
-        # P-value exists.
-        cur.row[colno.p] <- sprintf("%s$^%d$",
-          ucr.format.p(p.value, min.p), numeric.test.ix)
-      } else {
-        # P-value does not exist.
-        cur.row[colno.p] <- "---"
+        # Test can raise error, e.g. if all non-NA posts belong to the same
+        # group. If so, catch the error and let P = NA, giving the string "---".
+        p.value <- NA
+        p.value <- tryCatch(num.test.fcn(x=cur.x, g=data[[group.name]]),
+          error=test.error.handler)
+        if (!is.na(p.value)) {
+          # P-value exists.
+          cur.row[colno.p] <- sprintf("%s$^%d$",
+            ucr.format.p(p.value, min.p), numeric.test.ix)
+        } else {
+          # P-value does not exist.
+          cur.row[colno.p] <- "---"
+        }
       }
       if (show.missing == "in.row") {
         if (any(!is.element(n.miss.per.group, c("", "0")))) { # Do this only if there are missings.
@@ -404,35 +446,46 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
         }
         cur.rows[j, colno.var] <- sprintf("%s %s", prefix, cur.rows[j, colno.var])
       }
-      # P-value of Fisher's exact test or Pearson's chi2 test.
-      # First time here? If so, decide which test to use.
-      if (factor.test.ix == 0) {
-        n.tests.defined <- n.tests.defined + 1
-        factor.test.ix <- n.tests.defined
-        if (factor.test == "fisher") {
-          test.names[factor.test.ix] <- "Fisher's exact test"
-          factor.test.fcn <- fisher.test
+      if (include.p && is.element(cur.x.name, test.x.names)) {
+        # P-value.
+        # First time here? If so, decide which test to use.
+        if (factor.test.ix == 0) {
+          n.tests.defined <- n.tests.defined + 1
+          factor.test.ix <- n.tests.defined
+          if (factor.test == "fisher") {
+            # Fisher's exact test.
+            test.names[factor.test.ix] <- "Fisher's exact test"
+            factor.test.fcn <- function(x, g) fisher.test(x, g)$p.value
+          } else if (factor.test == "pearson") {
+            # Pearson's chi2 test without continuity correction.
+            test.names[factor.test.ix] <- "Pearson's $\\chi^2$ test"
+            factor.test.fcn <- function(x, g) chisq.test(x, g, correct=F)$p.value
+          } else {
+            # Trend test. Linear-by-linear association test from coin.
+            test.names[factor.test.ix] <- "Linear-by-linear trend test"
+            factor.test.fcn <- function(x, g) {
+              x <- as.ordered(x) # Make sure both x and g are ordinal.
+              g <- as.ordered(g) # Make sure g is ordinal.
+              it <- coin::independence_test(x ~ g, teststat="quad",
+                distribution="asymptotic")
+              p <- coin::pvalue(it)
+              return (p)
+            }
+          }
+        }
+        # Catch error from test if any, cf. numerical test above.
+        p.value <- NA
+        p.value <- tryCatch(factor.test.fcn(x=cur.x, g=data[[group.name]]),
+          error=test.error.handler)
+        if (!is.na(p.value)) {
+          # P exists.
+          cur.rows[1, colno.p] <- sprintf("%s$^%d$",
+            ucr.format.p(p.value, min.p), factor.test.ix)
         } else {
-          test.names[factor.test.ix] <- "Pearson's $\\chi^2$ test"
-          # No continuity correction (taken from Hmisc).
-          factor.test.fcn <- function(...) chisq.test(correct=F, ...)
+          # P does not exist:
+          cur.rows[1, colno.p] <- "---"
         }
       }
-      # Catch error from test if any, cf. numerical test above.
-      p.value <- NA
-      if (include.p) {
-        p.value <- tryCatch(factor.test.fcn(cur.x, data[[group.name]])$p.value,
-                            error=test.error.handler)
-      }
-      if (!is.na(p.value)) {
-        # P exists.
-        cur.rows[1, colno.p] <- sprintf("%s$^%d$",
-          ucr.format.p(p.value, min.p), factor.test.ix)
-      } else {
-        # P does not exist:
-        cur.rows[1, colno.p] <- "---"
-      }
-
       if (show.missing == "in.row") {
         if (any(!is.element(n.miss.per.group, c("", "0")))) { # Do this only if there are missings.
           n.miss.per.group <- ifelse(n.miss.per.group == "", "",

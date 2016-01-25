@@ -66,8 +66,8 @@ ucr.model.tab <- function(model, x.names=NULL, data, model.name,
     return (ret)
   }
   known.model.class <- function(mod) {
-    known.classes <- c("glm", "stripped.glm", "lrm", "cph", "mipo", "glmerMod",
-      "matrix")
+    known.classes <- c("lm", "glm", "stripped.glm", "lrm", "cph", "mipo",
+      "glmerMod", "matrix")
     ret <- class.contains(known.classes, mod)
     return (ret)
   }
@@ -106,7 +106,16 @@ ucr.model.tab <- function(model, x.names=NULL, data, model.name,
   result.mat <- matrix(0, nrow=0, ncol=4,
     dimnames=list(NULL, c("est", "lcl", "ucl", "p")))
   for (mod in model.list) {
-    if (class.contains(c("glm"), mod)) {
+    if (class.contains(c("lm"), mod)) {
+      # Linear regression.
+      b <- mod$coefficients
+      ci <- confint(mod)
+      lcl <- ci[, 1]
+      ucl <- ci[, 2]
+      sm <- summary(mod)
+      p <- sm$coeff[, "Pr(>|t|)"]
+      cur.rows <- cbind(b, lcl, ucl, p)
+    } else if (class.contains(c("glm"), mod)) {
       # Logistic regression etc.
       b <- mod$coefficients
       ci <- confint(mod)
