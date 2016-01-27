@@ -10,20 +10,23 @@ ucr.base.tab(data, group.name = NULL, combined.name = "Combined",
   factor.format = "count.perc", perc.method = "group", print.perc = T,
   print.perc.space = F, omit.ref.level = F, show.missing = "none",
   digits = 1, spec.digits = NULL, include.combined = T, include.n = T,
-  include.p = T, num.test = "nonparam", factor.test = "fisher",
-  min.p = "0.001")
+  include.p = T, test.x.names = x.names, num.test = "nonparam",
+  factor.test = "fisher", min.p = "0.001")
 }
 \arguments{
 \item{data}{The data frame.}
 
 \item{group.name}{Name of the variable in 'data' that defines the groups, or NULL
-(default) if there are no groups. Note that there must be no
-NA's in the group variable.}
+(default) if there are no groups. The group variable must be a
+factor without missing..}
 
-\item{combined.name}{Column heading for the combined group. Default  "Combined".}
+\item{combined.name}{Column heading for the combined group. Defaults to
+"Combined".}
 
-\item{x.names}{Names and order of the variables in 'data' that shall be included in
-the table. By default, all variables are included.}
+\item{x.names}{Names and order of the variables in 'data' that shall be
+included in the table. By default, all variables are
+included. However, the group variable, if any, is never
+included.}
 
 \item{num.format}{How to present numerical variables. Allowed values:
 \itemize{
@@ -99,8 +102,10 @@ be included in a separate column.}
 univariate tests for identical distribution in the different
 groups. P-values can only be included if there are groups.}
 
-\item{num.test}{Which kind of test to use for numerical variables. The selected
-test depends on the number of groups. Allowed values:
+\item{test.x.names}{Names of variables to perform tests for.}
+
+\item{num.test}{Which kind of test to use for numerical variables. Allowed
+      values:
 \itemize{
 \item "nonparam": A non-parametrical test:
 \itemize{
@@ -112,12 +117,22 @@ test depends on the number of groups. Allowed values:
     \item t-test for two groups.
     \item ANOVA for three or more groups.
     }
+\item "nonparam.trend": The non-parametric Jonckheere-Terpstra
+       trend test, treating the group variable as ordinal. Only
+       for 3+ groups.
+\item "param.trend": A parametric trend test (likelihood ratio
+       test for simple linear regression), converting the group
+       variable to linear scores. Only for 3+ groups.
     }}
 
 \item{factor.test}{Which test to use for factor variables. Allowed values:
 \itemize{
- \item "fisher": Fisher's exact test.
+\item "fisher": Fisher's exact test.
 \item "pearson": Pearson's chi2 test.
+\item "trend": Linear-by-linear association test, converting
+      both the group variable and the baseline variable
+      (possibly dichotomous) to linear scores. Only for 3+
+      groups.
 }}
 
 \item{min.p}{Smallest P-value to be displayed. If smaller, then a text like
@@ -130,7 +145,7 @@ The return value is an S3 object of class ucr.base.tab.
 \description{
 Creates a baseline table from a data frame. The data may
 be partitioned in two or more groups. A column for the
-"combined" group (all data) will also be included.
+"combined" group (all data) can also be included.
 }
 \author{
 Lars Lindhagen

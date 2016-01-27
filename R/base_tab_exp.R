@@ -9,6 +9,7 @@
 ##' ## bt <- ucr.base.tab(my_data)
 ##' ## write.csv(ucr_tab_exp(bt), file = "path/to/file.csv")
 ##' @author Henrik Renlund
+##' @export
 
 base_tab_exp <- function(object, replacer = " -:- "){
     x <- if("ucr.base.tab" %in% class(object)) object$tab else object

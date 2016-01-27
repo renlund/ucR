@@ -18,9 +18,8 @@ in the list is an array of group numbers.}
 A list of "smaller" \code{ucr.base.tab} objects.
 }
 \description{
-A simple wrapper for the Hmisc latex function,
-that adds an explanatory bottom text and extra
-column headings.
+Splits a baseline table into a number of sub-tables, each
+containing a subset of the columns.
 }
 \examples{
 # Suppose that u is an object of class ucr.base.tab with 10 groups,
