@@ -16,5 +16,6 @@ Suggests:
     knitr,
     Hmisc,
     survival,
-    testthat
+    testthat,
+    coin
 RoxygenNote: 5.0.1
