@@ -26,13 +26,15 @@ base_tab_prep <- function(X, max.unique = 10, elim.names = NULL, force.factor = 
          b_fix <- FALSE
       }
    } else if(is.character(binary.code)){
-      if(length(binary.code != 2)) stop("[base_tab_prep] wrong length of binary code")
+       if(length(binary.code) != 2){
+           stop("[base_tab_prep] wrong length of binary code")
+       }
       b_fix <- TRUE
       blist <- list("0" = binary.code[1], "1" = binary.code[2])
    } else {
       stop("[base_tab_prep] weird binary code")
    }
-   for(K in names(X)){
+   for(K in names(X)){ ## K = "bl_hyper"
       if(K %in% elim.names){
          X[[K]] <- NULL
          next
@@ -42,13 +44,13 @@ base_tab_prep <- function(X, max.unique = 10, elim.names = NULL, force.factor = 
          X[[K]] <- NULL
          next
       }
-      n_unique <- length(unique(X[[K]]))
+      n_unique <- length(na.omit(unique(X[[K]])))
       if(all(!the_class %in% c("numeric", "integer")) & n_unique > max.unique) {
          X[[K]] <- NULL
          next
       }
       if(n_unique == 2){
-         unique_set <- unique(X[[K]])
+         unique_set <- na.omit(unique(X[[K]]))
          if(setequal(unique_set, 0:1)){
             X[[K]] <- reFactor(x = X[[K]], L = blist)
             next
