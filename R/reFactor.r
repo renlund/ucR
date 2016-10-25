@@ -22,8 +22,8 @@
 #' @export
 
 reFactor <- function(x,L, na.level=NULL, exclude=NULL, new.last=FALSE, warn=TRUE){
-   if( !(is.numeric(x) | is.character(x) | is.factor(x)) ){
-      stop("[reFactor] 'x' is neither factor, character nor numeric")
+   if( !(is.numeric(x) | is.character(x) | is.factor(x) | is.logical(x)) ){
+      stop("[reFactor] 'x' is neither factor, charactr, numeric nor logical")
    }
    char_x <- as.character(x)
    fact_x <- if(is.factor(x)) x else factor(char_x)
