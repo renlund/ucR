@@ -84,6 +84,7 @@ latex.ucr.base.tab <- function(object, ...) {
   # Substitutions of special LaTeX symbols.
   object$tab <- gsub("_", "\\\\_", object$tab) # Change all '_' to '\_'.
   object$tab <- gsub("%", "\\\\%", object$tab) # Change all '%' to '\%'.
+  colnames(object$tab) <- gsub("_", "\\\\_", colnames(object$tab))
   bot <- gsub("%", "\\\\%", bot) # Change '%' to '\%' for bottom text too.
    dummy <- Hmisc::latex(object$tab, insert.bottom=bot,
     col.just=rep("l", times=ncol(object$tab)),
