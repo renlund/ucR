@@ -115,7 +115,7 @@
 #' @export
 
 ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
-  x.names=setdiff(names(data), group.name), num.format="median",
+  x.names=names(data), num.format="median",
   median.format="iqr", mean.format="par", factor.format="count.perc",
   perc.method="group", print.perc=T, print.perc.space=F,
   omit.ref.level=F, show.missing="none", digits=1,
@@ -134,7 +134,9 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
     include.n=include.n, include.p=include.p, test.x.names=test.x.names,
     num.test=num.test, factor.test=factor.test, min.p=min.p)
   # Make sure the group variable is not included.
-  x.names <- setdiff(x.names, group.name)
+  if (!is.null(group.name)) {
+    x.names <- x.names[x.names !=  group.name]
+  }
   # Make 'spec.digits' a complete list, replacing missing values by 'digits'.
   if (is.null(spec.digits)) {
     spec.digits <- list()
