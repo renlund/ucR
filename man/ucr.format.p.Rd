@@ -19,10 +19,9 @@ Smaller values than 'min.p' (a string!) will be replaced by strings like
 \examples{
 ucr.format.p(0.0000456, min.p="0.01")
 }
-\author{
-Lars Lindhagen
-}
 \seealso{
 \code{\link{format}}, \code{\link{sprintf}}
 }
-
+\author{
+Lars Lindhagen
+}

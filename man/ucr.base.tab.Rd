@@ -150,4 +150,3 @@ be partitioned in two or more groups. A column for the
 \author{
 Lars Lindhagen
 }
-

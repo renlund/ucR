@@ -15,10 +15,9 @@ latex.ucr.model.tab(object, ...)
 A simple wrapper for the Hmisc latex function,
 that adds extra column headings.
 }
-\author{
-Lars Lindhagen
-}
 \seealso{
 \code{\link{ucr.model.tab}}
 }
-
+\author{
+Lars Lindhagen
+}

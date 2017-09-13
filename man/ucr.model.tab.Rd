@@ -84,4 +84,3 @@ Creates a table to summarize one or several analysis models.
 \author{
 Lars Lindhagen
 }
-

@@ -16,10 +16,9 @@ A simple wrapper for the Hmisc latex function,
 that adds an explanatory bottom text and extra
 column headings.
 }
-\author{
-Lars Lindhagen
-}
 \seealso{
 \code{\link{ucr.base.tab}}
 }
-
+\author{
+Lars Lindhagen
+}

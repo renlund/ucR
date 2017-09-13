@@ -17,4 +17,3 @@ can let you open the tipsR presentations
 \author{
 Henrik Renlund
 }
-

@@ -24,4 +24,3 @@ Replace LaTeX code with something more readable. This
 \author{
 Henrik Renlund
 }
-

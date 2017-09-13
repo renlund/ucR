@@ -18,4 +18,3 @@ Returns the colors of the UCR palette
 \author{
 Henrik Renlund
 }
-

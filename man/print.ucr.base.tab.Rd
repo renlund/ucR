@@ -17,4 +17,3 @@ Format the object with base_tab_exp before printing
 \author{
 Henrik Renlund
 }
-

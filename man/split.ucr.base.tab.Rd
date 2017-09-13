@@ -30,10 +30,9 @@ containing a subset of the columns.
 # The following call achieves this:
 #  split(u, list(1:3, 4:7, 8:10))
 }
-\author{
-Lars Lindhagen
-}
 \seealso{
 \code{\link{ucr.base.tab}}
 }
-
+\author{
+Lars Lindhagen
+}

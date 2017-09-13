@@ -31,4 +31,3 @@ Remove difficult variables: dates, factors with too many unique
 \author{
 Henrik Renlund
 }
-

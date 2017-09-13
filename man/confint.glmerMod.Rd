@@ -26,4 +26,3 @@ This is a highly crappy solution to getting the confidence
 \author{
 Henrik Renlund  - but don't hold it against me
 }
-

@@ -228,7 +228,7 @@ ucr.internal.base.tab.parameter.check <- function(data, group.name,
     ix <- ix[1] # Pick the first non-existing variable for error text.
     stop(sprintf("x variable '%s' does not exist.", x.names[ix]))
   }
-  if (max(summary(factor(x.names))) > 1) {
+  if (max(summary(factor(x.names), maxsum = 1e6)) > 1) { ## default maxsum = 100
     tmp.sum <- summary(factor(x.names))
     ix <- which.max(tmp.sum)
     stop(sprintf("x variable '%s' included several times.", names(tmp.sum[ix])))

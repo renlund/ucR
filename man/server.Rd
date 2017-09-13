@@ -9,4 +9,3 @@ server()
 \description{
 Checks wether \code{Sys.info()} contains info pointing to the server
 }
-

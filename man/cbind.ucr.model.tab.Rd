@@ -4,7 +4,7 @@
 \alias{cbind.ucr.model.tab}
 \title{Combine two or more model tables.}
 \usage{
-cbind.ucr.model.tab(...)
+\method{cbind}{ucr.model.tab}(...)
 }
 \arguments{
 \item{...}{a number of \code{ucr.model.tab} objects.}
@@ -17,10 +17,9 @@ Combine two or more model tables. The tables are displayes
              in separate columns. The tables are supposed to be identical
              except for the regression results.
 }
-\author{
-Lars Lindhagen
-}
 \seealso{
 \code{\link{ucr.model.tab}}
 }
-
+\author{
+Lars Lindhagen
+}

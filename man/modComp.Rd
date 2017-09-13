@@ -83,4 +83,3 @@ rm(Model, cox_endp, DF)
 \author{
 Henrik Renlund
 }
-

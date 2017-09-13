@@ -26,4 +26,3 @@ This is a now only semi-crappy solution to getting the
 \author{
 Henrik Renlund/Lars Lindhagen - but don't hold it against us!
 }
-

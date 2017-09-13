@@ -23,4 +23,3 @@ transFormat(x, fun = NULL, signif = NULL, round = NULL, skip = FALSE,
 \description{
 Apply a function to x, then \code{round} or \code{signif} before formatting
 }
-
