@@ -84,6 +84,7 @@ latex.ucr.base.tab <- function(object, ...) {
   # Substitutions of special LaTeX symbols.
   object$tab <- gsub("_", "\\\\_", object$tab) # Change all '_' to '\_'.
   object$tab <- gsub("%", "\\\\%", object$tab) # Change all '%' to '\%'.
+  colnames(object$tab) <- gsub("_", "\\\\_", colnames(object$tab))
   bot <- gsub("%", "\\\\%", bot) # Change '%' to '\%' for bottom text too.
    dummy <- Hmisc::latex(object$tab, insert.bottom=bot,
     col.just=rep("l", times=ncol(object$tab)),
@@ -228,10 +229,9 @@ ucr.internal.base.tab.parameter.check <- function(data, group.name,
     ix <- ix[1] # Pick the first non-existing variable for error text.
     stop(sprintf("x variable '%s' does not exist.", x.names[ix]))
   }
-  if (max(summary(factor(x.names), maxsum = 1e6)) > 1) { ## default maxsum = 100
-    tmp.sum <- summary(factor(x.names))
-    ix <- which.max(tmp.sum)
-    stop(sprintf("x variable '%s' included several times.", names(tmp.sum[ix])))
+  if (any(duplicated(x.names))) {
+    ix <- which(duplicated(x.names))[1]
+    stop(sprintf("x variable '%s' included several times.", x.names[ix]))
   }
   for (n in x.names) {
     if (!is.numeric(data[[n]]) && !is.factor(data[[n]])) {
