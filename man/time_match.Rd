@@ -2,15 +2,20 @@
 % Please edit documentation in R/time_match.r
 \name{time_match}
 \alias{time_match}
-\title{find matches on variables in a given time period}
+\alias{time_match_set}
+\title{find matches}
 \usage{
-time_match(data, s, search, id = "lopnr", date = "INDATUMA", begin = NULL,
-  end = NULL, matches = "first.id", non.matches = TRUE)
+time_match(data, s, search, id = "id", date = "date", begin = NULL,
+  end = NULL, matches = "all", non.matches = TRUE)
+
+time_match_set(data, s, search, id = "id", date = "date", set,
+  set.id = "id", set.begin = "begin", set.end = "end", matches = "all",
+  non.matches = TRUE)
 }
 \arguments{
 \item{data}{a data frame}
 
-\item{s}{a regular expression}
+\item{s}{a search string (regular expression)}
 
 \item{search}{names of variables to search in (given in order of importance)}
 
@@ -28,6 +33,15 @@ date, and 'first.id' to filter on the first occurence of any individual}
 
 \item{non.matches}{if \code{TRUE} also return data on the individuals with
 no matches}
+
+\item{set}{a vector of id's, or a data frame containing id's as well as (but
+optionally) 'begin' and 'end' variables}
+
+\item{set.id}{variable name in 'set' to use as id}
+
+\item{set.begin}{variable name in 'set' to use as begin}
+
+\item{set.end}{variable name in 'set' to use as end}
 }
 \value{
 a data frame with \itemize{
@@ -45,10 +59,18 @@ a data frame with \itemize{
 }
 }
 \description{
+find matches on variables in a given time period
+}
+\details{
 in a dataset with one or more variables (typically containing text or codes)
     associated with a date, find matches on those variables within specifed
     time frames
 }
+\section{Functions}{
+\itemize{
+\item \code{time_match_set}: wrapper for find_match to look at only those units within a given set
+}}
+
 \author{
 Henrik Renlund
 }

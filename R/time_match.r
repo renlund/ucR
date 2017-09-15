@@ -3,6 +3,7 @@
 ##' in a dataset with one or more variables (typically containing text or codes)
 ##'     associated with a date, find matches on those variables within specifed
 ##'     time frames
+##' @title find matches
 ##' @param data a data frame
 ##' @param s a search string (regular expression)
 ##' @param search names of variables to search in (given in order of importance)
@@ -30,10 +31,8 @@
 ##' }
 ##' @author Henrik Renlund
 ##' @export
-time_match <- function(data, s, search,
-                id = 'lopnr', date = 'INDATUMA',
-                begin = NULL, end = NULL,
-                matches = "all", non.matches = TRUE){
+time_match <- function(data, s, search, id = 'id', date = 'date',
+                begin = NULL, end = NULL, matches = "all", non.matches = TRUE){
     ## -- some sanity checks --
     ok.matches <- c("first.id", "first.date", "all")
     if(!matches %in% ok.matches){
@@ -150,6 +149,60 @@ time_match <- function(data, s, search,
         invisible(NULL)
     }
 }
+
+##' @describeIn time_match wrapper for find_match to look at only those units within a given set
+##' @title find matches for specified units
+##' @param set a vector of id's, or a data frame containing id's as well as (but
+##'     optionally) 'begin' and 'end' variables
+##' @param set.id variable name in 'set' to use as id
+##' @param set.begin variable name in 'set' to use as begin
+##' @param set.end variable name in 'set' to use as end
+##' @export
+time_match_set <- function(data, s, search, id = "id", date = "date",
+                           set, set.id = "id",
+                           set.begin = "begin", set.end = "end",
+                           matches = "all", non.matches = TRUE){
+    if(is.null(dim(set))){
+        set <- data.frame(id = set)
+    } else {
+        vars.present <- intersect(names(set), c(set.id, set.begin, set.end))
+        set <- set[, vars.present]
+        if(!"id" %in% names(set)) stop("I want an id-variable ('", set.id,
+                                       "') in set")
+        names(set)[names(set) == set.id] <- "id"
+        names(set)[names(set) == set.begin] <- "begin"
+        names(set)[names(set) == set.end] <- "end"
+    }
+    if(is.null(set$begin)) set$begin <- min(data[[date]], na.rm = TRUE)
+    if(is.null(set$end))   set$end   <- max(data[[date]], na.rm = TRUE)
+    set <- set[, c("id", "begin", "end")]
+    ## -- fix data
+    data <- data[, c(id, date, search)]
+    names(data) <- c("id", "date", search)
+    ## -- missing date in data will be problematic, throw error
+    na.indx <- which(is.null(data$date))
+    if(length(na.indx) > 0){
+        warning("Missing 'date' at rows:", paste0(na.indx, collapse = ", "),
+                "\nThese will be removed\n")
+        data <- data[!na.indx, ]
+    }
+    DATA <- merge(set, data, by = "id", all.x = TRUE)
+    DATA$date[!is.na(DATA$date)] <- max(DATA$end, na.rm = TRUE)
+    time_match(data = DATA, s = s, search = search, id = "id",
+               date = "date", begin = "begin", end = "end",
+               matches = matches, non.matches = non.matches)
+
+}
+
+## data <- data.frame(id = sprintf("id%s", 1:10), date = -1:-10,
+##                    bar = LETTERS[10:1], foo = letters[1:10])
+## date <- "date"
+## set <- data.frame(id = sprintf("id%s", c(3:4, 11:12)), apa = 10:13, foo = 1:4)
+## set.id = "id"
+## set.begin = "begin"
+## set.end = "foo"
+## id = "id"
+## search = "foo"
 
 if(FALSE){ ## -- for testing ---
 
