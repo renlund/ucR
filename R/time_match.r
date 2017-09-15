@@ -4,7 +4,7 @@
 ##'     associated with a date, find matches on those variables within specifed
 ##'     time frames
 ##' @param data a data frame
-##' @param s a regular expression
+##' @param s a search string (regular expression)
 ##' @param search names of variables to search in (given in order of importance)
 ##' @param id name of id variable
 ##' @param date name of associated date variable
@@ -33,7 +33,7 @@
 time_match <- function(data, s, search,
                 id = 'lopnr', date = 'INDATUMA',
                 begin = NULL, end = NULL,
-                matches = "first.id", non.matches = TRUE){
+                matches = "all", non.matches = TRUE){
     ## -- some sanity checks --
     ok.matches <- c("first.id", "first.date", "all")
     if(!matches %in% ok.matches){
@@ -42,8 +42,8 @@ time_match <- function(data, s, search,
     nm <- c(id, date, search)
     badname.indx <- which(!nm %in% names(data))
     if(length(badname.indx) > 0){
-        warning("variable names", paste(nm[badname.indx], collapse = ", "),
-                "does not exist in data")
+        stop("some variable names (", paste(nm[badname.indx], collapse = ", "),
+                ") does not exist in the data set")
     }
     ## -- get relevant data and fix 'begin' and 'end' if not provided
     if(!is.null(begin) & is.character(begin)){
@@ -66,17 +66,18 @@ time_match <- function(data, s, search,
     if(is.null(begin)) begin <- min(data$date, na.rm = TRUE)
     data$begin <- begin
     data$end <- end
-    ## -- hard to deal with missing in 'date', if so throw error and let user
-    ## -- fix this
+    ## -- hard to deal with missing in 'date', so if so throw
+    ## -- error and let user fix this
     na.indx <- which(is.null(data$date))
     if(length(na.indx) > 0){
         warning("Missing 'date' at rows:", paste0(na.indx, collapse = ", "),
                 "\nThese will be removed\n")
         data <- data[!na.indx, ]
     }
-    ## -- calculate 't' time from begin and 't2' time to end
+    ## -- calculate 't', time from beginning, and 't2', time to end
     data$t  <- as.numeric(difftime(data$date, data$begin, units = "days"))
     data$t2 <- as.numeric(difftime(data$end, data$date, units = "days"))
+    ## -- filter down to relevant time period but keep copy of data for later
     data.copy <- subset(data, TRUE, select = c("id", "begin", "end"))
     data <- data[data$date >= data$begin & data$date <= end, ]
     ## -- look for patters 's' in each search variable
@@ -91,6 +92,7 @@ time_match <- function(data, s, search,
         R <- if(is.null(R)) tmp else rbind(R, tmp)
     }
     ## -- order matches and create indicators for first id and first date
+    ## -- if there are no matches, object R is still NULL (treat separately)
     vars <- c("id", "event", "t", "match", "variable", "t2",
               "first.id", "first.date", "begin", "date", "end")
     if(is.null(R)){
@@ -99,6 +101,9 @@ time_match <- function(data, s, search,
     } else {
         S <- R[order(R$id, R$date, R$variable), ]
         n <- nrow(S)
+        ## -- create indicators for first instance of each id and first instance
+        ## -- of each id + date combination. This code must treat the case of
+        ## -- length 1 vectors separately
         if(n > 1){
             S$first.id <- as.integer(c(TRUE, !(S$id[2:n] == S$id[1:(n-1)])))
             S$first.date <- as.integer(
@@ -116,9 +121,12 @@ time_match <- function(data, s, search,
     RET <- if(non.matches & nrow(TMP) > 0){
                n <- nrow(TMP)
                TMP <- TMP[order(TMP$id), ]
-               if(n>1){
+               ## -- keep only one line for each id
+               if(n > 1){
                    B <- TMP[c(TRUE, !TMP$id[2:n] == TMP$id[1:(n-1)]), ]
-               } else B <- TMP
+               } else {
+                   B <- TMP
+               }
                B$event <- 0L
                B$t <- as.numeric(difftime(B$end, B$begin))
                B$match <- NA_character_
@@ -172,14 +180,41 @@ if(FALSE){ ## -- for testing ---
                begin = as.Date("1990-01-01"), date = "bar",
                matches = "first.id", non.matches = FALSE)
 
-    data = df
-    s = "c"
-    search = c("quuz", "baz")
-    id = "foo"
-    date = "bar"
-    begin = as.Date("2001-01-01")
-    end = as.Date("2001-12-31")
-    matches = "all"
-    non.matches = TRUE
+    ## data = df
+    ## s = "c"
+    ## search = c("quuz", "baz")
+    ## id = "foo"
+    ## date = "bar"
+    ## begin = as.Date("2001-01-01")
+    ## end = as.Date("2001-12-31")
+    ## matches = "all"
+    ## non.matches = TRUE
+
+    ## this function might be useful at some point, but maybe not
+    df_first_instance <- function(data, ..., name = ".first_instance"){
+        if((n <- nrow(data)) == 1) {
+            data[[name]] <- 1L
+            return(data)
+        }
+        nm <- as.character(eval(substitute(alist(...))))
+        bad.names <- which(!nm %in% names(data))
+        if(length(bad.names) > 0){
+            stop("variable(s)", paste(nm[bad.names], collapse = ", "),
+                 "is/are not in data")
+        }
+        code <- paste0("data[order(",
+                       paste(paste0("data[['", nm, "']]"), collapse = ", "),
+                       "), ]")
+        data.ord <- eval(parse(text = code))
+        a <- "2:n"
+        b <- "1:(n-1)"
+        code2 <- paste0("!(", paste0(paste0("data.ord[['", nm, "']][", a, "] == data.ord[['",
+                                            nm, "']][", b, "]"),
+                                     collapse = " & "), ")")
+        f <- eval(parse(text = code2))
+        data.ord[[name]] <- as.integer(c(TRUE, f))
+        data.ord
+    }
 
 }
+
