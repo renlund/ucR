@@ -44,13 +44,13 @@ base_tab_prep <- function(X, max.unique = 10, elim.names = NULL, force.factor = 
          X[[K]] <- NULL
          next
       }
-      n_unique <- length(na.omit(unique(X[[K]])))
+      n_unique <- length(stats::na.omit(unique(X[[K]])))
       if(all(!the_class %in% c("numeric", "integer")) & n_unique > max.unique) {
          X[[K]] <- NULL
          next
       }
       if(n_unique == 2){
-         unique_set <- na.omit(unique(X[[K]]))
+         unique_set <- stats::na.omit(unique(X[[K]]))
          if(setequal(unique_set, 0:1)){
             X[[K]] <- reFactor(x = X[[K]], L = blist)
             next

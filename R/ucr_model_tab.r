@@ -110,7 +110,7 @@ ucr.model.tab <- function(model, x.names=NULL, data, model.name,
     if (identical(class(mod), "lm")) {
       # Linear regression.
       b <- mod$coefficients
-      ci <- confint(mod)
+      ci <- stats::confint(mod)
       lcl <- ci[, 1]
       ucl <- ci[, 2]
       sm <- summary(mod)
@@ -119,7 +119,7 @@ ucr.model.tab <- function(model, x.names=NULL, data, model.name,
     } else if (class.contains(c("glm"), mod) || class.contains("coxph", mod)) {
       # Logistic regression etc.
       b <- mod$coefficients
-      ci <- confint(mod)
+      ci <- stats::confint(mod)
       lcl <- ci[, 1]
       ucl <- ci[, 2]
       sm <- summary(mod)
@@ -129,17 +129,17 @@ ucr.model.tab <- function(model, x.names=NULL, data, model.name,
       # Our stripped glm.
       b <- mod$coef
       se <- sqrt(diag(mod$vcov))
-      lcl <- b - qnorm(0.975) * se # qnorm(0.975) = 1.96.
-      ucl <- b + qnorm(0.975) * se
-      p <- 2 * pnorm(abs(b/se), lower.tail=F)
+      lcl <- b - stats::qnorm(0.975) * se # stats::qnorm(0.975) = 1.96.
+      ucl <- b + stats::qnorm(0.975) * se
+      p <- 2 * stats::pnorm(abs(b/se), lower.tail=F)
       cur.rows <- cbind(b, lcl, ucl, p)
     } else if (class.contains(c("lrm", "cph"), mod)) {
       # Harrell's logistic regression etc.
       b <- mod$coefficients
-      ci <- confint(mod)
+      ci <- stats::confint(mod)
       lcl <- ci[, 1]
       ucl <- ci[, 2]
-      p <- 2 * pnorm(abs(b/se), lower.tail=F)
+      p <- 2 * stats::pnorm(abs(b/se), lower.tail=F)
       cur.rows <- cbind(b, lcl, ucl, p)
     } else if (class.contains("mipo", mod) || (class(mod) == "matrix")) {
       # Pooled imputation analysis, plain (mipo) or summary'zed (matrix).
@@ -157,8 +157,8 @@ ucr.model.tab <- function(model, x.names=NULL, data, model.name,
       sm <- summary(mod)$coefficients
       b <- sm[, "Estimate"]
       se <- sm[, "Std. Error"]
-      lcl <- b - qnorm(0.975) * se
-      ucl <- b + qnorm(0.975) * se
+      lcl <- b - stats::qnorm(0.975) * se
+      ucl <- b + stats::qnorm(0.975) * se
       p <- sm[, "Pr(>|z|)"]
       cur.rows <- cbind(b, lcl, ucl, p)
     } else {
@@ -245,10 +245,10 @@ ucr.model.tab <- function(model, x.names=NULL, data, model.name,
           cur.digits <- 1
         }
         if (cur.type == "sd") {
-          cur.scale <- sd(cur.x)
+          cur.scale <- stats::sd(cur.x)
           cur.row[colno.lev] <- sprintf("By SD: %.*f%s", cur.digits, cur.scale, cur.unit)
         } else if (cur.type == "iqr") {
-          x.quant <- quantile(cur.x, na.rm=T)
+          x.quant <- stats::quantile(cur.x, na.rm=T)
           cur.scale <- x.quant[4] - x.quant[2]
           cur.row[colno.lev] <- sprintf("By IQR: %.*f%s", cur.digits, cur.scale, cur.unit)
         } else if (is.numeric(cur.type)) {

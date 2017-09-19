@@ -8,8 +8,8 @@
 ucr_palette <- function(show=FALSE){
    colors <- c("#61A60E", "#3A96B4", "#DC6511", "#6E3784", "#005E85")
    if(show) {
-      dev.new()
-      barplot(table(factor(colors, levels=colors)), col=colors, yaxt='n')
+      grDevices::dev.new()
+      graphics::barplot(table(factor(colors, levels=colors)), col=colors, yaxt='n')
    }
    colors
 }

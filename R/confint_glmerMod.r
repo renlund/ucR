@@ -15,7 +15,7 @@ confint.glmerMod <- function(object, parm=NULL, level=0.95, ...,  more=FALSE){
    if(!is.null(parm)) warning("[confint.coxme] argument 'parm' doesn't do anything for this methos")
    if(level != 0.95) warning("[confint.coxme] 'level' will be 0.95 regardless of what argument you give it. Ha!")
    old_width <- options("width"=1000)
-   foo <- capture.output(summary(object))
+   foo <- utils::capture.output(summary(object))
    options("width" = old_width$width)
    a <- which(foo == "Fixed effects:") + 1
    b <- grep(pattern = "^Signif. codes:", x = foo)

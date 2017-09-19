@@ -4,12 +4,14 @@
 \alias{print.ucr.base.tab}
 \title{Print a ucr.base.tab object}
 \usage{
-\method{print}{ucr.base.tab}(x, replacer = " -:- ", ...)
+\method{print}{ucr.base.tab}(x, ..., replacer = " -:- ")
 }
 \arguments{
-\item{replacer}{Replace the LaTeX in first column with this}
+\item{x}{A ucr.base.tab object or the 'tab' component of that list.}
 
-\item{object}{A ucr.base.tab object or the 'tab' component of that list.}
+\item{...}{arguments passed to print}
+
+\item{replacer}{Replace the LaTeX in first column with this}
 }
 \description{
 Format the object with base_tab_exp before printing

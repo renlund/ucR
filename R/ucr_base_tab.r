@@ -270,12 +270,12 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
             perc.hi <- 100 - perc.lo
             quant.probs=c(median.format / 100, 1 - median.format / 100)
           }
-          x.quant <- quantile(cur.x.group, probs=quant.probs, na.rm=T)
+          x.quant <- stats::quantile(cur.x.group, probs=quant.probs, na.rm=T)
           x.lo <- x.quant[1]
           x.hi <- x.quant[2]
-          x.median <- median(cur.x.group, na.rm=T)
+          x.median <- stats::median(cur.x.group, na.rm=T)
           x.mean <- mean(cur.x.group, na.rm=T)
-          x.sd <- sd(cur.x.group, na.rm=T)
+          x.sd <- stats::sd(cur.x.group, na.rm=T)
           cur.digits <- spec.digits[[cur.x.name]] # Decimals for this variable.
           # String for median stuff.
           median.string <- sprintf("%.*f (%.*f -- %.*f)", cur.digits, x.median,
@@ -312,10 +312,10 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
             # Non-parametrical test: Wilcoxon/Kruskal-Wallis.
             if (n.groups == 2) {
               test.names[numeric.test.ix] <- "Wilcoxon test"
-              num.test.fcn <- function(x, g) wilcox.test(x ~ g)$p.value
+              num.test.fcn <- function(x, g) stats::wilcox.test(x ~ g)$p.value
             } else {
               test.names[numeric.test.ix] <- "Kruskal-Wallis test"
-              num.test.fcn <- function(x, g) kruskal.test(x ~ g)$p.value
+              num.test.fcn <- function(x, g) stats::kruskal.test(x ~ g)$p.value
             }
           } else if (num.test == "param") {
             # Parametrical test: t-test/ANOVA. Same code, just different names.
@@ -325,9 +325,9 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
               test.names[numeric.test.ix] <- "ANOVA"
             }
             num.test.fcn <- function(x, g) {
-              m0 <- lm(x ~ 1)
-              m1 <- lm(x ~ g)
-              a <- anova(m1, m0)
+              m0 <- stats::lm(x ~ 1)
+              m1 <- stats::lm(x ~ g)
+              a <- stats::anova(m1, m0)
               p <- a[["Pr(>F)"]][2]
               return (p)
             }
@@ -346,7 +346,7 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
             # Parametric trend test. Just linear regression...
             test.names[numeric.test.ix] <- "Linear regression trend test"
             num.test.fcn <- function(x, g) {
-              p <- summary(lm(x ~ as.numeric(g)))$coef[2, 4]
+              p <- summary(stats::lm(x ~ as.numeric(g)))$coef[2, 4]
               return (p)
             }
           }
@@ -454,11 +454,11 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
           if (factor.test == "fisher") {
             # Fisher's exact test.
             test.names[factor.test.ix] <- "Fisher's exact test"
-            factor.test.fcn <- function(x, g) fisher.test(x, g)$p.value
+            factor.test.fcn <- function(x, g) stats::fisher.test(x, g)$p.value
           } else if (factor.test == "pearson") {
             # Pearson's chi2 test without continuity correction.
             test.names[factor.test.ix] <- "Pearson's $\\chi^2$ test"
-            factor.test.fcn <- function(x, g) chisq.test(x, g, correct=F)$p.value
+            factor.test.fcn <- function(x, g) stats::chisq.test(x, g, correct=F)$p.value
           } else {
             # Trend test. Linear-by-linear association test from coin.
             test.names[factor.test.ix] <- "Linear-by-linear trend test"

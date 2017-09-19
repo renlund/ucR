@@ -98,16 +98,16 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
       if(uni & k==1){
          for(i in uni_filt){# i = uni_filt[1]
             vs <- vars[i]
-            form <- formula(paste0(resp ," ~ ", paste(vs, collapse=" + ")))
+            form <- stats::formula(paste0(resp ," ~ ", paste(vs, collapse=" + ")))
             MOD <- if(is.data.frame(DF)) model(form, data=DF) else model(form)
             look <- paste0("(", vs, ")", collapse="|")
-            coef_mod <- coef(MOD)
+            coef_mod <- stats::coef(MOD)
             coef_indx <- grepl(look, names(coef_mod))
             COEF <- gsub(" ", "", transFormat(coef_mod[coef_indx], ...))
             if(ci){
-               ci_mod <- confint(MOD)
+               ci_mod <- stats::confint(MOD)
                ci_indx <- grepl(look, rownames(ci_mod))
-               CI <- confint(MOD)[ci_indx,]
+               CI <- stats::confint(MOD)[ci_indx,]
                COEF <- paste(COEF, klister(CI, ...))
             }
             filt <- which(vars %in% vs)
@@ -115,21 +115,21 @@ modComp <- function(resp, vars, model, covars, data=NULL, uni=TRUE, ci=TRUE, ...
          }
       } else {
          vs <- vars[ sort(unique(covars[[indx]])) ]
-         form <- formula(paste0(resp ," ~ ", paste(vs, collapse=" + ")))
+         form <- stats::formula(paste0(resp ," ~ ", paste(vs, collapse=" + ")))
          MOD <- if(is.data.frame(DF)) model(form, data=DF) else model(form)
          look <- paste0("(", vs, ")", collapse="|")
          coef_mod <- if("glmerMod" %in% class(MOD)) {
              warning("[modComp] extracting coefficients from a glmerMod object is somewhat experimental")
-             coef(MOD)[[1]][1,]
+             stats::coef(MOD)[[1]][1,]
          } else {
-             coef(MOD)
+             stats::coef(MOD)
          }
          coef_indx <- grepl(look, names(coef_mod))
          COEF <- gsub(" ", "", transFormat(coef_mod[coef_indx], ...))
          if(ci){
-            ci_mod <- confint(MOD)
+            ci_mod <- stats::confint(MOD)
             ci_indx <- grepl(look, rownames(ci_mod))
-            CI <- confint(MOD)[ci_indx,]
+            CI <- stats::confint(MOD)[ci_indx,]
             COEF <- paste(COEF, klister(CI, ...))
          }
          filt <- which(vars %in% vs)
