@@ -6,11 +6,12 @@
 \title{find matches}
 \usage{
 time_match(data, s, search, id = "id", date = "date", begin = NULL,
-  end = NULL, matches = "all", non.matches = TRUE)
+  end = NULL, matches = "all", non.matches = TRUE, keep = NULL,
+  verbose = TRUE)
 
 time_match_set(data, s, search, id = "id", date = "date", set,
   set.id = "id", set.begin = "begin", set.end = "end", matches = "all",
-  non.matches = TRUE)
+  non.matches = TRUE, keep = NULL, verbose = TRUE)
 }
 \arguments{
 \item{data}{a data frame}
@@ -33,6 +34,14 @@ date, and 'first.id' to filter on the first occurence of any individual}
 
 \item{non.matches}{if \code{TRUE} also return data on the individuals with
 no matches}
+
+\item{keep}{vector of names to also keep from data. Note what the names in
+the reuturn objects are, if keep conflicts with these, some variables
+will be renamed. Also, the id, date and possibly begin and end variables
+will always be kept (but renamed)}
+
+\item{verbose}{if \code{TRUE} the function will give helpful and/or annoying
+messages sometimes}
 
 \item{set}{a vector of id's, or a data frame containing id's as well as (but
 optionally) 'begin' and 'end' variables}
