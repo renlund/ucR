@@ -7,11 +7,11 @@
 \usage{
 time_match(data, s, search, id = "id", date = "date", begin = NULL,
   end = NULL, matches = "all", non.matches = TRUE, keep = NULL,
-  verbose = TRUE)
+  verbose = FALSE)
 
 time_match_set(data, s, search, id = "id", date = "date", set,
   set.id = "id", set.begin = "begin", set.end = "end", matches = "all",
-  non.matches = TRUE, keep = NULL, verbose = TRUE)
+  non.matches = TRUE, keep = NULL, verbose = FALSE)
 }
 \arguments{
 \item{data}{a data frame}
@@ -60,8 +60,10 @@ a data frame with \itemize{
  \item match the match found
  \item variable match found in this variable
  \item t2 days from 'date' to end
- \item first.id indicator for first occurence of associted id
+ \item first.id indicator for first occurence of associated id
  \item first.date indicator for first occurence of associated id and date
+ \item last.id indicator for last occurence of associated id
+ \item last.date indicator for last occurence of associated id and date
  \item begin the begin variable
  \item date the date variable
  \item end the end variable
