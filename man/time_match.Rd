@@ -10,7 +10,7 @@ time_match(data, s, search, id = "id", date = "date", begin = NULL,
   verbose = FALSE)
 
 time_match_set(data, s, search, id = "id", date = "date", set,
-  set.id = "id", set.begin = "begin", set.end = "end", matches = "all",
+  set.id = id, set.begin = "begin", set.end = "end", matches = "all",
   non.matches = TRUE, keep = NULL, verbose = FALSE)
 }
 \arguments{
@@ -48,9 +48,9 @@ optionally) 'begin' and 'end' variables}
 
 \item{set.id}{variable name in 'set' to use as id}
 
-\item{set.begin}{variable name in 'set' to use as begin}
+\item{set.begin}{variable name in 'set' to use as begin, will be set to smallest date in data}
 
-\item{set.end}{variable name in 'set' to use as end}
+\item{set.end}{variable name in 'set' to use as end, will be set to smallest date in data}
 }
 \value{
 a data frame with \itemize{

@@ -47,9 +47,7 @@ time_match <- function(data, s, search, id = 'id', date = 'date',
                     "Checking arguments and preparing data\n")
     ## -- some sanity checks --
     ## vars is the names of variables we keep or create by default
-    vars <- c("id", "event", "t", "match", "variable", "t2",
-              "first.id", "first.date", "last.id", "last.date",
-              "begin", "date", "end")
+    vars <- .time_match_vars()
     ## make sure there's no name conflicts between variables keep by default and
     ## created, versus want the user wants to keep (as specified by 'keep')
     begin.chr <- if(!is.null(begin) & is.character(begin)) begin else NULL
@@ -66,40 +64,26 @@ time_match <- function(data, s, search, id = 'id', date = 'date',
     }
     if(length(s) > 1){
         warning("s of length > 1, only first entry used")
+        s <- s[1]
     }
-    ok.matches <- c("first.id", "first.date", "last.id", "last.date", "all")
-    if(!matches %in% ok.matches){
-        stop("'matches' must be one of: ", paste(ok.matches, collapse = ", "))
-    }
+    .time_match_check_match(matches)
     nm <- c(id, date, search, keep)
     badname.indx <- which(!nm %in% names(data))
-    if(length(badname.indx) > 0){
-        stop("Some variable names specified by id, date and search (i.e.: ",
-             paste(nm[badname.indx], collapse = ", "),
-                ") does not exist in the data set")
-    }
+    .time_match_check_data_names(names(data), c(nm, begin.chr, end.chr))
     ## -- get relevant data and fix 'begin' and 'end' if not provided
     if(!is.null(begin.chr)){
         begin <- data[[begin.chr]]
-        if(is.null(begin)){
-            warning("Is 'begin' really a variable in data?\n",
-                    "it will be ignored!")
-        }
     } else if(!is.null(begin)){
         if(any(is.na(begin))) stop("no missing in 'begin' please")
-        if(min(begin) < max(data[[date]]) & verbose){
+        if(verbose) if(min(begin) < max(data[[date]])){
             message(" (!) FYI: (earliest) 'begin' earlier than earliest 'date'")
         }
     }
     if(!is.null(end.chr)){
         end <- data[[end.chr]]
-        if(is.null(end)){
-            warning("Is 'end' really a variable in data?\n",
-                    "it will be ignored!")
-        }
     } else if(!is.null(end)){
         if(any(is.na(end))) stop("no missing in 'end' please")
-        if(max(end) > max(data[[date]]) & verbose){
+        if(verbose) if(max(end) > max(data[[date]])){
             message(" (!) FYI: (latest) 'end' larger than latest 'date'")
         }
     }
@@ -110,7 +94,7 @@ time_match <- function(data, s, search, id = 'id', date = 'date',
     data$begin <- begin
     data$end <- end
     ## -- hard to deal with missing in 'date', so if so throw
-    ## -- error and let user fix this
+    ## --    error and let user fix this
     na.indx <- which(is.null(data$date))
     if(length(na.indx) > 0){
         warning("Missing 'date' at rows:", paste0(na.indx, collapse = ", "),
@@ -217,13 +201,41 @@ time_match <- function(data, s, search, id = 'id', date = 'date',
     }
 }
 
-## ~~ ##  helper for time_match
-## ~~ ##
-## ~~ ##  make sure there are no name conflicts
-## ~~ ##  @param keep
-## ~~ ##  @param data.names
-## ~~ ##  @param vars
-## ~~ ##  @author Henrik Renlund
+## check that nm are elements of data.names
+.time_match_check_data_names <- function(data.names, nm){
+    badname.indx <- which(!nm %in% data.names)
+    if(length(badname.indx) > 0){
+        stop("Some variable names specified (i.e.: ",
+             paste(nm[badname.indx], collapse = ", "),
+             ") does not exist in data.")
+    }
+    invisible(NULL)
+}
+
+
+## default names of variables used/created by time_match
+.time_match_vars <- function(){
+    c("id", "event", "t", "match", "variable", "t2",
+      "first.id", "first.date", "last.id", "last.date",
+      "begin", "date", "end")
+}
+
+##
+.time_match_check_match <- function(matches){
+    ok.matches <- c("first.id", "first.date", "last.id", "last.date", "all")
+    if(!matches %in% ok.matches){
+        stop("'matches' must be one of: ", paste(ok.matches, collapse = ", "))
+    }
+    invisible(NULL)
+}
+
+##  helper for time_match
+##
+##  make sure there are no name conflicts
+##  @param keep
+##  @param data.names
+##  @param vars
+##  @author Henrik Renlund
 .update_names <- function(keep, data.names, vars, verbose = TRUE){
     if(!is.null(keep)){
         ## Throw error if not all keep-names are in data
@@ -260,19 +272,19 @@ time_match <- function(data, s, search, id = 'id', date = 'date',
 ##' @param set a vector of id's, or a data frame containing id's as well as (but
 ##'     optionally) 'begin' and 'end' variables
 ##' @param set.id variable name in 'set' to use as id
-##' @param set.begin variable name in 'set' to use as begin
-##' @param set.end variable name in 'set' to use as end
+##' @param set.begin variable name in 'set' to use as begin, will be set to smallest date in data
+##' @param set.end variable name in 'set' to use as end, will be set to smallest date in data
 ##' @export
 time_match_set <- function(data, s, search, id = "id", date = "date",
-                           set, set.id = "id",
+                           set, set.id = id,
                            set.begin = "begin", set.end = "end",
                            matches = "all", non.matches = TRUE,
                            keep = NULL, verbose = FALSE){
     if(verbose) cat("\n[Function ucR::time_match_set set to verbose.]\n",
                     "Checking arguments and preparing data before calling",
                     "time_match...\n")
-    vars <- c("id", "event", "t", "match", "variable", "t2",
-              "first.id", "first.date", "begin", "date", "end")
+    vars <- .time_match_vars()
+    .time_match_check_match(matches)
     keep <- setdiff(keep, c(id, date))
     if(!is.null(keep)){
         updates <- .update_names(keep = keep,
@@ -283,21 +295,29 @@ time_match_set <- function(data, s, search, id = "id", date = "date",
         names(data) <- updates$data.names
         vars <- updates$vars
     }
+    nm <- c(id, date, search, keep)
+    .time_match_check_data_names(names(data), nm)
+    begin.chr <- if(!is.null(set.begin) & is.character(set.begin)){
+                     if(set.begin %in% names(set)) set.begin else NULL
+                 } else NULL
+    end.chr <- if(!is.null(set.end) & is.character(set.end)){
+                   if(set.end %in% names(set)) set.end else NULL
+                   } else NULL
     if(is.null(dim(set))){
         set <- data.frame(id = set)
+        if(verbose) if(!any(set$id %in% data[[id]])){
+                        message(" (!) FYI: no element of set in data id")
+                    }
     } else {
-        vars.present <- intersect(names(set), c(set.id, set.begin, set.end))
-        set <- set[, vars.present, drop = FALSE]
+        nm_set <- intersect(c(set.id, begin.chr, end.chr), names(set))
+        set <- set[, nm_set, drop = FALSE]
         if(!set.id %in% names(set)){
-            stop("I want an id-variable ('", set.id, "') in set")
+            stop("An id-variable ('", set.id, "') is needed in set.\n",
+                 "Set this separately with 'set.id'")
         }
-        names(set)[names(set) == set.id] <- "id"
-        if(is.character(set.begin)){
-            names(set)[names(set) == set.begin] <- "begin"
-        }
-        if(is.character(set.end)){
-            names(set)[names(set) == set.end] <- "end"
-        }
+        names(set) <- c("id",
+                        if(!is.null(begin.chr)) "begin",
+                        if(!is.null(end.chr))"end")
     }
     if(is.null(set$begin)){
         set$begin <- if(inherits(set.begin, "Date")){
@@ -315,7 +335,7 @@ time_match_set <- function(data, s, search, id = "id", date = "date",
     }
     ## set <- set[, c("id", "begin", "end")] ## not needed
     ## -- fix data
-    data <- data[, c(id, date, search, keep)]
+    data <- data[, nm]
     names(data) <- c("id", "date", search, keep)
     ## -- missing date in data will be problematic, throw error
     na.indx <- which(is.null(data$date))
@@ -344,7 +364,6 @@ if(FALSE){ ## -- for testing ---
         date = sprintf("date%d", 1:10)
     )
     df <- df[sample(1:nrow(df)), ]
-
     Set <- data.frame(
         ID = c(2:4, 6:7),
         arrival = as.Date("2000-06-06") + c(0,10,365,366,367),
@@ -358,6 +377,21 @@ if(FALSE){ ## -- for testing ---
                    set.begin = "arrival", set.end = "death.date",
                    matches = "all", non.matches = TRUE, keep = "xtra",
                    verbose = TRUE)
+
+    ## data = df
+    ## s = "a"
+    ## search = "baz"
+    ## id = "foo"
+    ## date = "bar"
+    ## set = Set[, c("ID", "arrival")]
+    ## set.id = "ID"
+    ## set.begin = "arrival"
+    ## ## set.end = "death.date"
+    ## set.end = "end"
+    ## matches = "all"
+    ## non.matches = TRUE
+    ## keep = "xtra"
+    ## verbose = TRUE
 
     time_match_set(data = df, s = "a", search = "baz", id = "foo",
                    date = "bar", set = Set[, c("ID", "arrival")],
@@ -410,6 +444,13 @@ if(FALSE){ ## -- for testing ---
                    set = c(2:4, 7:8), matches = "all", non.matches = TRUE,
                    keep = c("xtra", "date"),
                    verbose = TRUE)
+
+    time_match_set(data = df, s = "a", search = c("quuz", "baz"), id = "foo",
+                   date = "bar",
+                   set = c(7:8), matches = "all", non.matches = TRUE,
+                   keep = c("xtra", "date"),
+                   verbose = TRUE)
+
 
     ## this function might be useful at some point, but maybe not
     df_first_instance <- function(data, ..., name = ".first_instance"){
