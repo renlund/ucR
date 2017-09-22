@@ -11,7 +11,7 @@ time_match(data, s, search, id = "id", date = "date", begin = NULL,
 
 time_match_set(data, s, search, id = "id", date = "date", set,
   set.id = id, set.begin = "begin", set.end = "end", matches = "all",
-  non.matches = TRUE, keep = NULL, verbose = FALSE)
+  non.matches = TRUE, keep = NULL, verbose = TRUE)
 }
 \arguments{
 \item{data}{a data frame}

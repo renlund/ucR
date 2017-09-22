@@ -108,10 +108,13 @@ time_match <- function(data, s, search, id = 'id', date = 'date',
     data.copy <- subset(data, TRUE, select = c("id", "begin", "end"))
     data <- data[data$date >= data$begin & data$date <= end, ]
     ## -- look for patters 's' in each search variable
-    if(verbose) cat(" Searching through variables:\n")
     R <- NULL
+    if(verbose){
+        cat(" Searching through variable:\n   ")
+        if(length(search) == 0) cat("(no variabes to search in!)\n")
+    }
     for(K in search){ ##  K <- search[1] ## for testing
-        if(verbose) cat("  - Searching variable:", K, "\n")
+        if(verbose) cat(K, ", ", sep = "")
         g <- grepl(pattern = s, x = data[[K]])
         if(sum(g) == 0) next
         tmp <- data[g, ]
@@ -120,7 +123,7 @@ time_match <- function(data, s, search, id = 'id', date = 'date',
         tmp$event <- 1L
         R <- if(is.null(R)) tmp else rbind(R, tmp)
     }
-    if(verbose) cat(" Search complete\n Fixing output data\n")
+    if(verbose) cat("\n and search complete.\n Fixing output data\n")
     ## -- order matches and create indicators for first id and first date
     ## -- if there are no matches, object R is still NULL (treat separately)
     if(is.null(R)){
@@ -279,7 +282,7 @@ time_match_set <- function(data, s, search, id = "id", date = "date",
                            set, set.id = id,
                            set.begin = "begin", set.end = "end",
                            matches = "all", non.matches = TRUE,
-                           keep = NULL, verbose = FALSE){
+                           keep = NULL, verbose = TRUE){
     if(verbose) cat("\n[Function ucR::time_match_set set to verbose.]\n",
                     "Checking arguments and preparing data before calling",
                     "time_match...\n")
@@ -347,10 +350,42 @@ time_match_set <- function(data, s, search, id = "id", date = "date",
     DATA <- merge(set, data, by = "id", all.x = TRUE)
     DATA$date[is.na(DATA$date)] <- max(DATA$end, na.rm = TRUE)
     if(verbose) cat(" ...done!\n")
-    time_match(data = DATA, s = s, search = search, id = "id",
-               date = "date", begin = "begin", end = "end",
-               matches = matches, non.matches = non.matches,
-               keep = keep, verbose = verbose)
+    if(length(s) == 1){
+        time_match(data = DATA, s = s, search = search, id = "id",
+                   date = "date", begin = "begin", end = "end",
+                   matches = matches, non.matches = non.matches,
+                   keep = keep, verbose = verbose)
+    } else {
+        s.names <- names(s)
+        if(!matches %in% c("first.id", "last.id")){
+            warning("Multiple search terms 's' is harder to combine for 'matches'",
+                    " argument not giving one line per unit, and these cases are",
+                    " not implemented yet. 'matches' will be set to 'first.id'")
+            matches <- "first.id"
+        }
+        if(is.null(s.names)){
+            if(verbose) cat(" (!) FYI: you might want to have 's' named.",
+                            "Prefix '.s1', '.s2', etc will be added\n")
+            s.names <- sprintf(".s%d", 1:length(s))
+        }
+        R <- NULL
+        N <- length(s)
+        for(i in 1:N){ ## i = 3
+            if(verbose) cat("\n Searching for regular expression:", s[i],
+                            "\n", paste(rep("=", options("width")$width-2),
+                                        collapse = ""))
+            tm <- time_match(data = DATA, s = s[i], search = search, id = "id",
+                             date = "date", begin = "begin", end = "end",
+                             matches = matches, non.matches = non.matches,
+                             keep = keep, verbose = verbose)
+            names(tm)[2:6] <- paste0(names(tm)[2:6], ".", s.names[i])
+            if(i != N){
+                tm <- tm[,1:6]
+            }
+            R <- if(is.null(R)) tm else merge(R, tm, by = "id")
+        }
+        R
+    }
 }
 
 if(FALSE){ ## -- for testing ---
@@ -378,15 +413,21 @@ if(FALSE){ ## -- for testing ---
                    matches = "all", non.matches = TRUE, keep = "xtra",
                    verbose = TRUE)
 
+    time_match_set(data = df, s = setNames(letters[1:3], LETTERS[1:3]),
+                   search = c("quuz", "baz"), id = "foo",
+                   date = "bar",
+                   set = c(4:8), matches = "all", non.matches = TRUE,
+                   keep = c("xtra", "date"),
+                   verbose = TRUE)
+
     ## data = df
-    ## s = "a"
-    ## search = "baz"
+    ## s = setNames(letters[1:3], LETTERS[1:3])
+    ## search = c("quuz", "baz")
     ## id = "foo"
     ## date = "bar"
-    ## set = Set[, c("ID", "arrival")]
-    ## set.id = "ID"
-    ## set.begin = "arrival"
-    ## ## set.end = "death.date"
+    ## set = c(4:8)
+    ## set.id = "id"
+    ## set.begin = "begin"
     ## set.end = "end"
     ## matches = "all"
     ## non.matches = TRUE
@@ -450,6 +491,13 @@ if(FALSE){ ## -- for testing ---
                    set = c(7:8), matches = "all", non.matches = TRUE,
                    keep = c("xtra", "date"),
                    verbose = TRUE)
+
+    time_match_set(data = df, s = "arg!", search = c("quuz", "baz"), id = "foo",
+                   date = "bar",
+                   set = c(4:8), matches = "all", non.matches = TRUE,
+                   keep = c("xtra", "date"),
+                   verbose = TRUE)
+
 
 
     ## this function might be useful at some point, but maybe not
