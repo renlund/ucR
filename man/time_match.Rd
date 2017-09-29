@@ -2,29 +2,30 @@
 % Please edit documentation in R/time_match.R
 \name{time_match}
 \alias{time_match}
-\title{find matches}
+\title{find matches for specific units on variables in a given time period}
 \usage{
-time_match(data, s, search = NULL, id = "id", date = "date",
+time_match(pattern, x = NULL, data, id = "id", date = "date",
   units = NULL, units.id = id, begin = "begin", end = "end",
-  long = TRUE, stack = TRUE, verbose = TRUE)
+  long = TRUE, stack = TRUE, ..., verbose = TRUE)
 }
 \arguments{
+\item{pattern}{a vector of search strings (regular expressions) (the names
+attribute will be used if it exists)}
+
+\item{x}{names of variables to search in (given in order of importance), if
+missing all variables except id and date are chosen}
+
 \item{data}{a data frame}
 
-\item{s}{a search string (regular expression), or vector thereof (in the
-latter case it is a good idea to have entries named)}
+\item{id}{name of id variable (in 'data')}
 
-\item{search}{names of variables to search in (given in order of
-importance), if missing all variables except id and date are chosen}
+\item{date}{name of associated date variable (in 'data')}
 
-\item{id}{name of id variable}
+\item{units}{a vector of id's, or a data frame containing id's as well as
+(but optionally) 'begin' and 'end' variables}
 
-\item{date}{name of associated date variable}
-
-\item{units}{a vector of id's, or a data frame containing id's as well as (but
-optionally) 'begin' and 'end' variables}
-
-\item{units.id}{variable name in 'set' to use as id}
+\item{units.id}{variable name in 'set' to use as id (by default the same is
+'id')}
 
 \item{begin}{variable name in 'set' to use as begin, if missing will be set
 to earliest date in data}
@@ -35,59 +36,72 @@ latest date in data}
 \item{long}{if \code{TRUE} all matches will get a row, else first match gets
 details and information on all other matches is condensed}
 
-\item{stack}{if \code{TRUE} results are stacked with a 'search.term'
-variable. Note that if 'long' is \code{TRUE}, then stack will be set to \code{TRUE}}
+\item{stack}{if \code{TRUE} results are stacked. Not stacking is only
+possible when \code{long = FALSE}.}
+
+\item{...}{arguments passed to \code{grepl}}
 
 \item{verbose}{if \code{TRUE} the function will give helpful and/or annoying
 messages sometimes}
 }
 \value{
-The basic 'long' output is a data frame with \itemize{
- \item id the id variable
+The basic 'long' output is a data frame with
+
+ \itemize{\item id the id variable
+
  \item begin the begin date (could be individual)
+
  \item end the end date (could be individual)
- \item date the date variable of XK
- \item event 1 is if match found, else 0.
- \item t days from 'begin' to 'date'
+
+ \item date the date of assicated match
+
+ \item event indicator for a match
+
+ \item time days from 'begin' to 'date'
+
  \item match the match found
- \item match.in match found in this variable
- \item t2 days from 'date' to end
+
+ \item match.in the variable the match was found in
+
+ \item pattern the pattern searched for
+
+ \item alias the name of pattern searched for (else p1, p2, etc)
+
  \item first.id indicator for first occurence of associated id
+
  \item first.date indicator for first occurence of associated id and date
+
  \item ... all variables in data that are not id, date or search
     variables. These will be renamed if they are in conflict with output
-    names. These will only be included in output when \code{long = TRUE}.
-}
+    names. These will only be included in output when \code{long = TRUE}.}
+
 Note that any individual can have more than one match.
 
 The basic output when \code{long = FALSE} is one line per individual where
-    the first match (by date and order of search variables) is specified
-    with some detail and information on all subsequent matches is condensed.
-\itemize{ XK
- \item id, begin, end, date, event, time, match, match.in as before, but
-    only relevant for the first match.
- \item events the total number of matches found
- \item matches all (unique) matches found, separated by a space
- \item matches.info all (unique) match:mathing variable:date-cominations
-    separated by a space
-}
+    the first match (by date and order of search variables, i.e. filtered on
+    \code{first.id == 1}) is specified with some detail, and information on
+    all subsequent matches is condensed.
 
-If s is a vector, the results can be stacked or not. If they are not
+ \itemize{ \item id, begin, end, date, event, time, match, match.in, pattern, alias
+    as before, but only relevant for the first match.
+
+ \item events the total number of matches found
+
+ \item matches all (unique) matches found, separated by a space
+
+ \item matches.info all (unique) match:mathing variable:date-cominations
+    separated by a space }
+
+If pattern is a vector, the results can be stacked or not. If they are not
     stacked, the format must necessarily be one line per individual
-    (i.e. \code{long = FALSE}). If the result is stacked, another variable
-    'search' will either give the pattern searched for, or, if the vector of
-    pattern has names, the corresponding name. If the output is unstacked,
-    all pattern specific output (i.e. all but id, begin and end) variables
-    will get a suffix, either the names of the pattern vector, or a created
-    one.
+    (i.e. \code{long = FALSE}).  If the output is unstacked, all pattern
+    specific output (i.e. all but id, begin and end) variables will get a
+    suffix, either the names of the pattern vector, or a created one.
 }
 \description{
-find matches on variables in a given time period
-}
-\details{
-in a dataset with one or more variables (typically containing text or codes)
-    associated with a date, find matches on those variables within specifed
-    time frames
+in a dataset with one or more variables (typically containing text)
+    associated with a date, find matches on those variables for specific
+    individuals within specifed time frames
 }
 \author{
 Henrik Renlund
