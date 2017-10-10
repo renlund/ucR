@@ -5,8 +5,8 @@
 \title{find matches for specific units on variables in a given time period}
 \usage{
 time_match(pattern, x = NULL, data, id = "id", date = "date",
-  units = NULL, units.id = id, begin = "begin", end = "end",
-  long = TRUE, stack = TRUE, ..., verbose = TRUE)
+  units = NULL, units.id = id, begin = "begin", end = "end", ...,
+  long = TRUE, stack = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{pattern}{a vector of search strings (regular expressions) (the names
@@ -33,44 +33,32 @@ to earliest date in data}
 \item{end}{variable name in 'set' to use as end, if missing will be set to
 latest date in data}
 
+\item{...}{arguments passed to \code{grepl}}
+
 \item{long}{if \code{TRUE} all matches will get a row, else first match gets
-details and information on all other matches is condensed}
+details and information on all other matches is condensed. N.B
+\code{long = FALSE} will be slow for large datasets!}
 
 \item{stack}{if \code{TRUE} results are stacked. Not stacking is only
 possible when \code{long = FALSE}.}
 
-\item{...}{arguments passed to \code{grepl}}
-
 \item{verbose}{if \code{TRUE} the function will give helpful and/or annoying
-messages sometimes}
+messages}
 }
 \value{
 The basic 'long' output is a data frame with
-
  \itemize{\item id the id variable
-
  \item begin the begin date (could be individual)
-
  \item end the end date (could be individual)
-
  \item date the date of assicated match
-
  \item event indicator for a match
-
  \item time days from 'begin' to 'date'
-
  \item match the match found
-
  \item match.in the variable the match was found in
-
  \item pattern the pattern searched for
-
  \item alias the name of pattern searched for (else p1, p2, etc)
-
  \item first.id indicator for first occurence of associated id
-
- \item first.date indicator for first occurence of associated id and date
-
+ \item first.id_date indicator for first occurence of associated id and date
  \item ... all variables in data that are not id, date or search
     variables. These will be renamed if they are in conflict with output
     names. These will only be included in output when \code{long = TRUE}.}
@@ -84,12 +72,9 @@ The basic output when \code{long = FALSE} is one line per individual where
 
  \itemize{ \item id, begin, end, date, event, time, match, match.in, pattern, alias
     as before, but only relevant for the first match.
-
  \item events the total number of matches found
-
  \item matches all (unique) matches found, separated by a space
-
- \item matches.info all (unique) match:mathing variable:date-cominations
+ \item matches.info all (unique) match/mathing-variable/date-combinations
     separated by a space }
 
 If pattern is a vector, the results can be stacked or not. If they are not

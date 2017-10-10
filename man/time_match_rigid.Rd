@@ -22,7 +22,8 @@ and latest dates will be used, respectively.}
 \item{...}{arguments (beyond 'pattern' and 'x') passed to \code{grepl}}
 
 \item{long}{output format, if \code{TRUE} all hits have separate row, else
-the emphasis is on the first hit for each 'id' (by 'date' and 'x')}
+the emphasis is on the first hit for each 'id' (by 'date' and 'x'). N.B
+\code{long = FALSE} will be slow for large datasets!}
 
 \item{verbose}{if \code{TRUE} the function will give helpful and/or annoying
 messages sometimes}

@@ -13,7 +13,8 @@
 ##'     and latest dates will be used, respectively.
 ##' @param ... arguments (beyond 'pattern' and 'x') passed to \code{grepl}
 ##' @param long output format, if \code{TRUE} all hits have separate row, else
-##'     the emphasis is on the first hit for each 'id' (by 'date' and 'x')
+##'     the emphasis is on the first hit for each 'id' (by 'date' and 'x'). N.B
+##'     \code{long = FALSE} will be slow for large datasets!
 ##' @param verbose if \code{TRUE} the function will give helpful and/or annoying
 ##'     messages sometimes
 ##' @param paste.alias if \code{long = FALSE} and if 'x' has a names attribute,
@@ -69,7 +70,7 @@ time_match_rigid <- function(pattern, x = NULL, data, ...,
     if(is.null(data$begin)) data$begin <- min(data$date)
     if(is.null(data$end)) data$end <- max(data$date)
     ## -- keep copy of data, one row per id, for later
-    data.copy <- subset(data, !duplicated(id), select = used_data_names)
+    data.copy <- subset(data, !duplicated(data$id), select = used_data_names)
     data.copy$date <- as.Date(NA_character_)
     missing_in_nonmatches <- setdiff(output_vars, names(data.copy))
     ## -- derive time variables
@@ -151,6 +152,10 @@ time_match_rigid <- function(pattern, x = NULL, data, ...,
     if(long){
         RET
     } else {
+        if(verbose & length(unique(RET$id)) > 1000){
+            cat(" (!) FYI: long = FALSE can take a looong",
+                "time for large datasets\n")
+        }
         foo <- function(E){
             n <- nrow(E)
             E$events <- if(sum(E$event) > 0) n else 0
@@ -169,7 +174,9 @@ time_match_rigid <- function(pattern, x = NULL, data, ...,
             if(paste.alias) names(D)[4:13] <- paste0(names(D)[4:13], .alias)
             D
         }
-        do.call(rbind, lapply(split(RET, RET$id), foo))
+        RET <- do.call(rbind, lapply(split(RET, RET$id), foo))
+        rownames(RET) <- NULL
+        RET
     }
 }
 
@@ -194,39 +201,27 @@ time_match_rigid <- function(pattern, x = NULL, data, ...,
 ##'     to earliest date in data
 ##' @param end variable name in 'set' to use as end, if missing will be set to
 ##'     latest date in data
+##' @param ... arguments passed to \code{grepl}
 ##' @param long if \code{TRUE} all matches will get a row, else first match gets
-##'     details and information on all other matches is condensed
+##'     details and information on all other matches is condensed. N.B
+##'     \code{long = FALSE} will be slow for large datasets!
 ##' @param stack if \code{TRUE} results are stacked. Not stacking is only
 ##'     possible when \code{long = FALSE}.
-##' @param ... arguments passed to \code{grepl}
 ##' @param verbose if \code{TRUE} the function will give helpful and/or annoying
-##'     messages sometimes
+##'     messages
 ##' @return The basic 'long' output is a data frame with
-##'
 ##'  \itemize{\item id the id variable
-##'
 ##'  \item begin the begin date (could be individual)
-##'
 ##'  \item end the end date (could be individual)
-##'
 ##'  \item date the date of assicated match
-##'
 ##'  \item event indicator for a match
-##'
 ##'  \item time days from 'begin' to 'date'
-##'
 ##'  \item match the match found
-##'
 ##'  \item match.in the variable the match was found in
-##'
 ##'  \item pattern the pattern searched for
-##'
 ##'  \item alias the name of pattern searched for (else p1, p2, etc)
-##'
 ##'  \item first.id indicator for first occurence of associated id
-##'
 ##'  \item first.id_date indicator for first occurence of associated id and date
-##'
 ##'  \item ... all variables in data that are not id, date or search
 ##'     variables. These will be renamed if they are in conflict with output
 ##'     names. These will only be included in output when \code{long = TRUE}.}
@@ -240,11 +235,8 @@ time_match_rigid <- function(pattern, x = NULL, data, ...,
 ##'
 ##'  \itemize{ \item id, begin, end, date, event, time, match, match.in, pattern, alias
 ##'     as before, but only relevant for the first match.
-##'
 ##'  \item events the total number of matches found
-##'
 ##'  \item matches all (unique) matches found, separated by a space
-##'
 ##'  \item matches.info all (unique) match/mathing-variable/date-combinations
 ##'     separated by a space }
 ##'
@@ -258,12 +250,14 @@ time_match_rigid <- function(pattern, x = NULL, data, ...,
 ##' @export
 time_match <- function(pattern, x = NULL, data, id = 'id', date = 'date',
                        units = NULL, units.id = id, begin = 'begin',
-                       end = 'end', long = TRUE, stack = TRUE, ...,
+                       end = 'end', ..., long = TRUE, stack = TRUE,
                        verbose = TRUE){
     .required_properties(verbose, class = "logical", length = 1, nm = "verbose")
     if(verbose) cat("\n [Function ucR::time_match_set set to verbose.]\n",
                     "Checking arguments and preparing data before calling",
                     "time_match...\n")
+    .required_data_names(data.names = names(data),
+                         required = c(id, date, x))
     data.begin <- if(class(begin) == "Date"){
                       begin
                   } else {
@@ -286,8 +280,6 @@ time_match <- function(pattern, x = NULL, data, id = 'id', date = 'date',
     .required_properties(end,   class = c("Date", "character"), length = 1)
     .required_properties(long, class = "logical", length = 1)
     .required_properties(stack, class = "logical", length = 1)
-    .required_data_names(data.names = names(data),
-                         required = c(id, date, x))
     if(long){
         if(!stack) warning("long format must be stacked")
         stack <- TRUE
@@ -338,7 +330,7 @@ time_match <- function(pattern, x = NULL, data, id = 'id', date = 'date',
         units <- units[, c(units.id, begin, end)]
         names(units) <- c('id', 'begin', 'end')
     }
-    ## -- missing date in data will be problematic, throw error
+    ## -- missing date in data will be problematic, throw warning
     na.indx <- is.na(data[[date]])
     if(any(na.indx)){
         warning("Missing 'date' at rows:", paste0(which(na.indx), collapse = ", "),
@@ -347,12 +339,19 @@ time_match <- function(pattern, x = NULL, data, id = 'id', date = 'date',
     ## -- fix data
     data <- data[!na.indx, c(id, date, x, keep)]
     names(data) <- c("id", "date", x, keep)
-    DATA <- merge(units, data, by = 'id', all.x = TRUE)
+    DATA <- merge(units, data, by = 'id', all.x = TRUE, sort = FALSE)
     DATA$date[is.na(DATA$date)] <- max(DATA$end, na.rm = TRUE)
+    ## -- pass to time_match_rigid
+    .dots <- list(...) ## .dots <- as.list(NULL)
     if(length(pattern) == 1){
-        time_match_rigid(pattern = pattern, x = x, data = data,
-                         ..., long = long, verbose = verbose,
-                         paste.alias = TRUE)
+        ## time_match_rigid(pattern = pattern, x = x, data = DATA, ...,
+        ##                  long = long, verbose = verbose,
+        ##                  paste.alias = TRUE)
+        do.call(time_match_rigid,
+                args = c(list('pattern' = pattern, 'x' = x, 'data' = DATA,
+                              'long' = long, 'verbose' = verbose,
+                              'paste.alias' = TRUE),
+                         .dots))
     } else {
         pattern.names <- names(pattern)
         set.pattern.names <- sprintf("p%d", 1:length(pattern))
@@ -370,19 +369,91 @@ time_match <- function(pattern, x = NULL, data, id = 'id', date = 'date',
             if(verbose) cat("\n Searching for regular expression:", pattern[i],
                             "\n", paste(rep("=", options("width")$width-2),
                                         collapse = ""))
-            tm <- time_match_rigid(pattern = pattern[i], x = x, data = DATA,
-                                   ..., long = long, verbose = verbose,
-                                   paste.alias = paste.alias)
+            ## tm <- time_match_rigid(pattern = pattern[i], x = x, data = DATA,
+            ##                        ..., long = long, verbose = verbose,
+            ##                        paste.alias = paste.alias)
+            tm <- do.call(time_match_rigid,
+                args = c(list('pattern' = pattern[i], 'x' = x, 'data' = DATA,
+                              'long' = long, 'verbose' = verbose,
+                              'paste.alias' = paste.alias),
+                         .dots))
             if(stack){
                 R <- if(is.null(R)) tm else rbind(R, tm)
             } else {
                 R <- if(is.null(R)) tm else merge(R, tm, by = c("id", "begin", "end"))
             }
         }
+        rownames(R) <- NULL
         R
     }
 }
 
+.required_properties <- function(x, class = NULL, length = NULL, nm = NULL){
+    if(is.null(nm)) nm <- as.character(substitute(x))
+    if(!is.null(class)){
+        s <- paste0("Argument '", nm, "' fails to be in class: ",
+                    paste0(class, collapse = ", or"))
+        if(!any(class(x) %in% class)) stop(s)
+    }
+    if(!is.null(length)){
+        s <- paste0("Argument '", nm, "' fails to be have length: ",
+                    paste0(length, collapse = ", or"))
+        if(!length(x) %in% length) stop(s)
+    }
+}
+
+.required_data_names <- function(data.names, required){
+    badname.indx <- which(!required %in% data.names)
+    if(length(badname.indx) > 0){
+        stop("Some variable names required (specifically: ",
+             paste(required[badname.indx], collapse = ", "),
+             ") does not exist in data.")
+    }
+    invisible(NULL)
+}
+
+
+.not_allowed_names <- function(nm, no){
+    badname.indx <- which(nm %in% no)
+    if(length(badname.indx) > 0){
+        stop("Name conflict, don't want ",
+             paste0(nm, collapse = "; "), " and ",
+             paste0(no, collapse = "; "), " to intersect.")
+    }
+    invisible(NULL)
+}
+
+
+.rename_if_in <- function(nm, compare, prefix = '.', suffix = NULL,
+                          all = FALSE, limit = 10, verbose = TRUE){
+    if(length(prefix) > 1 | length(suffix) > 1) stop("bad prefix or suffix")
+    nm.org <- nm
+    rename <- which(nm %in% compare)
+    if(length(rename) == 0){
+        NULL
+    } else {
+        if(verbose) message(" (!) I will try to alter some variable names")
+        dummy <- 0
+        while(length(rename) > 0 & dummy < limit){
+            if(all){
+                nm <- paste0(prefix, nm, suffix)
+            } else {
+                nm[rename] <- paste0(prefix, nm[rename], suffix)
+            }
+            rename <- which(nm %in% compare)
+            dummy <- dummy + 1
+        }
+        if(length(rename) > 0) {
+            stop("Renaming of conflicting variables failed.")
+        }
+        if(verbose){
+            i <- which(nm.org != nm)
+            x <- paste(paste0(nm.org[i], " -> ", nm[i]), collapse = ", ")
+            message("     Name changes: ", x)
+        }
+        nm
+    }
+}
 
 #################################################################
 
@@ -449,6 +520,19 @@ if(FALSE){
                x = c('baz', 'quuz'), id = 'foo',
                date = 'bar', units = Set, units.id = 'ID', begin = 'arrival',
                end = 'death.date', long = FALSE, stack = TRUE, verbose = TRUE)
+
+    data = df
+    pattern = setNames(c('a', 'b'), c("Foo", "Bar"))
+    x = c('baz', 'quuz')
+    id = 'foo'
+    date = 'bar'
+    units = Set
+    units.id = 'ID'
+    begin = 'arrival'
+    end = 'death.date'
+    long = TRUE
+    stack = TRUE
+    verbose = TRUE
 
     ## use set dates
     time_match(data = df, pattern = setNames(c('a', 'b'), c("Foo", "Bar")),
@@ -551,85 +635,20 @@ if(FALSE){
     time_match_rigid(data = df, pattern = 'x', x = c('time'),
                       long = FALSE, verbose = TRUE)
     time_match_rigid(data = df, pattern = setNames('x', "dieX"), x = c('time'),
-                      long = FALSE, verbose = TRUE)
+                     long = FALSE, verbose = TRUE)
 
+    ##
+    n <- 100000
+    test <- data.frame(
+        id = sample(1:(n/2), size = n, replace = TRUE),
+        date = as.Date("1990-01-01") + sample(0:(10*n), size = n),
+        m = sample(letters[1:3], size = n, replace = TRUE)
+    )
+    length(unique(test$id))
 
-}
+    TMP <- test[order(test$id, test$date, test$m), ]
 
-
-#################################################################
-
-
-.required_properties <- function(x, class = NULL, length = NULL, nm = NULL){
-    if(is.null(nm)) nm <- as.character(substitute(x))
-    if(!is.null(class)){
-        s <- paste0("Argument '", nm, "' fails to be in class: ",
-                    paste0(class, collapse = ", or"))
-        if(!any(class(x) %in% class)) stop(s)
-    }
-    if(!is.null(length)){
-        s <- paste0("Argument '", nm, "' fails to be have length: ",
-                    paste0(length, collapse = ", or"))
-        if(!length(x) %in% length) stop(s)
-    }
-}
-
-.required_data_names <- function(data.names, required){
-    badname.indx <- which(!required %in% data.names)
-    if(length(badname.indx) > 0){
-        stop("Some variable names required (specifically: ",
-             paste(required[badname.indx], collapse = ", "),
-             ") does not exist in data.")
-    }
-    invisible(NULL)
-}
-
-
-.not_allowed_names <- function(nm, no){
-    badname.indx <- which(nm %in% no)
-    if(length(badname.indx) > 0){
-        stop("Name conflict, don't want ",
-             paste0(nm, collapse = "; "), " and ",
-             paste0(no, collapse = "; "), " to intersect.")
-    }
-    invisible(NULL)
-}
-
-
-.rename_if_in <- function(nm, compare, prefix = '.', suffix = NULL,
-                          all = FALSE, limit = 10, verbose = TRUE){
-    if(length(prefix) > 1 | length(suffix) > 1) stop("bad prefix or suffix")
-    nm.org <- nm
-    rename <- which(nm %in% compare)
-    if(length(rename) == 0){
-        NULL
-    } else {
-        if(verbose) message(" (!) I will try to alter some variable names")
-        dummy <- 0
-        while(length(rename) > 0 & dummy < limit){
-            if(all){
-                nm <- paste0(prefix, nm, suffix)
-            } else {
-                nm[rename] <- paste0(prefix, nm[rename], suffix)
-            }
-            rename <- which(nm %in% compare)
-            dummy <- dummy + 1
-        }
-        if(length(rename) > 0) {
-            stop("Renaming of conflicting variables failed.")
-        }
-        if(verbose){
-            i <- which(nm.org != nm)
-            x <- paste(paste0(nm.org[i], " -> ", nm[i]), collapse = ", ")
-            message("     Name changes: ", x)
-        }
-        nm
-    }
-}
-
-#################################################################
-
-if(FALSE){
+    TMP2 <- do.call(rbind, lapply(split(test, test$id), identity))
 
     .not_allowed_names(letters[1:3], letters[3:5])
     .required_data_names(letters[1:3], letters[2:5])
