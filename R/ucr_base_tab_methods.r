@@ -6,12 +6,13 @@
 #'
 #' @author Lars Lindhagen
 #' @param object a \code{ucr.base.tab} object
+#' @param alt.gray a logical flag telling whether every other row should be gray
 #' @param ... arguments to be passed to \code{latex}
 #' @seealso \code{\link{ucr.base.tab}}
 #' @importFrom Hmisc latex
 #' @export
 
-latex.ucr.base.tab <- function(object, ...) {
+latex.ucr.base.tab <- function(object, alt.gray=F, ...) {
   # --> Add bottom text.
   # Explain notation.
   bot <- "" # Bottom text.
@@ -86,7 +87,14 @@ latex.ucr.base.tab <- function(object, ...) {
   object$tab <- gsub("%", "\\\\%", object$tab) # Change all '%' to '\%'.
   colnames(object$tab) <- gsub("_", "\\\\_", colnames(object$tab))
   bot <- gsub("%", "\\\\%", bot) # Change '%' to '\%' for bottom text too.
-   dummy <- Hmisc::latex(object$tab, insert.bottom=bot,
+
+  # Alternating gray and white lines.
+  if (alt.gray) {
+    ix <- seq(from=2, to=nrow(object$tab), by=2)
+    object$tab[ix, 1] <- sprintf("\\rowcolor{gray!15}%s", object$tab[ix, 1])
+  }
+
+  dummy <- Hmisc::latex(object$tab, insert.bottom=bot,
     col.just=rep("l", times=ncol(object$tab)),
     collabel.just=rep("l", times=ncol(object$tab)),
     extracolheads=object$extra.col.heads,
