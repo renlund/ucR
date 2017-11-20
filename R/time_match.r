@@ -296,7 +296,10 @@ time_match <- function(pattern, x = NULL, data, id = 'id', date = 'date',
         names(data)[names(data) %in% x] <- x.new
         x <- x.new
     }
-    keep <- if(long) setdiff(names(data), c(used_data_names, x)) else NULL
+    keep <- if(long) {
+                setdiff(names(data), c(used_data_names, x, id, date))
+            } else NULL
+    ## XK line above: also remove 'date' if it is character!
     keep.new <- .rename_if_in(nm = keep, compare = internal_names,
                               prefix = '.', verbose = verbose)
     ## -- ... but rename them if they coincide with internal names
@@ -521,18 +524,18 @@ if(FALSE){
                date = 'bar', units = Set, units.id = 'ID', begin = 'arrival',
                end = 'death.date', long = FALSE, stack = TRUE, verbose = TRUE)
 
-    data = df
-    pattern = setNames(c('a', 'b'), c("Foo", "Bar"))
-    x = c('baz', 'quuz')
-    id = 'foo'
-    date = 'bar'
-    units = Set
-    units.id = 'ID'
-    begin = 'arrival'
-    end = 'death.date'
-    long = TRUE
-    stack = TRUE
-    verbose = TRUE
+    ## data = df
+    ## pattern = setNames(c('a', 'b'), c("Foo", "Bar"))
+    ## x = c('baz', 'quuz')
+    ## id = 'foo'
+    ## date = 'bar'
+    ## units = Set
+    ## units.id = 'ID'
+    ## begin = 'arrival'
+    ## end = 'death.date'
+    ## long = TRUE
+    ## stack = TRUE
+    ## verbose = TRUE
 
     ## use set dates
     time_match(data = df, pattern = setNames(c('a', 'b'), c("Foo", "Bar")),
