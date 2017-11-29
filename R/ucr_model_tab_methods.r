@@ -49,6 +49,7 @@ cbind.ucr.model.tab <- function(...) {
 #' @param object a \code{ucr.model.tab} object
 #' @param ... arguments to be passed to \code{latex}
 #' @seealso \code{\link{ucr.model.tab}}
+#' @importFrom Hmisc latex
 #' @export
 
 latex.ucr.model.tab <- function(object, ...) {
@@ -64,4 +65,3 @@ latex.ucr.model.tab <- function(object, ...) {
     ...)
   return (NULL)
 }
-

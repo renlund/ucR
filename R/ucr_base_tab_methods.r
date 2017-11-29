@@ -8,6 +8,7 @@
 #' @param object a \code{ucr.base.tab} object
 #' @param ... arguments to be passed to \code{latex}
 #' @seealso \code{\link{ucr.base.tab}}
+#' @importFrom Hmisc latex
 #' @export
 
 latex.ucr.base.tab <- function(object, ...) {
