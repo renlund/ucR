@@ -130,15 +130,15 @@ and possibly as many as one per search string times variable searched in.
 Output (names are fixed):
 \begin{itemize}
 \item \verb|id| the identifier
-\item \verb|begin| first date searched from
-\item \verb|end| last date searched untill
+\item \verb|begin| first date searched from (inclusive)
+\item \verb|end| last date searched untill (inclusive)
 \item \verb|date| the date of the match
 \item \verb|event| indicator for match
 \item \verb|time| days between \verb|begin| and \verb|date|
 \item \verb|match| that which matched
 \item \verb|match.in| name of variable of match
 \item \verb|pattern| pattern searched for
-\item \verb|alias| name of pattern searched for (else pattern)
+\item \verb|alias| name of pattern searched for
 \item \verb|first.id| indicator for the first match for each individual and pattern
 \item \verb|first.id_date| indicator for the first match for each individual, date and pattern
 \end{itemize}
@@ -146,7 +146,7 @@ Output (names are fixed):
 A few of these are tabulated below.
 
 <<'show-mh', results = 'asis'>>=
-kable(tm[, c('id', 'event', 'alias', 'match', 'match.in')])
+kable(tm[, c('id', 'event', 'alias', 'match', 'match.in', 'first.id')])
 @
 \vspace{0.5cm}
 
@@ -169,6 +169,8 @@ kable(medhist, row.names = FALSE)
 \subsection{Outcomes}
 Next, we'll look at outcomes. Since the end of study is
 variable, we'll have to create this variable, lets call it \verb|endofstudy|.
+Note: if we want to start the search one day after \verb|enter| we'll have to
+create this delayed start as a variable. Search dates are inclusive.
 
 <<'find-outcomes'>>=
 
