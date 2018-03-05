@@ -195,11 +195,11 @@ time_match_rigid <- function(pattern, x = NULL, data, ...,
 ##' @param date name of associated date variable (in 'data')
 ##' @param units a vector of id's, or a data frame containing id's as well as
 ##'     (but optionally) 'begin' and 'end' variables
-##' @param units.id variable name in 'set' to use as id (by default the same is
+##' @param units.id variable name in 'units' to use as id (by default the same is
 ##'     'id')
-##' @param begin variable name in 'set' to use as begin, if missing will be set
+##' @param begin variable name in 'units' to use as begin, if missing will be set
 ##'     to earliest date in data
-##' @param end variable name in 'set' to use as end, if missing will be set to
+##' @param end variable name in 'units' to use as end, if missing will be set to
 ##'     latest date in data
 ##' @param ... arguments passed to \code{grepl}
 ##' @param long if \code{TRUE} all matches will get a row, else first match gets
@@ -252,6 +252,7 @@ time_match <- function(pattern, x = NULL, data, id = 'id', date = 'date',
                        units = NULL, units.id = id, begin = 'begin',
                        end = 'end', ..., long = TRUE, stack = TRUE,
                        verbose = TRUE){
+    message("maintaining this function in the 'dm' package instead, probably delete it from this location at some point")
     .required_properties(verbose, class = "logical", length = 1, nm = "verbose")
     if(verbose) cat("\n [Function ucR::time_match_set set to verbose.]\n",
                     "Checking arguments and preparing data before calling",

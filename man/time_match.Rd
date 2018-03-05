@@ -24,13 +24,13 @@ missing all variables except id and date are chosen}
 \item{units}{a vector of id's, or a data frame containing id's as well as
 (but optionally) 'begin' and 'end' variables}
 
-\item{units.id}{variable name in 'set' to use as id (by default the same is
+\item{units.id}{variable name in 'units' to use as id (by default the same is
 'id')}
 
-\item{begin}{variable name in 'set' to use as begin, if missing will be set
+\item{begin}{variable name in 'units' to use as begin, if missing will be set
 to earliest date in data}
 
-\item{end}{variable name in 'set' to use as end, if missing will be set to
+\item{end}{variable name in 'units' to use as end, if missing will be set to
 latest date in data}
 
 \item{...}{arguments passed to \code{grepl}}

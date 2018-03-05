@@ -1,6 +1,7 @@
 ##' magnitude of number
 ##'
-##' returns the magnitude of the input
+##' returns the magnitude of the input. Why? No reason. Oh, ok, it is actually a
+##'     helper function for \code{trunc_digits}.
 ##' @param x a numeric
 ##' @export
 ##' @author Henrik Renlund

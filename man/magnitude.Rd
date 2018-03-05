@@ -10,7 +10,8 @@ magnitude(x)
 \item{x}{a numeric}
 }
 \description{
-returns the magnitude of the input
+returns the magnitude of the input. Why? No reason. Oh, ok, it is actually a
+    helper function for \code{trunc_digits}.
 }
 \author{
 Henrik Renlund

@@ -22,6 +22,7 @@
 #' @export
 
 reFactor <- function(x,L, na.level=NULL, exclude=NULL, new.last=FALSE, warn=TRUE){
+   message("'reFactor' is unnecessarily complex and will some day be deleted without mercy, dm::recode will replace it")
    if( !(is.numeric(x) | is.character(x) | is.factor(x) | is.logical(x)) ){
       stop("[reFactor] 'x' is neither factor, charactr, numeric nor logical")
    }

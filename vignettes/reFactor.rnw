@@ -17,7 +17,13 @@ set.seed(19790424)
 \tableofcontents
 
 \section{Purpose}
-The function\footnote{The name \code{relevel} was taken!} \code{reFactor} was build mainly to be able to easily rename, reorder, and merge the levels of a factor. It can also create and exclude levels, and set \code{NA} to be a level.
+\noindent\textbf{This function will be maintained in the 'dm' package.}
+
+\vspace{1cm}
+\noindent The function\footnote{The name \code{relevel} was taken!}
+\code{reFactor} was build mainly to be able to easily rename, reorder, and merge
+the levels of a factor. It can also create and exclude levels, and set \code{NA}
+to be a level.
 
 Motivating example:
 <<motivating_example>>=

@@ -22,7 +22,10 @@ if(FALSE){ ## compile
 
 \section{Introduction}
 
-This vignette serves as a test for \verb|ucR::time_match|.
+\noindent\textbf{This function will be maintained in the 'dm' package.}
+
+\vspace{1cm}
+\noindent This vignette serves as a test for \verb|ucR::time_match|.
 
 \subsection{The problem we want to solve}
 Suppose you have a set of units in a data set, and another data set where each
