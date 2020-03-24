@@ -3,7 +3,6 @@
 \docType{package}
 \name{ucR}
 \alias{ucR}
-\alias{ucR-package}
 \title{ucR: miscellaneous functions}
 \description{
 'ucR' is a package of miscellaneous functions used by the R coders of ucr stat.
