@@ -4,8 +4,7 @@
 \alias{confint.coxme}
 \title{\code{confint} method for class \code{coxme}}
 \usage{
-\method{confint}{coxme}(object, parm = NULL, level = 0.95, ...,
-  more = FALSE)
+\method{confint}{coxme}(object, parm = NULL, level = 0.95, ..., more = FALSE)
 }
 \arguments{
 \item{object}{an object of class \code{coxme}}

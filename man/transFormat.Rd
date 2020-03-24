@@ -4,8 +4,7 @@
 \alias{transFormat}
 \title{Transform and format}
 \usage{
-transFormat(x, fun = NULL, signif = NULL, round = NULL, skip = FALSE,
-  ...)
+transFormat(x, fun = NULL, signif = NULL, round = NULL, skip = FALSE, ...)
 }
 \arguments{
 \item{x}{the object}

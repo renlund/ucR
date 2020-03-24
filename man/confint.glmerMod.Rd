@@ -4,8 +4,7 @@
 \alias{confint.glmerMod}
 \title{\code{confint} method for class \code{glmerMod}}
 \usage{
-\method{confint}{glmerMod}(object, parm = NULL, level = 0.95, ...,
-  more = FALSE)
+\method{confint}{glmerMod}(object, parm = NULL, level = 0.95, ..., more = FALSE)
 }
 \arguments{
 \item{object}{an object of class \code{coxme}}

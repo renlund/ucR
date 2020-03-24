@@ -4,8 +4,7 @@
 \alias{modComp}
 \title{Compare covariate influence}
 \usage{
-modComp(resp, vars, model, covars, data = NULL, uni = TRUE, ci = TRUE,
-  ...)
+modComp(resp, vars, model, covars, data = NULL, uni = TRUE, ci = TRUE, ...)
 }
 \arguments{
 \item{resp}{the response variable}
