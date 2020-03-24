@@ -21,7 +21,7 @@
 ##'     this will be pasted onto some output variable names, unless you set
 ##'     override this behavour by setting this argument to zero
 ##' @return See \code{\link{time_match}} for details on output
-##' @seealso \code{\link{time_match}}, \code{\link[base]{grepl}}
+##' @seealso \code{\link{time_match}}, \code{\link{grepl}}
 ##' @author Henrik Renlund
 time_match_rigid <- function(pattern, x = NULL, data, ...,
                              long = TRUE, verbose = TRUE, paste.alias = TRUE){
