@@ -4,8 +4,7 @@
 \alias{reFactor}
 \title{This function manipulates factor levels}
 \usage{
-reFactor(x, L, na.level = NULL, exclude = NULL, new.last = FALSE,
-  warn = TRUE)
+reFactor(x, L, na.level = NULL, exclude = NULL, new.last = FALSE, warn = TRUE)
 }
 \arguments{
 \item{x}{factor or character vector to be relabelled or reordered}

@@ -4,9 +4,21 @@
 \alias{time_match}
 \title{find matches for specific units on variables in a given time period}
 \usage{
-time_match(pattern, x = NULL, data, id = "id", date = "date",
-  units = NULL, units.id = id, begin = "begin", end = "end", ...,
-  long = TRUE, stack = TRUE, verbose = TRUE)
+time_match(
+  pattern,
+  x = NULL,
+  data,
+  id = "id",
+  date = "date",
+  units = NULL,
+  units.id = id,
+  begin = "begin",
+  end = "end",
+  ...,
+  long = TRUE,
+  stack = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{pattern}{a vector of search strings (regular expressions) (the names

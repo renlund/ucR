@@ -4,14 +4,30 @@
 \alias{ucr.base.tab}
 \title{Create a baseline table}
 \usage{
-ucr.base.tab(data, group.name = NULL, combined.name = "Combined",
-  x.names = names(data), num.format = "median", median.format = "iqr",
-  mean.format = "par", factor.format = "count.perc",
-  perc.method = "group", print.perc = T, print.perc.space = F,
-  omit.ref.level = F, show.missing = "none", digits = 1,
-  spec.digits = NULL, include.combined = T, include.n = T,
-  include.p = T, test.x.names = x.names, num.test = "nonparam",
-  factor.test = "fisher", min.p = "0.001")
+ucr.base.tab(
+  data,
+  group.name = NULL,
+  combined.name = "Combined",
+  x.names = names(data),
+  num.format = "median",
+  median.format = "iqr",
+  mean.format = "par",
+  factor.format = "count.perc",
+  perc.method = "group",
+  print.perc = T,
+  print.perc.space = F,
+  omit.ref.level = F,
+  show.missing = "none",
+  digits = 1,
+  spec.digits = NULL,
+  include.combined = T,
+  include.n = T,
+  include.p = T,
+  test.x.names = x.names,
+  num.test = "nonparam",
+  factor.test = "fisher",
+  min.p = "0.001"
+)
 }
 \arguments{
 \item{data}{The data frame.}

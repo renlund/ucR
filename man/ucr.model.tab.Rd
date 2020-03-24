@@ -4,11 +4,23 @@
 \alias{ucr.model.tab}
 \title{Description of analysis models.}
 \usage{
-ucr.model.tab(model, x.names = NULL, data, model.name,
-  rm.intercept = "(Intercept)", allow.missing.coef = F,
-  allow.duplicated.coef = F, factor.sep = "", link.fcn = exp,
-  num.scale = NULL, include.ref = T, or.hr = "OR", include.p = T,
-  n = NULL, max.ucl = 100)
+ucr.model.tab(
+  model,
+  x.names = NULL,
+  data,
+  model.name,
+  rm.intercept = "(Intercept)",
+  allow.missing.coef = F,
+  allow.duplicated.coef = F,
+  factor.sep = "",
+  link.fcn = exp,
+  num.scale = NULL,
+  include.ref = T,
+  or.hr = "OR",
+  include.p = T,
+  n = NULL,
+  max.ucl = 100
+)
 }
 \arguments{
 \item{model}{The model object, or a list of model objects. The following

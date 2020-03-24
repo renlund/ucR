@@ -4,8 +4,15 @@
 \alias{time_match_rigid}
 \title{find matches on variables in a given time period}
 \usage{
-time_match_rigid(pattern, x = NULL, data, ..., long = TRUE,
-  verbose = TRUE, paste.alias = TRUE)
+time_match_rigid(
+  pattern,
+  x = NULL,
+  data,
+  ...,
+  long = TRUE,
+  verbose = TRUE,
+  paste.alias = TRUE
+)
 }
 \arguments{
 \item{pattern}{a search string to pass to \code{grepl}}
@@ -40,7 +47,7 @@ this is essentially a helper function for \code{time_match}, see the
     documentation
 }
 \seealso{
-\code{\link{time_match}}, \code{\link[base]{grepl}}
+\code{\link{time_match}}, \code{\link{grepl}}
 }
 \author{
 Henrik Renlund
