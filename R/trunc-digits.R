@@ -24,6 +24,16 @@ magnitude <- function(x){
     1 / func(1, e)
 }
 
+magnitudes <- function(x){
+    n <- length(x)
+    if(n<1) stop("want length >0")
+    r <- rep(NA, n)
+    for(k in 1:n){
+        r[k] <- magnitude(x[k])
+    }
+    r
+}
+
 ##' truncation with digits
 ##'
 ##' like \code{trunc}, but with digits specification
