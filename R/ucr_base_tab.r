@@ -12,9 +12,8 @@
 #' @param combined.name  Column heading for the combined group. Defaults to
 #'       "Combined".
 #' @param x.names  Names and order of the variables in 'data' that shall be
-#'                 included in the table. By default, all variables are
-#'                 included. However, the group variable, if any, is never
-#'                 included.
+#'                 included in the table. By default, all variables except
+#'                 the group variable, if any, are included.
 #' @param num.format  How to present numerical variables. Allowed values:
 #'              \itemize{
 #'                \item "median": Median with IQR or range.
@@ -112,7 +111,7 @@
 #' @export
 
 ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
-  x.names=names(data), num.format="median",
+  x.names=setdiff(names(data), group.name), num.format="median",
   median.format="iqr", mean.format="par", factor.format="count.perc",
   perc.method="group", print.perc=T, print.perc.space=F,
   omit.ref.level=F, show.missing="none", digits=1,
@@ -130,10 +129,6 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
     show.missing=show.missing, digits=digits, spec.digits=spec.digits,
     include.n=include.n, include.p=include.p, test.x.names=test.x.names,
     num.test=num.test, factor.test=factor.test, min.p=min.p)
-  # Make sure the group variable is not included.
-  if (!is.null(group.name)) {
-    x.names <- x.names[x.names !=  group.name]
-  }
   # Make 'spec.digits' a complete list, replacing missing values by 'digits'.
   if (is.null(spec.digits)) {
     spec.digits <- list()
