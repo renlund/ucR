@@ -4,8 +4,14 @@
 \alias{base_tab_prep}
 \title{Prepare a data frame for base tabulating}
 \usage{
-base_tab_prep(X, max.unique = 10, elim.names = NULL, force.factor = TRUE,
-  binary.code = TRUE, elim.class = NULL)
+base_tab_prep(
+  X,
+  max.unique = 10,
+  elim.names = NULL,
+  force.factor = TRUE,
+  binary.code = TRUE,
+  elim.class = NULL
+)
 }
 \arguments{
 \item{X}{a data frame}
