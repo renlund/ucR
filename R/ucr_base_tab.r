@@ -113,7 +113,7 @@
 ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
   x.names=setdiff(names(data), group.name), num.format="median",
   median.format="iqr", mean.format="par", factor.format="count.perc",
-  perc.method="group", print.perc=T, print.perc.space=F,
+  perc.method="group", print.perc=T, print.perc.space=F, use.texttt=F,
   omit.ref.level=F, show.missing="none", digits=1,
   spec.digits=NULL, include.combined=T, include.n=T, include.p=T,
   test.x.names=x.names,
@@ -232,7 +232,12 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
     if (Hmisc::label(cur.x) != "") {
       cur.x.label <- Hmisc::label(cur.x) # Variable label.
     } else {
-      cur.x.label <- cur.x.name # No label, use variable name instead.
+      # No label, use variable name instead, possibly using typewriter font.
+      if (use.texttt) {
+        cur.x.label <- sprintf("\\texttt{%s}", cur.x.name)
+      } else {
+        cur.x.label <- cur.x.name
+      }
     }
     if (is.numeric(cur.x)) {
       # -----> Numeric variable.
