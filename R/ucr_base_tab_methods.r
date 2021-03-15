@@ -166,9 +166,9 @@ split.ucr.base.tab <- function(object, group.partition, always.n=F) {
 # Sanity checks for parameters to the ucr.base.tab function.
 ucr.internal.base.tab.parameter.check <- function(data, group.name,
   combined.name, x.names, num.format, median.format, mean.format, factor.format,
-  perc.method, print.perc, print.perc.space, omit.ref.level, separate.factor.row,
-  show.missing, digits, spec.digits, include.n, include.p, test.x.names,
-  num.test, factor.test, min.p) {
+  perc.method, print.perc, print.perc.space, omit.perc.decimal,
+  omit.ref.level, separate.factor.row, show.missing, digits, spec.digits,
+  include.n, include.p, test.x.names, num.test, factor.test, min.p) {
 
   # --> Utility functions.
   # Tests if x is a non-negative integer.
@@ -271,6 +271,7 @@ ucr.internal.base.tab.parameter.check <- function(data, group.name,
   assert.string.in.set(perc.method, c("group", "level", "total"))
   assert.logical(print.perc)
   assert.logical(print.perc.space)
+  assert.logical(omit.perc.decimal)
   assert.logical(omit.ref.level)
   assert.logical(separate.factor.row)
   assert.string.in.set(show.missing, c("none", "in.row", "sep.row"))

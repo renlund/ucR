@@ -51,6 +51,8 @@
 #' @param print.perc.space  TRUE if a space is to be printed between the number and the
 #'                    percent sign, i.e. "12.3 \%" rather than "12.3\%".
 #'                    N/A if percent sign is disabled.
+#' @omit.perc.decimal  TRUE if the decimal is to be omitted for percentages
+#'                    above 1%, e.g. 13% rather than 13.3%.
 #' @param omit.ref.level  TRUE if the reference (first) level of dichotomous factor
 #'                  variables should be omitted from the table.
 #' @separate.factor.row  TRUE if a separate row is added (first) for each
@@ -116,9 +118,9 @@
 ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
   x.names=setdiff(names(data), group.name), num.format="median",
   median.format="iqr", mean.format="par", factor.format="count.perc",
-  perc.method="group", print.perc=T, print.perc.space=F, use.texttt=F,
-  omit.ref.level=F, separate.factor.row=F, show.missing="none", digits=1,
-  spec.digits=NULL, include.combined=T, include.n=T, include.p=T,
+  perc.method="group", print.perc=T, print.perc.space=F, omit.perc.decimal=F,
+  use.texttt=F, omit.ref.level=F, separate.factor.row=F, show.missing="none",
+  digits=1, spec.digits=NULL, include.combined=T, include.n=T, include.p=T,
   test.x.names=x.names,
   num.test="nonparam", factor.test="fisher", min.p="0.001") {
 
@@ -128,7 +130,8 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
     x.names=x.names, num.format=num.format, median.format=median.format,
     mean.format=mean.format, factor.format=factor.format,
     perc.method=perc.method, print.perc=print.perc,
-    print.perc.space=print.perc.space, omit.ref.level=omit.ref.level,
+    print.perc.space=print.perc.space,
+    omit.perc.decimal=omit.perc.decimal, omit.ref.level=omit.ref.level,
     separate.factor.row=separate.factor.row, show.missing=show.missing,
     digits=digits, spec.digits=spec.digits, include.n=include.n,
     include.p=include.p, test.x.names=test.x.names, num.test=num.test,
@@ -417,10 +420,16 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
           } else {
             if (tot > 0) { # Avoid division by zero.
               perc <- count / tot * 100 # Percentage.
+              perc.digits <- 1 # Until further notice.
+              if (omit.perc.decimal && (perc > 1)) {
+                perc.digits <- 0
+              }
               if (factor.format == "count.perc") {
-                cur.rows[j, cur.col] <- sprintf("%d (%.1f%s)", count, perc, perc.sign)
+                cur.rows[j, cur.col] <- sprintf("%d (%.*f%s)", count,
+                  perc.digits, perc, perc.sign)
               } else {
-                cur.rows[j, cur.col] <- sprintf("%.1f%s (%d)", perc, perc.sign, count)
+                cur.rows[j, cur.col] <- sprintf("%.*f%s (%d)", perc.digits, perc,
+                  perc.sign, count)
               }
             } else {
               # Count = total = 0. Percent undefined.
