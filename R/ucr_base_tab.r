@@ -51,8 +51,13 @@
 #' @param print.perc.space  TRUE if a space is to be printed between the number and the
 #'                    percent sign, i.e. "12.3 \%" rather than "12.3\%".
 #'                    N/A if percent sign is disabled.
+#' @omit.perc.decimal  TRUE if the decimal is to be omitted for percentages
+#'                    above 1%, e.g. 13% rather than 13.3%.
 #' @param omit.ref.level  TRUE if the reference (first) level of dichotomous factor
 #'                  variables should be omitted from the table.
+#' @separate.factor.row  TRUE if a separate row is added (first) for each
+#'                  factor, containing the variable name, number of
+#'                  inidividuals/missing etc.
 #' @param show.missing  How should missing values, if any, per group be shown?
 #'                \itemize{
 #'                \item "none": Don't show missing values.
@@ -113,9 +118,9 @@
 ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
   x.names=setdiff(names(data), group.name), num.format="median",
   median.format="iqr", mean.format="par", factor.format="count.perc",
-  perc.method="group", print.perc=T, print.perc.space=F,
-  omit.ref.level=F, show.missing="none", digits=1,
-  spec.digits=NULL, include.combined=T, include.n=T, include.p=T,
+  perc.method="group", print.perc=T, print.perc.space=F, omit.perc.decimal=F,
+  use.texttt=F, omit.ref.level=F, separate.factor.row=F, show.missing="none",
+  digits=1, spec.digits=NULL, include.combined=T, include.n=T, include.p=T,
   test.x.names=x.names,
   num.test="nonparam", factor.test="fisher", min.p="0.001") {
 
@@ -125,10 +130,12 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
     x.names=x.names, num.format=num.format, median.format=median.format,
     mean.format=mean.format, factor.format=factor.format,
     perc.method=perc.method, print.perc=print.perc,
-    print.perc.space=print.perc.space, omit.ref.level=omit.ref.level,
-    show.missing=show.missing, digits=digits, spec.digits=spec.digits,
-    include.n=include.n, include.p=include.p, test.x.names=test.x.names,
-    num.test=num.test, factor.test=factor.test, min.p=min.p)
+    print.perc.space=print.perc.space,
+    omit.perc.decimal=omit.perc.decimal, omit.ref.level=omit.ref.level,
+    separate.factor.row=separate.factor.row, show.missing=show.missing,
+    digits=digits, spec.digits=spec.digits, include.n=include.n,
+    include.p=include.p, test.x.names=test.x.names, num.test=num.test,
+    factor.test=factor.test, min.p=min.p)
   # Make 'spec.digits' a complete list, replacing missing values by 'digits'.
   if (is.null(spec.digits)) {
     spec.digits <- list()
@@ -232,7 +239,12 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
     if (Hmisc::label(cur.x) != "") {
       cur.x.label <- Hmisc::label(cur.x) # Variable label.
     } else {
-      cur.x.label <- cur.x.name # No label, use variable name instead.
+      # No label, use variable name instead, possibly using typewriter font.
+      if (use.texttt) {
+        cur.x.label <- sprintf("\\texttt{%s}", cur.x.name)
+      } else {
+        cur.x.label <- cur.x.name
+      }
     }
     if (is.numeric(cur.x)) {
       # -----> Numeric variable.
@@ -408,10 +420,16 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
           } else {
             if (tot > 0) { # Avoid division by zero.
               perc <- count / tot * 100 # Percentage.
+              perc.digits <- 1 # Until further notice.
+              if (omit.perc.decimal && (perc > 1)) {
+                perc.digits <- 0
+              }
               if (factor.format == "count.perc") {
-                cur.rows[j, cur.col] <- sprintf("%d (%.1f%s)", count, perc, perc.sign)
+                cur.rows[j, cur.col] <- sprintf("%d (%.*f%s)", count,
+                  perc.digits, perc, perc.sign)
               } else {
-                cur.rows[j, cur.col] <- sprintf("%.1f%s (%d)", perc, perc.sign, count)
+                cur.rows[j, cur.col] <- sprintf("%.*f%s (%d)", perc.digits, perc,
+                  perc.sign, count)
               }
             } else {
               # Count = total = 0. Percent undefined.
@@ -423,23 +441,33 @@ ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
             }
             exists.factor.perc <- TRUE
           }
-
         } # End of 'g' loop over groups.
       } # End of 'j' loop over factor levels.
 
       if (omit.ref.level && (cur.n.levels == 2)) {
         cur.rows <- matrix(cur.rows[-1, ], ncol=n.cols) # Remove first row.
       }
-      cur.rows[1, colno.n] <- length(which(!is.na(cur.x))) # Number of observations.
       # Add "prefix" to rows: Variable name for first row, and indentation o/w.
-      for (j in 1:nrow(cur.rows)) {
-        if (j == 1) {
-          prefix <- sprintf("%s:", cur.x.label)
-        } else {
+      if (separate.factor.row) {
+        sep.row <- rep("", ncol(cur.rows))
+        sep.row[1] <- sprintf("%s:", cur.x.label)
+        for (j in 1:nrow(cur.rows)) {
           prefix <- "\\hspace{1em}"
+          cur.rows[j, colno.var] <- sprintf("%s %s", prefix, cur.rows[j, colno.var])
         }
-        cur.rows[j, colno.var] <- sprintf("%s %s", prefix, cur.rows[j, colno.var])
+        cur.rows <- rbind(sep.row, cur.rows)
+        rownames(cur.rows) <- NULL
+      } else {
+        for (j in 1:nrow(cur.rows)) {
+          if (j == 1) {
+            prefix <- sprintf("%s:", cur.x.label)
+          } else {
+            prefix <- "\\hspace{1em}"
+          }
+          cur.rows[j, colno.var] <- sprintf("%s %s", prefix, cur.rows[j, colno.var])
+        }
       }
+      cur.rows[1, colno.n] <- length(which(!is.na(cur.x))) # Number of observations.
       if (include.p && is.element(cur.x.name, test.x.names)) {
         # P-value.
         # First time here? If so, decide which test to use.
