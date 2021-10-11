@@ -4,10 +4,16 @@
 \alias{latex.ucr.base.tab}
 \title{Produce latex code from a \code{ucr.base.tab} object}
 \usage{
-\method{latex}{ucr.base.tab}(object, ...)
+\method{latex}{ucr.base.tab}(object, alt.gray = F, col.just = NULL, collabel.just = NULL, ...)
 }
 \arguments{
 \item{object}{a \code{ucr.base.tab} object}
+
+\item{alt.gray}{a logical flag telling whether every other row should be gray}
+
+\item{col.just}{if \code{NULL}, left-justification is applied}
+
+\item{collabel.just}{if \code{NULL}, left-justification is applied}
 
 \item{...}{arguments to be passed to \code{latex}}
 }

@@ -8,7 +8,7 @@ ucr.base.tab(
   data,
   group.name = NULL,
   combined.name = "Combined",
-  x.names = names(data),
+  x.names = setdiff(names(data), group.name),
   num.format = "median",
   median.format = "iqr",
   mean.format = "par",
@@ -40,9 +40,8 @@ factor without missing..}
 "Combined".}
 
 \item{x.names}{Names and order of the variables in 'data' that shall be
-included in the table. By default, all variables are
-included. However, the group variable, if any, is never
-included.}
+included in the table. By default, all variables except
+the group variable, if any, are included.}
 
 \item{num.format}{How to present numerical variables. Allowed values:
 \itemize{
