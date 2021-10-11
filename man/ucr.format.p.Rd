@@ -2,7 +2,7 @@
 % Please edit documentation in R/ucr_common.r
 \name{ucr.format.p}
 \alias{ucr.format.p}
-\title{Format p values for readability}
+\title{Format p values for readability.}
 \usage{
 ucr.format.p(p, min.p = "0.001")
 }
