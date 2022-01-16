@@ -17,4 +17,5 @@ test_that("'base_tab_prep' works (manual test)", {
       str(df)
       str(base_tab_prep(df))
    }
+   expect_equal(TRUE, TRUE) ## else test is empty
 })

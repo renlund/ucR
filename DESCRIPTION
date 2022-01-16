@@ -1,6 +1,6 @@
 Package: ucR
 Title: Ucr Stat Functions
-Version: 0.4.0.9005
+Version: 0.4.0.9010
 Authors@R: c(person(given = "Henrik", family = "Renlund", role =
     c("aut", "cre"), email= "henrik.renlund@ucr.uu.se"), person(given = "Lars",
     family= "Lindhagen", role = "aut", email= "lars.lindhagen@ucr.uu.se"),
@@ -18,4 +18,4 @@ Suggests:
     survival,
     testthat,
     coin
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

@@ -5,22 +5,22 @@
 #' "combined" group (all data) can also be included.
 #'
 #' @author Lars Lindhagen
-#' @param data  The data frame.
-#' @param group.name  Name of the variable in 'data' that defines the groups, or NULL
+#' @param data The data frame.
+#' @param group.name Name of the variable in 'data' that defines the groups, or NULL
 #'              (default) if there are no groups. The group variable must be a
 #'              factor without missing..
-#' @param combined.name  Column heading for the combined group. Defaults to
+#' @param combined.name Column heading for the combined group. Defaults to
 #'       "Combined".
-#' @param x.names  Names and order of the variables in 'data' that shall be
+#' @param x.names Names and order of the variables in 'data' that shall be
 #'                 included in the table. By default, all variables except
 #'                 the group variable, if any, are included.
-#' @param num.format  How to present numerical variables. Allowed values:
+#' @param num.format How to present numerical variables. Allowed values:
 #'              \itemize{
 #'                \item "median": Median with IQR or range.
 #'              \item "mean": Mean with standard deviation.
 #'              \item "both": Both. This gives "median stuff (mean stuff)".
 #'              }
-#' @param median.format  What measure of dispersion to give together with medians.
+#' @param median.format What measure of dispersion to give together with medians.
 #'                 Allowed values:
 #'                 \itemize{
 #'                \item "iqr": Interquartile range (Q1 and Q3).
@@ -29,36 +29,37 @@
 #'                   Example: If median.format = 10, then the 10th and 90th
 #'                   percentiles will be reported.
 #'                   }
-#' @param mean.format  How to present standard deviations. Allowed values:
+#' @param mean.format How to present standard deviations. Allowed values:
 #'               \itemize{
 #'                \item "par": Mean (SD).
 #'               \item "pm": Mean plus/minus SD.
 #'               }
-#' @param factor.format  How to present factor variables. Allowed values:
+#' @param factor.format How to present factor variables. Allowed values:
 #'                 \itemize{
 #'                \item count.perc: Count (percentage).
 #'                 \item perc.count: Percentage (count).
 #'                 }
-#' @param perc.method  How to compute percentages for factor variables. Allowed values:
+#' @param perc.method How to compute percentages for factor variables. Allowed values:
 #'               \itemize{
 #'                \item "group": Computes n(group, level) / n(group).
 #'               \item "level": Computes n(group, level) / n(level).
-#'                 For the combined group, this would always give 100%.
+#'                 For the combined group, this would always give 100\%.
 #'                 Hence, percentages are omitted in this case.
 #'               \item "total": Percentage  n(group, level) / n.
 #'               }
-#' @param print.perc  TRUE if a percent sign ('\%') is to be printed for percentages.
-#' @param print.perc.space  TRUE if a space is to be printed between the number and the
+#' @param print.perc TRUE if a percent sign ('\%') is to be printed for percentages.
+#' @param print.perc.space TRUE if a space is to be printed between the number and the
 #'                    percent sign, i.e. "12.3 \%" rather than "12.3\%".
 #'                    N/A if percent sign is disabled.
-#' @omit.perc.decimal  TRUE if the decimal is to be omitted for percentages
-#'                    above 1%, e.g. 13% rather than 13.3%.
-#' @param omit.ref.level  TRUE if the reference (first) level of dichotomous factor
+#' @param omit.perc.decimal TRUE if the decimal is to be omitted for percentages
+#'                    above 1\%, e.g. 13\% rather than 13.3\%.
+#' @param use.texttt logical; use latex texttt
+#' @param omit.ref.level TRUE if the reference (first) level of dichotomous factor
 #'                  variables should be omitted from the table.
-#' @separate.factor.row  TRUE if a separate row is added (first) for each
+#' @param separate.factor.row TRUE if a separate row is added (first) for each
 #'                  factor, containing the variable name, number of
 #'                  inidividuals/missing etc.
-#' @param show.missing  How should missing values, if any, per group be shown?
+#' @param show.missing How should missing values, if any, per group be shown?
 #'                \itemize{
 #'                \item "none": Don't show missing values.
 #'                \item "in.row": Show the number of missing values within square
@@ -66,21 +67,21 @@
 #'                \item "sep.row": Show the number of missing values is a separate
 #'                  row.
 #'                  }
-#' @param digits  An integer, giving the number of decimals for numeric
+#' @param digits An integer, giving the number of decimals for numeric
 #'          variables, unless otherwise specified through the parameter
 #'          'spec.digits'.
-#' @param spec.digits  A list, whose names form a subset of 'x.names', and whose values
+#' @param spec.digits A list, whose names form a subset of 'x.names', and whose values
 #'               are the number of decimals for those (numeric) variables. The
 #'               value NULL causes 'digits' to be used throughout.
-#' @param include.combined  TRUE if the combined group should be included in a
+#' @param include.combined TRUE if the combined group should be included in a
 #'                    separate column.
-#' @param include.n  TRUE if number of valid (non-NA) observations per variable should
+#' @param include.n TRUE if number of valid (non-NA) observations per variable should
 #'             be included in a separate column.
-#' @param include.p  TRUE if P-values are to be included in the table. They refer to
+#' @param include.p TRUE if P-values are to be included in the table. They refer to
 #'             univariate tests for identical distribution in the different
 #'             groups. P-values can only be included if there are groups.
-#' @param test.x.names  Names of variables to perform tests for.
-#' @param num.test  Which kind of test to use for numerical variables. Allowed
+#' @param test.x.names Names of variables to perform tests for.
+#' @param num.test Which kind of test to use for numerical variables. Allowed
 #'                  values:
 #'            \itemize{
 #'            \item "nonparam": A non-parametrical test:
@@ -100,7 +101,7 @@
 #'                   test for simple linear regression), converting the group
 #'                   variable to linear scores. Only for 3+ groups.
 #'                }
-#' @param factor.test  Which test to use for factor variables. Allowed values:
+#' @param factor.test Which test to use for factor variables. Allowed values:
 #'               \itemize{
 #'               \item "fisher": Fisher's exact test.
 #'               \item "pearson": Pearson's chi2 test.
@@ -109,12 +110,11 @@
 #'                     (possibly dichotomous) to linear scores. Only for 3+
 #'                     groups.
 #'               }
-#' @param min.p  Smallest P-value to be displayed. If smaller, then a text like
+#' @param min.p Smallest P-value to be displayed. If smaller, then a text like
 #'         "< 0.001" is given.
 #'         NOTE: This value must be a string, e.g. "0.001" or "1e-3".
 #' @return The return value is an S3 object of class ucr.base.tab.
 #' @export
-
 ucr.base.tab <- function(data, group.name=NULL, combined.name="Combined",
   x.names=setdiff(names(data), group.name), num.format="median",
   median.format="iqr", mean.format="par", factor.format="count.perc",

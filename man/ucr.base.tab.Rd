@@ -79,7 +79,7 @@ the group variable, if any, are included.}
 \itemize{
  \item "group": Computes n(group, level) / n(group).
 \item "level": Computes n(group, level) / n(level).
-  For the combined group, this would always give 100%.
+  For the combined group, this would always give 100\%.
   Hence, percentages are omitted in this case.
 \item "total": Percentage  n(group, level) / n.
 }}
@@ -90,8 +90,17 @@ the group variable, if any, are included.}
 percent sign, i.e. "12.3 \%" rather than "12.3\%".
 N/A if percent sign is disabled.}
 
+\item{omit.perc.decimal}{TRUE if the decimal is to be omitted for percentages
+above 1\%, e.g. 13\% rather than 13.3\%.}
+
+\item{use.texttt}{logical; use latex texttt}
+
 \item{omit.ref.level}{TRUE if the reference (first) level of dichotomous factor
 variables should be omitted from the table.}
+
+\item{separate.factor.row}{TRUE if a separate row is added (first) for each
+factor, containing the variable name, number of
+inidividuals/missing etc.}
 
 \item{show.missing}{How should missing values, if any, per group be shown?
 \itemize{

@@ -1,7 +1,7 @@
-[![Travis-CI Build Status](https://travis-ci.org/renlund/ucR.svg?branch=master)](https://travis-ci.org/renlund/ucR)
+[![R build](https://github.com/renlund/ucR/workflows/R/badge.svg)](https://github.com/renlund/ucR/actions/workflows/r.yml)
 
 ucR
 =======
 
-Miscellaneous code from ucr stat. 
+Miscellaneous code from ucr stat.
 Not suitable for use outside ucr.
