@@ -82,7 +82,8 @@ ucr.base.tab2flextable <- function(object, template = NULL, caption = NULL,
     }
     group.names <- unique(template$group)
     ## choose and order rows according to the template
-    index <- order_as(labs, template$label, incl.unordered = FALSE)
+    ## index <- order_as(labs, template$label, incl.unordered = FALSE)
+    index <- align(labs, template$label, all = FALSE)$order
     DB <- as.data.frame(B[index,])
 
     ## deLaTeX DB
@@ -91,6 +92,7 @@ ucr.base.tab2flextable <- function(object, template = NULL, caption = NULL,
     DB$Variable <- gsub("\\hspace{1em}", ":", DB$Variable, fixed = TRUE)
     DB$Variable <- gsub("\\#", "", DB$Variable, fixed = TRUE) ## ??
     DB[] <- lapply(DB, function(X) gsub(" -- ", " - ", X))
+    DB[] <- lapply(DB, function(X) gsub("$\\pm$", "\U00B1", X, fixed = TRUE))
 
     ## identify footnotes for p-value info
     test.names <- object$test.names
@@ -201,6 +203,18 @@ ucr.base.tab2flextable <- function(object, template = NULL, caption = NULL,
     ft
 }
 
+ubt_text <- function(object){
+    bot <- ubt.bottom.text(object)
+    bot <- gsub("$\\pm$", "\U00B1", bot, fixed = TRUE)
+    bot <- gsub("$_1$", "\U2081", bot, fixed = TRUE)
+    bot <- gsub("$_3$", "\U2083", bot, fixed = TRUE)
+    bot <- gsub("$", "", bot, fixed = TRUE)
+    bot <- gsub("^ *\\n\\n ", "", bot)
+    bot <- gsub(" -- ", " - ", bot)
+    bot <- unlist(strsplit(bot, split = " \n\n ", fixed = TRUE))
+    bot
+}
+
 if(FALSE){ ## TEST START =======================================================
 
     n <- 6000
@@ -234,6 +248,21 @@ if(FALSE){ ## TEST START =======================================================
     x <- ucr.base.tab2flextable(
         object = ucR::ucr.base.tab(data = X,
                                    include.p = FALSE),
+        template = NULL
+    )
+    x
+    print(x, preview = "docx")
+    print(x, preview = "pdf", latex_engine = "xelatex")
+
+
+    test <- ucR::ucr.base.tab(data = X,
+                              num.format = "mean",
+                              mean.format = "pm",
+                              include.p = FALSE)
+    b <- ubt_text(test)
+
+    x <- ucr.base.tab2flextable(
+        object = test,
         template = NULL
     )
     x
@@ -357,145 +386,107 @@ cluster.by.incl.next <- function(incl.next){
     c(1, 1 + cumsum(!incl.next[-n]))
 }
 
-order_as <- function (given, wanted, incl.unordered = TRUE){
-    .s <- "_."
-    if (any(grepl(paste0("_\\.[0-9]_\\.$"), given))) {
-        mess <- paste0("'order_as' uses suffix '", .s, "<number>",
-            .s, "' ", "internally hoping noone would ever use such a ",
-            "strange variable name, but if so then this might ",
-            "cause the ordering to fail. Please check the results ",
-            "(or rename your variables)")
-        warning(mess)
+align <- function(x, template = NULL, group = NULL,
+                  all = TRUE, outgroup = ".Other"){
+    if(length(x) == 0){
+        warning("zero length input makes no sense")
+        return(as.list(NULL))
     }
-    want <- wanted[wanted %in% given]
-    if (any(duplicated(want))) {
-        warning("duplicated entries in 'wanted'")
-        want <- unique(want)
+    if(!is.null(group) & !is.null(template)){
+        if(length(group) != length(template)){
+            stop("template and group of the same length, please")}
     }
-    foo <- function(X) {
-        n <- nrow(X)
-        X$nr <- if (n == 1)
-            ""
-        else 1:n
-        NR <- if (n == 1)
-            ""
-        else paste0(.s, 1:n, .s)
-        X$attention <- if (n == 1)
-            0
-        else c(rep(0, n - 1), 1)
-        X$edited <- paste0(X$given, NR)
-        X
+    if(is.null(template)) template = sort(x)
+    m <- match(x, template)
+    distinct_m <- sort(unique(na.omit(m)))
+    order <- rep(NA_integer_, length(x))
+    dummy <- 0L
+    for(d in distinct_m){
+        i <- which(x %in% x[which(d==m)][1])
+        n <- length(i)
+        order[dummy + 1:n] <- i
+        dummy <- dummy + n
     }
-    df <- data.frame(given = given, stringsAsFactors = FALSE)
-    spl <- lapply(split(df, f = df$given), foo)
-    dc <- unsplit(spl, f = df$given)
-    rownames(dc) <- NULL
-    sdc <- subset(dc, dc$attention == 1)
-    lw <- as.list(want)
-    names(lw) <- want
-    for (k in seq_along(sdc$given)) {
-        K <- as.character(sdc$given[k])
-        if (!K %in% names(lw))
-            next
-        n <- sdc$nr[k]
-        lw[[K]] <- sprintf(paste0(lw[[K]], .s, "%s", .s), 1:n)
+    if(any(is.na(m))){
+        if(all){
+            order[which(is.na(order))] <- which(is.na(m))
+        } else {
+            order <- order[!is.na(order)]
+        }
     }
-    W <- unlist(lw)
-    G <- dc$edited
-    indx <- match(W, G)
-    rest <- setdiff(1:length(given), indx)
-    if (incl.unordered) {
-        c(indx, rest)
-    }
-    else {
-        indx
+    z <- data.frame(x = x[order])
+    if(is.null(group)){
+        z$group <- outgroup
+        list(order = order,
+             sorted = z,
+             group.rle = list(lengths = nrow(z),
+                              values = outgroup))
+    } else {
+        tg <- data.frame(template = template, group = group)
+        s <- merge(x = z, y = tg, all.x = TRUE,
+                   by.x = "x", by.y = "template", sort = FALSE)
+        if(all){
+            s$group[is.na(s$group)] <- outgroup
+        }
+        Rle <- rle(s$group)
+        class(Rle) <- "list"
+        list(order = order,
+             sorted = s,
+             group.rle = Rle)
     }
 }
 
-## This is a huge chunk of latex.ucr.base.tab; it would be better to separate
-## out most of this as a separate function so that possible future changes can
-## be made in 1 location ... but for now:
-
-ubt_text <- function(object){
-    bot <- "" ## Bottom text.
-    if (object$exists.numeric) { # Add text explaining numerical variables if any.
-        median.eq <- "$m$ ($a$ -- $b$)"
-        if (object$median.format == "iqr") {
-            median.txt <- "median (Q$_1$ -- Q$_3$)"
-        } else if (object$median.format == "range") {
-            median.txt <- "median (min -- max)"
-        } else {
-            ## User-specified quantiles.
-            median.txt <- sprintf("median (%dth -- %dth percentile)",
-                                  round(object$median.format), round(100 - object$median.format))
-        }
-        if (object$mean.format == "pm") {
-            mean.eq <- "$x$ $\\pm$ $s$"
-            mean.txt <- "mean $\\pm$ SD"
-        } else {
-            mean.eq <- "$x$ ($s$)"
-            mean.txt <- "mean (SD)"
-        }
-        if (object$num.format == "median") {
-            num.txt <- sprintf("%s represents %s", median.eq, median.txt)
-        } else if (object$num.format == "mean") {
-            num.txt <- sprintf("%s represents %s", mean.eq, mean.txt)
-        } else {
-            num.txt <- sprintf("%s \\{%s\\} represents %s \\{%s\\}", median.eq, mean.eq, median.txt, mean.txt)
-        }
-    bot <- sprintf("%s \n\n %s.", bot, num.txt)
-  }
-    if (object$exists.factor.perc) {
-        if (object$factor.format == "count.perc") {
-            bot <- sprintf("%s \n\n $n$ ($p$%s) represent frequency (percentage).",
-                           bot, object$perc.sign)
-        } else {
-            bot <- sprintf("%s \n\n $p$%s ($n$) represent percentage (frequency).",
-                           bot, object$perc.sign)
-        }
-    }
-    ## Explain percentages. If there are no groups, there is not much to explain...
-    if (object$exists.factor.perc & object$exists.groups) {
-        if (object$perc.method == "group") {
-            bot <- sprintf("%s Percentages computed by group.", bot)
-        } else if (object$perc.method == "level") {
-            bot <- sprintf("%s Percentages computed by level.", bot)
-        } else {
-            bot <- sprintf("%s Percentages computed by group and level.", bot)
-        }
-    }
-    if (object$exists.factor.noperc) {
-        bot <- sprintf("%s \n\n Plain numbers are frequencies.", bot)
-    }
-    ## Explain mising notation.
-    if (object$has.missing.in.row) {
-        bot <- sprintf("%s \n\n $[M]$ represents number of missings.", bot)
-    }
-    ## Explain the tests used.
-    if (any(!is.na(object$test.names))) { # Any test used at all?
-        bot <- sprintf("%s \n\n Tests used: ", bot)
-        for (i in 1:2) {
-            if (!is.na(object$test.names[i])) { # Test 'i' used?
-                if (i == 2) {
-                    bot <- sprintf("%s; ", bot) # Add a semicolon between the test texts.
-                }
-                bot <- sprintf("%s$^%d$%s", bot, i, object$test.names[i])
-            }
-        }
-        bot <- sprintf("%s.", bot) # Add a final period.
-    }
-    ## Substitutions of special LaTeX symbols.
-    object$tab <- gsub("_", "\\\\_", object$tab) # Change all '_' to '\_'.
-    object$tab <- gsub("%", "\\\\%", object$tab) # Change all '%' to '\%'.
-    colnames(object$tab) <- gsub("_", "\\\\_", colnames(object$tab))
-    ## bot <- gsub("%", "\\\\%", bot) # Change '%' to '\%' for bottom text too.
-    ## new:
-    bot <- gsub("$\\pm$", "\U00B1", bot, fixed = TRUE)
-    bot <- gsub("$_1$", "\U2081", bot, fixed = TRUE)
-    bot <- gsub("$_3$", "\U2083", bot, fixed = TRUE)
-    bot <- gsub("$", "", bot, fixed = TRUE)
-    bot <- gsub("^ *\\n\\n ", "", bot)
-    bot <- gsub(" -- ", " - ", bot)
-    bot <- unlist(strsplit(bot, split = " \n\n ", fixed = TRUE))
-    bot
-}
+## order_as <- function (given, wanted, incl.unordered = TRUE){
+##     .s <- "_."
+##     if (any(grepl(paste0("_\\.[0-9]_\\.$"), given))) {
+##         mess <- paste0("'order_as' uses suffix '", .s, "<number>",
+##             .s, "' ", "internally hoping noone would ever use such a ",
+##             "strange variable name, but if so then this might ",
+##             "cause the ordering to fail. Please check the results ",
+##             "(or rename your variables)")
+##         warning(mess)
+##     }
+##     want <- wanted[wanted %in% given]
+##     if (any(duplicated(want))) {
+##         warning("duplicated entries in 'wanted'")
+##         want <- unique(want)
+##     }
+##     foo <- function(X) {
+##         n <- nrow(X)
+##         X$nr <- if (n == 1)
+##             ""
+##         else 1:n
+##         NR <- if (n == 1)
+##             ""
+##         else paste0(.s, 1:n, .s)
+##         X$attention <- if (n == 1)
+##             0
+##         else c(rep(0, n - 1), 1)
+##         X$edited <- paste0(X$given, NR)
+##         X
+##     }
+##     df <- data.frame(given = given, stringsAsFactors = FALSE)
+##     spl <- lapply(split(df, f = df$given), foo)
+##     dc <- unsplit(spl, f = df$given)
+##     rownames(dc) <- NULL
+##     sdc <- subset(dc, dc$attention == 1)
+##     lw <- as.list(want)
+##     names(lw) <- want
+##     for (k in seq_along(sdc$given)) {
+##         K <- as.character(sdc$given[k])
+##         if (!K %in% names(lw))
+##             next
+##         n <- sdc$nr[k]
+##         lw[[K]] <- sprintf(paste0(lw[[K]], .s, "%s", .s), 1:n)
+##     }
+##     W <- unlist(lw)
+##     G <- dc$edited
+##     indx <- match(W, G)
+##     rest <- setdiff(1:length(given), indx)
+##     if (incl.unordered) {
+##         c(indx, rest)
+##     }
+##     else {
+##         indx
+##     }
+## }
