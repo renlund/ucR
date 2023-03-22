@@ -490,6 +490,9 @@ ubt_text <- function(object){
     colnames(object$tab) <- gsub("_", "\\\\_", colnames(object$tab))
     ## bot <- gsub("%", "\\\\%", bot) # Change '%' to '\%' for bottom text too.
     ## new:
+    bot <- gsub("$\\pm$", "\U00B1", bot, fixed = TRUE)
+    bot <- gsub("$_1$", "\U2081", bot, fixed = TRUE)
+    bot <- gsub("$_3$", "\U2083", bot, fixed = TRUE)
     bot <- gsub("$", "", bot, fixed = TRUE)
     bot <- gsub("^ *\\n\\n ", "", bot)
     bot <- gsub(" -- ", " - ", bot)
