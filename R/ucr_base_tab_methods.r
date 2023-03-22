@@ -16,75 +16,80 @@
 
 latex.ucr.base.tab <- function(object, alt.gray=F,
   col.just=NULL, collabel.just=NULL, ...) {
-  # --> Add bottom text.
-  # Explain notation.
-  bot <- "" # Bottom text.
-  if (object$exists.numeric) { # Add text explaining numerical variables if any.
-    median.eq <- "$m$ ($a$ -- $b$)"
-    if (object$median.format == "iqr") {
-      median.txt <- "median (Q$_1$ -- Q$_3$)"
-    } else if (object$median.format == "range") {
-      median.txt <- "median (min -- max)"
-    } else {
-      # User-specified quantiles.
-      median.txt <- sprintf("median (%dth -- %dth percentile)",
-        round(object$median.format), round(100 - object$median.format))
-    }
-    if (object$mean.format == "pm") {
-      mean.eq <- "$x$ $\\pm$ $s$"
-      mean.txt <- "mean $\\pm$ SD"
-    } else {
-      mean.eq <- "$x$ ($s$)"
-      mean.txt <- "mean (SD)"
-    }
-    if (object$num.format == "median") {
-      num.txt <- sprintf("%s represents %s", median.eq, median.txt)
-    } else if (object$num.format == "mean") {
-      num.txt <- sprintf("%s represents %s", mean.eq, mean.txt)
-    } else {
-         num.txt <- sprintf("%s \\{%s\\} represents %s \\{%s\\}", median.eq, mean.eq, median.txt, mean.txt)
-    }
-    bot <- sprintf("%s \n\n %s.", bot, num.txt)
-  }
-  if (object$exists.factor.perc) {
-    if (object$factor.format == "count.perc") {
-      bot <- sprintf("%s \n\n $n$ ($p$%s) represent frequency (percentage).",
-        bot, object$perc.sign)
-    } else {
-      bot <- sprintf("%s \n\n $p$%s ($n$) represent percentage (frequency).",
-        bot, object$perc.sign)
-    }
-  }
-  # Explain percentages. If there are no groups, there is not much to explain...
-  if (object$exists.factor.perc & object$exists.groups) {
-    if (object$perc.method == "group") {
-      bot <- sprintf("%s Percentages computed by group.", bot)
-    } else if (object$perc.method == "level") {
-      bot <- sprintf("%s Percentages computed by level.", bot)
-    } else {
-      bot <- sprintf("%s Percentages computed by group and level.", bot)
-    }
-  }
-  if (object$exists.factor.noperc) {
-    bot <- sprintf("%s \n\n Plain numbers are frequencies.", bot)
-  }
-  # Explain mising notation.
-  if (object$has.missing.in.row) {
-    bot <- sprintf("%s \n\n $[M]$ represents number of missings.", bot)
-  }
-  # Explain the tests used.
-  if (any(!is.na(object$test.names))) { # Any test used at all?
-    bot <- sprintf("%s \n\n Tests used: ", bot)
-    for (i in 1:2) {
-      if (!is.na(object$test.names[i])) { # Test 'i' used?
-        if (i == 2) {
-          bot <- sprintf("%s; ", bot) # Add a semicolon between the test texts.
-        }
-        bot <- sprintf("%s$^%d$%s", bot, i, object$test.names[i])
-      }
-    }
-    bot <- sprintf("%s.", bot) # Add a final period.
-  }
+
+  ## ## ## BEGIN TEST : MOVE THIS PART TO SEPARATE FUNCTION
+  ## # --> Add bottom text.
+  ## # Explain notation.
+  ## bot <- "" # Bottom text.
+  ## if (object$exists.numeric) { # Add text explaining numerical variables if any.
+  ##   median.eq <- "$m$ ($a$ -- $b$)"
+  ##   if (object$median.format == "iqr") {
+  ##     median.txt <- "median (Q$_1$ -- Q$_3$)"
+  ##   } else if (object$median.format == "range") {
+  ##     median.txt <- "median (min -- max)"
+  ##   } else {
+  ##     # User-specified quantiles.
+  ##     median.txt <- sprintf("median (%dth -- %dth percentile)",
+  ##       round(object$median.format), round(100 - object$median.format))
+  ##   }
+  ##   if (object$mean.format == "pm") {
+  ##     mean.eq <- "$x$ $\\pm$ $s$"
+  ##     mean.txt <- "mean $\\pm$ SD"
+  ##   } else {
+  ##     mean.eq <- "$x$ ($s$)"
+  ##     mean.txt <- "mean (SD)"
+  ##   }
+  ##   if (object$num.format == "median") {
+  ##     num.txt <- sprintf("%s represents %s", median.eq, median.txt)
+  ##   } else if (object$num.format == "mean") {
+  ##     num.txt <- sprintf("%s represents %s", mean.eq, mean.txt)
+  ##   } else {
+  ##        num.txt <- sprintf("%s \\{%s\\} represents %s \\{%s\\}", median.eq, mean.eq, median.txt, mean.txt)
+  ##   }
+  ##   bot <- sprintf("%s \n\n %s.", bot, num.txt)
+  ## }
+  ## if (object$exists.factor.perc) {
+  ##   if (object$factor.format == "count.perc") {
+  ##     bot <- sprintf("%s \n\n $n$ ($p$%s) represent frequency (percentage).",
+  ##       bot, object$perc.sign)
+  ##   } else {
+  ##     bot <- sprintf("%s \n\n $p$%s ($n$) represent percentage (frequency).",
+  ##       bot, object$perc.sign)
+  ##   }
+  ## }
+  ## # Explain percentages. If there are no groups, there is not much to explain...
+  ## if (object$exists.factor.perc & object$exists.groups) {
+  ##   if (object$perc.method == "group") {
+  ##     bot <- sprintf("%s Percentages computed by group.", bot)
+  ##   } else if (object$perc.method == "level") {
+  ##     bot <- sprintf("%s Percentages computed by level.", bot)
+  ##   } else {
+  ##     bot <- sprintf("%s Percentages computed by group and level.", bot)
+  ##   }
+  ## }
+  ## if (object$exists.factor.noperc) {
+  ##   bot <- sprintf("%s \n\n Plain numbers are frequencies.", bot)
+  ## }
+  ## # Explain mising notation.
+  ## if (object$has.missing.in.row) {
+  ##   bot <- sprintf("%s \n\n $[M]$ represents number of missings.", bot)
+  ## }
+  ## # Explain the tests used.
+  ## if (any(!is.na(object$test.names))) { # Any test used at all?
+  ##   bot <- sprintf("%s \n\n Tests used: ", bot)
+  ##   for (i in 1:2) {
+  ##     if (!is.na(object$test.names[i])) { # Test 'i' used?
+  ##       if (i == 2) {
+  ##         bot <- sprintf("%s; ", bot) # Add a semicolon between the test texts.
+  ##       }
+  ##       bot <- sprintf("%s$^%d$%s", bot, i, object$test.names[i])
+  ##     }
+  ##   }
+  ##   bot <- sprintf("%s.", bot) # Add a final period.
+  ## }
+  ## ## END TEST
+  bot <- ubt.bottom.text(object)
+
   # Substitutions of special LaTeX symbols.
   object$tab <- gsub("_", "\\\\_", object$tab) # Change all '_' to '\_'.
   object$tab <- gsub("%", "\\\\%", object$tab) # Change all '%' to '\%'.
@@ -111,6 +116,80 @@ latex.ucr.base.tab <- function(object, alt.gray=F,
     ...)
   invisible (NULL)
 }
+
+
+ubt.bottom.text <- function(object){
+    bot <- "" ## Bottom text.
+    if (object$exists.numeric) { # Add text explaining numerical variables if any.
+        median.eq <- "$m$ ($a$ -- $b$)"
+        if (object$median.format == "iqr") {
+            median.txt <- "median (Q$_1$ -- Q$_3$)"
+        } else if (object$median.format == "range") {
+            median.txt <- "median (min -- max)"
+        } else {
+            ## User-specified quantiles.
+            median.txt <- sprintf("median (%dth -- %dth percentile)",
+                                  round(object$median.format), round(100 - object$median.format))
+        }
+        if (object$mean.format == "pm") {
+            mean.eq <- "$x$ $\\pm$ $s$"
+            mean.txt <- "mean $\\pm$ SD"
+        } else {
+            mean.eq <- "$x$ ($s$)"
+            mean.txt <- "mean (SD)"
+        }
+        if (object$num.format == "median") {
+            num.txt <- sprintf("%s represents %s", median.eq, median.txt)
+        } else if (object$num.format == "mean") {
+            num.txt <- sprintf("%s represents %s", mean.eq, mean.txt)
+        } else {
+            num.txt <- sprintf("%s \\{%s\\} represents %s \\{%s\\}", median.eq, mean.eq, median.txt, mean.txt)
+        }
+    bot <- sprintf("%s \n\n %s.", bot, num.txt)
+  }
+    if (object$exists.factor.perc) {
+        if (object$factor.format == "count.perc") {
+            bot <- sprintf("%s \n\n $n$ ($p$%s) represent frequency (percentage).",
+                           bot, object$perc.sign)
+        } else {
+            bot <- sprintf("%s \n\n $p$%s ($n$) represent percentage (frequency).",
+                           bot, object$perc.sign)
+        }
+    }
+    ## Explain percentages. If there are no groups, there is not much to explain...
+    if (object$exists.factor.perc & object$exists.groups) {
+        if (object$perc.method == "group") {
+            bot <- sprintf("%s Percentages computed by group.", bot)
+        } else if (object$perc.method == "level") {
+            bot <- sprintf("%s Percentages computed by level.", bot)
+        } else {
+            bot <- sprintf("%s Percentages computed by group and level.", bot)
+        }
+    }
+    if (object$exists.factor.noperc) {
+        bot <- sprintf("%s \n\n Plain numbers are frequencies.", bot)
+    }
+    ## Explain mising notation.
+    if (object$has.missing.in.row) {
+        bot <- sprintf("%s \n\n $[M]$ represents number of missings.", bot)
+    }
+    ## Explain the tests used.
+    if (any(!is.na(object$test.names))) { # Any test used at all?
+        bot <- sprintf("%s \n\n Tests used: ", bot)
+        for (i in 1:2) {
+            if (!is.na(object$test.names[i])) { # Test 'i' used?
+                if (i == 2) {
+                    bot <- sprintf("%s; ", bot) # Add a semicolon between the test texts.
+                }
+                bot <- sprintf("%s$^%d$%s", bot, i, object$test.names[i])
+            }
+        }
+        bot <- sprintf("%s.", bot) # Add a final period.
+    }
+    bot
+}
+
+
 
 #' @title Splits a table into several sub-tables.
 #'
