@@ -154,7 +154,7 @@ ucr.base.tab2flextable <- function(object, template = NULL, caption = NULL,
     ## its flextime:
     names(DB)[1] <- " "
     ft <- flextable(DB)
-    ft <- set_table_properties(ft, layout = "autofit")
+    ft <- set_table_properties(ft, opts_pdf = list(tabcolsep = 3), layout = "autofit")
 
     ## this will fix the row group labels (if any)
     for(i in seq_along(i.na)){
@@ -170,9 +170,21 @@ ucr.base.tab2flextable <- function(object, template = NULL, caption = NULL,
     ft <- bold(ft, i = 1, part = "header")
 
     ## footer stuff
-    fl <- ubt_text(object)
-    if(tests) fl <- fl[!grepl("^Tests used", fl)]
-    ft <- add_footer_lines(ft, values = as_paragraph(fl))
+    bot <- ubt_text(object)
+    if(tests) bot <- bot[!grepl("^Tests used", bot)]
+    ## ft <- add_footer_lines(ft, values = as_paragraph(bot))
+
+    repl1 <- "m (a - b) represents median (Q1 - Q3)."
+    rep.with1 <- as_paragraph("m (a - b) represents median (Q",
+                             as_sub("1"), " - Q", as_sub("3"),").")
+    ap <- NULL
+    for(b in bot){
+        tmp <- if(b == repl1) rep.with1 else as_paragraph(b)
+        ap <- c(ap, tmp)
+    }
+    class(ap) <- "paragraph"
+
+    ft <- add_footer_lines(ft, values = ap)
     ft <- padding(ft, padding = 0, part = "footer")
 
     ## fontsize stuff
@@ -206,8 +218,10 @@ ucr.base.tab2flextable <- function(object, template = NULL, caption = NULL,
 ubt_text <- function(object){
     bot <- ubt.bottom.text(object)
     bot <- gsub("$\\pm$", "\U00B1", bot, fixed = TRUE)
-    bot <- gsub("$_1$", "\U2081", bot, fixed = TRUE)
-    bot <- gsub("$_3$", "\U2083", bot, fixed = TRUE)
+    ## bot <- gsub("$_1$", "\U2081", bot, fixed = TRUE)
+    ## bot <- gsub("$_3$", "\U2083", bot, fixed = TRUE)
+    bot <- gsub("$_1$", "1", bot, fixed = TRUE)
+    bot <- gsub("$_3$", "3", bot, fixed = TRUE)
     bot <- gsub("$", "", bot, fixed = TRUE)
     bot <- gsub("^ *\\n\\n ", "", bot)
     bot <- gsub(" -- ", " - ", bot)
@@ -253,7 +267,6 @@ if(FALSE){ ## TEST START =======================================================
     x
     print(x, preview = "docx")
     print(x, preview = "pdf", latex_engine = "xelatex")
-
 
     test <- ucR::ucr.base.tab(data = X,
                               num.format = "mean",
